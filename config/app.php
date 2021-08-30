@@ -1,5 +1,7 @@
 <?php
 
+use App\Providers\RepositoryServiceProvider;
+
 return [
 
     /*
@@ -67,7 +69,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Europe/Warsaw',
 
     /*
     |--------------------------------------------------------------------------
@@ -80,7 +82,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'pl',
 
     /*
     |--------------------------------------------------------------------------
@@ -174,7 +176,9 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
+        App\Providers\RepositoryServiceProvider::class,
+        App\Providers\CodeExecutorServiceProvider::class,
+        App\Providers\ApiServiceProvider::class,
     ],
 
     /*
