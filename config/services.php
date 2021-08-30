@@ -30,4 +30,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'external-compiler-client' => [
+        'uri' => env('JDOODLE_BASE_URI'),
+        'client-id' => env('JDOODLE_CLIENT_ID'),
+        'client-secret' => env('JDOODLE_CLIENT_SECRET'),
+    ]
 ];
