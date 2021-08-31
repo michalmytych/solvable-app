@@ -15,6 +15,7 @@ class CreateCodeLanguagesTable extends Migration
     {
         Schema::create('code_languages', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('name');
             $table->string('identifier');
             $table->unsignedSmallInteger('version');
             $table->timestamps();

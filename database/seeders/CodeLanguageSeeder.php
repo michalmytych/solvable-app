@@ -15,6 +15,7 @@ class CodeLanguageSeeder extends Seeder
     public function run()
     {
         CodeLanguage::firstOrCreate([
+            'name' => 'C++ 17',
             'identifier' => 'cpp17',
             'version' => 0
         ]);

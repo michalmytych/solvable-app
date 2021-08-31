@@ -11,6 +11,7 @@ class CodeLanguage extends Model
     use HasUuid;
 
     protected $fillable = [
+        'name',
         'identifier',
         'version'
     ];
