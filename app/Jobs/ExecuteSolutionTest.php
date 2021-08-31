@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Services\Websockets\BroadcastingService;
 use Exception;
 use App\Models\Test;
 use App\Models\Solution;
@@ -12,7 +13,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Exceptions\CodeExecutor\ExternalCompilerRequestError;
+use App\Exceptions\CodeExecutor\ExternalCompilerRequestException;
 use App\Support\ExternalCompiler\Client as ExternalCompilerClient;
 
 class ExecuteSolutionTest implements ShouldQueue
@@ -23,15 +24,22 @@ class ExecuteSolutionTest implements ShouldQueue
 
     private Solution $solution;
 
+    private BroadcastingService $broadcastingService;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Test $test, Solution $solution)
+    public function __construct(
+        Test $test,
+        Solution $solution,
+        BroadcastingService $broadcastingService
+    )
     {
         $this->test = $test;
         $this->solution = $solution;
+        $this->broadcastingService = $broadcastingService;
     }
 
     /**
@@ -58,7 +66,7 @@ class ExecuteSolutionTest implements ShouldQueue
             ]);
 
         if ((int) $responseData['statusCode'] !== Response::HTTP_OK) {
-            throw new ExternalCompilerRequestError($responseData['error'], $responseData['statusCode']);
+            throw new ExternalCompilerRequestException($responseData['error'], $responseData['statusCode']);
         }
 
         $testResult = [
@@ -76,7 +84,7 @@ class ExecuteSolutionTest implements ShouldQueue
             'passed' => $this->checkIfExecutionPassedTest($execution)
         ]);
 
-        // todo $this->broadcastingService->broadcastExecutionState($execution)
+        $this->broadcastingService->broadcastExecutionState($execution);
     }
 
     /**
