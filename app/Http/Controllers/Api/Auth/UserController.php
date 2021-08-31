@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
-use App\Models\User;
-use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
+use App\Repositories\UserRepository;
 use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Requests\Api\Auth\RegisterRequest;
 use App\Contracts\Auth\UserControllerInterface;
@@ -31,7 +30,7 @@ class UserController extends Controller implements UserControllerInterface
     {
         $data = $request->validated();
 
-        $user = $this->userRepository->findByEmail($data['email']);
+        $user = $this->userRepository->store($data);
 
         $token = $user->createToken('api_token')->plainTextToken;
 
