@@ -7,6 +7,9 @@ use App\Models\Solution;
 use App\Enums\SolutionStatusType;
 use App\Repositories\SolutionRepository;
 use App\Contracts\CodeExecutor\CodeExecutorServiceInterface;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException;
 
 class SolutionService
 {
@@ -54,7 +57,7 @@ class SolutionService
      */
     public function setSolutionData(array $data): self
     {
-        $this->solutionData = $data;
+        $this->solutionData = $this->decodeSolutionCodeFromBase($data);
 
         return $this;
     }
@@ -113,6 +116,26 @@ class SolutionService
         $this->solution = $this->problem
             ->solutions()
             ->create($this->solutionData);
+    }
+
+    /**
+     * Decode stored solution code data from base 64 to string,
+     * throw validation error if provided code data is invalid.
+     *
+     * @param array $data
+     * @return array
+     */
+    private function decodeSolutionCodeFromBase(array $data): array
+    {
+        $data['code'] = base64_decode($data['code']);
+
+        if (!$data['code']) {
+            ValidationException::withMessages([
+                'errors' => [ 'code' => 'solution.errors.invalid-code-data-provided' ]
+            ]);
+        }
+
+        return $data;
     }
 
     /**

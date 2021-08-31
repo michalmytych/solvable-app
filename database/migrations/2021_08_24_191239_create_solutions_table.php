@@ -28,7 +28,7 @@ class CreateSolutionsTable extends Migration
                 ->references('id')
                 ->on('code_languages')
                 ->onDelete('cascade');
-            $table->string('code')
+            $table->longText('code')
                 ->nullable();
             $table->smallInteger('score')
                 ->unsigned()
