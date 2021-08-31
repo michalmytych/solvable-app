@@ -51,14 +51,24 @@ class SolutionController extends Controller
 
         $solutionData['user_id'] = Auth::id();
 
-        $this->solutionService
+        $solution = $this->solutionService
             ->setProblem($problem)
             ->setSolutionData($solutionData)
             ->validate()
-            ->delegateExecution();
+            ->delegateExecution()
+            ->getProcessedSolution();
 
         return response()->json([
-            'message' => 'solution.messages.processing'
+            'message' => 'solution.messages.processing',
+            'data' => [
+                'id' => $solution->id,
+                'code' => $solution->code,
+                'created_at' => $solution->created_at,
+                'characters' => $solution->characters,
+                'code_language' => [
+                    'name' => $solution->codeLanguage->name,
+                ]
+            ]
         ], 202);
     }
 }

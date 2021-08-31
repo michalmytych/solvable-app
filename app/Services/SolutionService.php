@@ -84,13 +84,25 @@ class SolutionService
      * which can be used as abstraction / adapter for many different
      * external code compilation & execution services.
      */
-    public function delegateExecution(): void
+    public function delegateExecution(): self
     {
         $this->codeExecutorService
             ->init()
             ->executeSolution($this->solution);
 
         $this->updateSolution(['status' => SolutionStatusType::DELEGATED]);
+
+        return $this;
+    }
+
+    /**
+     * Return currently processed solution model.
+     *
+     * @return Solution
+     */
+    public function getProcessedSolution(): Solution
+    {
+        return $this->solution;
     }
 
     /**
