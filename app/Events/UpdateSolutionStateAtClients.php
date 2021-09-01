@@ -3,13 +3,13 @@
 namespace App\Events;
 
 use App\Models\Execution;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class UpdateSolutionStateAtClients implements ShouldBroadcast
+class UpdateSolutionStateAtClients implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -33,10 +33,10 @@ class UpdateSolutionStateAtClients implements ShouldBroadcast
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return Channel
+     * @return PrivateChannel
      */
-    public function broadcastOn(): Channel
+    public function broadcastOn(): PrivateChannel
     {
-        return new Channel('channel');
+        return new PrivateChannel('solution-state-updates');
     }
 }

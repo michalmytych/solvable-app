@@ -2,8 +2,8 @@
 
 namespace App\Services\Websockets;
 
-use App\Events\UpdateSolutionStateAtClients;
 use App\Models\Execution;
+use App\Events\UpdateSolutionStateAtClients;
 
 class BroadcastingService
 {
@@ -14,6 +14,6 @@ class BroadcastingService
      */
     public function broadcastExecutionState(Execution $execution): void
     {
-        broadcast(new UpdateSolutionStateAtClients($execution));
+        UpdateSolutionStateAtClients::dispatch($execution);
     }
 }

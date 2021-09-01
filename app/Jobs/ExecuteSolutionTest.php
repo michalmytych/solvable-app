@@ -24,22 +24,15 @@ class ExecuteSolutionTest implements ShouldQueue
 
     private Solution $solution;
 
-    private BroadcastingService $broadcastingService;
-
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(
-        Test $test,
-        Solution $solution,
-        BroadcastingService $broadcastingService
-    )
+    public function __construct(Test $test, Solution $solution)
     {
         $this->test = $test;
         $this->solution = $solution;
-        $this->broadcastingService = $broadcastingService;
     }
 
     /**
@@ -48,7 +41,10 @@ class ExecuteSolutionTest implements ShouldQueue
      * @return void
      * @throws Exception
      */
-    public function handle(ExternalCompilerClient $externalCompilerClient)
+    public function handle(
+        ExternalCompilerClient $externalCompilerClient,
+        BroadcastingService $broadcastingService
+    )
     {
         $solution = $this->solution;
 
@@ -84,7 +80,7 @@ class ExecuteSolutionTest implements ShouldQueue
             'passed' => $this->checkIfExecutionPassedTest($execution)
         ]);
 
-        $this->broadcastingService->broadcastExecutionState($execution);
+        $broadcastingService->broadcastExecutionState($execution);
     }
 
     /**
