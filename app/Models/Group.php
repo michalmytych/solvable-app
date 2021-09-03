@@ -31,4 +31,14 @@ class Group extends Model
     {
         return $this->belongsToMany(Course::class, 'group_course');
     }
+
+    /**
+     * Return problems related to group.
+     *
+     * @return HasMany
+     */
+    public function problems(): HasMany
+    {
+        return $this->hasMany(Problem::class);
+    }
 }

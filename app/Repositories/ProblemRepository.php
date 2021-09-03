@@ -16,4 +16,15 @@ class ProblemRepository
     {
         return Problem::where('user_id', $id);
     }
+
+    /**
+     * Store new problem in database.
+     *
+     * @param array $data
+     * @return Problem
+     */
+    public function store(array $data): Problem
+    {
+        return Problem::create($data);
+    }
 }
