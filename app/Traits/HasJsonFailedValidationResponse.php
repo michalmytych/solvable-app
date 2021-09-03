@@ -2,10 +2,10 @@
 
 namespace App\Traits;
 
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\ValidationException;
 
 trait HasJsonFailedValidationResponse
 {
@@ -23,7 +23,7 @@ trait HasJsonFailedValidationResponse
             response()->json([
                 'errors' => $errors,
                 'message' => 'validation.failed'
-            ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY)
+            ], Response::HTTP_UNPROCESSABLE_ENTITY)
         );
     }
 }

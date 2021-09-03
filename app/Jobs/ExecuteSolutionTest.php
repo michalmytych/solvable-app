@@ -9,6 +9,7 @@ use App\Models\Solution;
 use App\Models\Execution;
 use Illuminate\Bus\Queueable;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -65,6 +66,8 @@ class ExecuteSolutionTest implements ShouldQueue
             throw new ExternalCompilerRequestException($responseData['error'], $responseData['statusCode']);
         }
 
+        $responseData = $this->prepareExternalServiceResponseData($responseData);
+
         $testResult = [
             'output' => $responseData['output'],
             'execution_time' => $responseData['cpuTime'],
@@ -109,5 +112,25 @@ class ExecuteSolutionTest implements ShouldQueue
     private function isOutputValid($validOutput, $executionOutput): bool
     {
         return (string)$validOutput === (string)$executionOutput;
+    }
+
+    /**
+     * Validate if data returned by external service is valid
+     * for database insertion, if it isn't - prepare it.
+     *
+     * @param Collection $responseData
+     * @return array
+     */
+    private function prepareExternalServiceResponseData(Collection $responseData): array
+    {
+        $outputLimit = config('services.external-compiler-client.max-chars-in-external-compiler-output') ?? 1028;
+
+        if (strlen($responseData['output']) > (int) $outputLimit) {
+            // For some reason substr() works better here than
+            // Str::limit() which gives different outputs some time (?)
+            $responseData['output'] = substr($responseData['output'], 0, $outputLimit);
+        }
+
+        return $responseData->toArray();
     }
 }

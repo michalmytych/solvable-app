@@ -34,5 +34,6 @@ return [
         'uri' => env('JDOODLE_BASE_URI'),
         'client-id' => env('JDOODLE_CLIENT_ID'),
         'client-secret' => env('JDOODLE_CLIENT_SECRET'),
+        'max-chars-in-external-compiler-output' => env('JDOODLE_MAX_CHARS_IN_OUTPUT', 1028)
     ]
 ];

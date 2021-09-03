@@ -27,7 +27,10 @@ class CreateExecutionsTable extends Migration
                 ->nullable();
             $table->unsignedInteger('memory_used')
                 ->nullable();
-            $table->string('output', 1028)
+            $table->string(
+                'output',
+                config('services.external-compiler-client.max-chars-in-external-compiler-output')
+            )
                 ->nullable();
             $table->boolean('passed')->default(false);
             $table->timestamps();

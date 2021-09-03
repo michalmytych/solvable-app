@@ -2,6 +2,8 @@
 
 namespace App\Services\CodeExecutor;
 
+use App\Exceptions\CurlError3Exception;
+use App\Exceptions\ExternalServiceInitializationException;
 use App\Models\Solution;
 use App\Jobs\ExecuteSolutionTest;
 use App\Jobs\FinishSolutionProcessing;
@@ -17,6 +19,13 @@ class CodeExecutorService implements CodeExecutorServiceInterface
         $this->externalCompilerClient = $externalCompilerClient;
     }
 
+    /**
+     * Initialize service.
+     *
+     * @return $this
+     * @throws CurlError3Exception
+     * @throws ExternalServiceInitializationException
+     */
     public function init(): self
     {
         $this->externalCompilerClient->init();
@@ -24,6 +33,11 @@ class CodeExecutorService implements CodeExecutorServiceInterface
         return $this;
     }
 
+    /**
+     * Execute solution code.
+     *
+     * @param Solution $solution
+     */
     public function executeSolution(Solution $solution): void
     {
         $tests = $solution->problem->tests;
