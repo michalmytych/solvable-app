@@ -13,6 +13,12 @@ class SolutionValidationService
 
     private Problem $problem;
 
+    /**
+     * Set solution instance to validate.
+     *
+     * @param Solution $solution
+     * @return $this
+     */
     public function setSolution(Solution $solution): self
     {
         $this->solution = $solution;
@@ -20,6 +26,12 @@ class SolutionValidationService
         return $this;
     }
 
+    /**
+     * Set problem to get validation rules.
+     *
+     * @param Problem $problem
+     * @return $this
+     */
     public function setProblem(Problem $problem): self
     {
         $this->problem = $problem;
@@ -27,6 +39,12 @@ class SolutionValidationService
         return $this;
     }
 
+    /**
+     * Validate solution code characters count against
+     * characters limit provided in problem instance.
+     *
+     * @return $this
+     */
     public function validateCharsCount(): self
     {
         $charactersCount = strlen($this->solution->code);
@@ -44,6 +62,12 @@ class SolutionValidationService
         return $this;
     }
 
+    /**
+     * Validate if language related to solution
+     * was allowed in provided problem.
+     *
+     * @return $this
+     */
     public function validateLanguageUsed(): self
     {
         $chosenCodingLanguageId = strlen($this->solution->code_language_id);
@@ -59,7 +83,12 @@ class SolutionValidationService
         return $this;
     }
 
-    private function markSolutionAsInvalid(int $statusType): void
+    /**
+     * Mark status of processed as invalid.
+     *
+     * @param int $statusType
+     */
+    private function markSolutionAsInvalid(int $statusType = SolutionStatusType::INVALID): void
     {
         $this->solution = tap($this->solution)->update(['status' => $statusType]);
     }

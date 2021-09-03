@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 trait HasUuid
 {
     /**
-     * Boot function from Laravel.
+     * Boot functions from Laravel.
      */
     protected static function boot(): void
     {
