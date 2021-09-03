@@ -19,7 +19,11 @@ class DatabaseSeeder extends Seeder
             ProblemSeeder::class,
             SolutionSeeder::class,
             TestSeeder::class,
-            CodeLanguageProblemTableSeeder::class
+            CodeLanguageProblemTableSeeder::class,
+            CourseSeeder::class,
+            GroupSeeder::class,
+            GroupCourseTableSeeder::class,
+            GroupProblemTableSeeder::class
         ]);
     }
 }

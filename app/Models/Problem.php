@@ -49,4 +49,14 @@ class Problem extends Model
     {
         return $this->belongsToMany(CodeLanguage::class);
     }
+
+    /**
+     * Groups to which problem is related.
+     *
+     * @return BelongsToMany
+     */
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(Group::class, 'group_problem');
+    }
 }
