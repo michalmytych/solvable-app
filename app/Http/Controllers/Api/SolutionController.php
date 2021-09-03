@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\SolutionRepository;
 use App\Http\Requests\Api\Solution\CommitRequest;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class SolutionController extends Controller
 {
@@ -19,7 +18,7 @@ class SolutionController extends Controller
 
     public function __construct(
         SolutionRepository $solutionRepository,
-        SolutionService $solutionService
+        SolutionService    $solutionService
     )
     {
         $this->solutionRepository = $solutionRepository;
@@ -30,12 +29,14 @@ class SolutionController extends Controller
      * Get all solutions for provided problem.
      *
      * @param Problem $problem
-     * @return EloquentCollection
+     * @return array
      */
-    public function allByProblem(Problem $problem): EloquentCollection
+    public function allByProblem(Problem $problem): array
     {
-        return $this->solutionRepository
-            ->allByProblem($problem);
+        return [
+            'data' => $this->solutionRepository
+                ->allByProblem($problem)
+        ];
     }
 
     /**
