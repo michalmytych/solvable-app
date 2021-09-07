@@ -24,9 +24,9 @@ class CreateTestsTable extends Migration
                 ->on('solutions');
             $table->string('input');
             $table->json('valid_outputs');
-            $table->json('time_limit');
-            $table->json('memory_limit');
-            $table->json('chars_limit');
+            $table->decimal('time_limit');
+            $table->unsignedSmallInteger('memory_limit');
+            $table->unsignedSmallInteger('chars_limit');
             $table->timestamps();
         });
     }

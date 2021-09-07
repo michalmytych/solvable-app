@@ -23,6 +23,10 @@ class Test extends Model
         'id'
     ];
 
+    protected $casts = [
+        'valid_outputs' => 'json'
+    ];
+
     /**
      * Executions of this test.
      *
