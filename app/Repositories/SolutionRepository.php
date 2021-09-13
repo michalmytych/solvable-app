@@ -4,7 +4,8 @@ namespace App\Repositories;
 
 use App\Models\Problem;
 use App\Models\Solution;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
+use Illuminate\Contracts\Auth\Authenticatable;
 use App\Contracts\SolutionRepositoryInterface;
 
 class SolutionRepository implements SolutionRepositoryInterface
@@ -13,11 +14,23 @@ class SolutionRepository implements SolutionRepositoryInterface
      * Get all solutions for provided problem instance.
      *
      * @param Problem $problem
+     * @param Authenticatable $user
      * @return Collection
      */
-    public function allByProblem(Problem $problem): Collection
+    public function findByProblemAndUser(Problem $problem, Authenticatable $user): Collection
     {
-        return $problem->solutions;
+        return Solution::query()
+            ->where('problem_id', $problem->id)
+            ->where('user_id', $user->id)
+            ->select([
+                'id',
+                'problem_id',
+                'code_language_id',
+                'status',
+                'created_at',
+                'updated_at'
+            ])
+            ->get();
     }
 
     /**

@@ -31,11 +31,11 @@ class SolutionController extends Controller
      * @param Problem $problem
      * @return array
      */
-    public function allByProblem(Problem $problem): array
+    public function findByProblemAndUser(Problem $problem): array
     {
         return [
             'data' => $this->solutionRepository
-                ->allByProblem($problem)
+                ->findByProblemAndUser($problem, Auth::user())
         ];
     }
 
