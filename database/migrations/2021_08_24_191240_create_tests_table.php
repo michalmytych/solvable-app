@@ -19,9 +19,6 @@ class CreateTestsTable extends Migration
                 ->references('id')
                 ->on('problems')
                 ->onDelete('cascade');
-            $table->foreignUuid('solution_id')
-                ->references('id')
-                ->on('solutions');
             $table->string('input');
             $table->json('valid_outputs');
             $table->decimal('time_limit');
