@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Services\Websockets\BroadcastingService;
 use Exception;
 use App\Models\Test;
 use App\Models\Solution;
@@ -41,7 +42,10 @@ class ExecuteSolutionTest implements ShouldQueue
      * @return void
      * @throws Exception
      */
-    public function handle(ExternalCompilerClient $externalCompilerClient)
+    public function handle(
+        ExternalCompilerClient $externalCompilerClient,
+        BroadcastingService $broadcastingService
+    )
     {
         $solution = $this->solution;
 
@@ -79,7 +83,7 @@ class ExecuteSolutionTest implements ShouldQueue
             'passed' => $this->checkIfExecutionPassedTest($execution)
         ]);
 
-        // todo $this->broadcastingService->broadcastExecutionState($execution)
+        $broadcastingService->broadcastExecutionState($execution);
     }
 
     /**
