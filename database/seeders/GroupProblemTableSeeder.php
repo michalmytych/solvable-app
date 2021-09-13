@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Group;
 use App\Models\Problem;
-use App\Models\CodeLanguage;
 use Illuminate\Database\Seeder;
 
-class CodeLanguageProblemTableSeeder extends Seeder
+class GroupProblemTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,7 +16,7 @@ class CodeLanguageProblemTableSeeder extends Seeder
     public function run()
     {
         Problem::first()
-            ->codeLanguages()
-            ->attach(CodeLanguage::first()->id);
+            ->groups()
+            ->attach(Group::first());
     }
 }

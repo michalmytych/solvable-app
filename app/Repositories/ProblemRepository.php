@@ -27,4 +27,15 @@ class ProblemRepository
     {
         return Problem::create($problemData);
     }
+
+    /**
+     * Store new problem in database.
+     *
+     * @param array $data
+     * @return Problem
+     */
+    public function store(array $data): Problem
+    {
+        return Problem::create($data);
+    }
 }
