@@ -49,11 +49,11 @@ class SolutionValidationService
     {
         $charactersCount = strlen($this->solution->code);
 
-        if ($charactersCount > $this->problem->characters_limit) {
+        if ($charactersCount > $this->problem->chars_limit) {
             $this->markSolutionAsInvalid(SolutionStatusType::CHARACTERS_LIMIT_EXCEEDED);
 
             ValidationException::withMessages([
-                'errors' => [ 'solutions.validation.memory-limit-exceeded' ]
+                'errors' => [ 'solutions.validation.characters-limit-exceeded' ]
             ]);
         }
 

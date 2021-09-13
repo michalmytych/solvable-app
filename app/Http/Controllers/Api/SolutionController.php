@@ -47,7 +47,7 @@ class SolutionController extends Controller
     public function findByProblemAndUser(Problem $problem): array
     {
         return [
-            'data' => $this->solutionRepository
+            'solutions' => $this->solutionRepository
                 ->findByProblemAndUser($problem, Auth::user())
         ];
     }
@@ -57,9 +57,9 @@ class SolutionController extends Controller
      *
      * @param CommitRequest $commitRequest
      * @param Problem $problem
-     * @return JsonResponse
+     * @return SolutionResource
      */
-    public function commit(CommitRequest $commitRequest, Problem $problem): JsonResponse
+    public function commit(CommitRequest $commitRequest, Problem $problem): SolutionResource
     {
         $solutionData = $commitRequest->input('data');
 
@@ -72,17 +72,6 @@ class SolutionController extends Controller
             ->delegateExecution()
             ->getProcessedSolution();
 
-        return response()->json([
-            'message' => 'solution.messages.processing',
-            'data' => [
-                'id' => $solution->id,
-                'code' => $solution->code,
-                'created_at' => $solution->created_at,
-                'characters' => $solution->characters,
-                'code_language' => [
-                    'name' => $solution->codeLanguage->name,
-                ]
-            ]
-        ], 202);
+        return new SolutionResource($solution);
     }
 }

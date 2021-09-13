@@ -17,8 +17,8 @@ class CreateProblemsTable extends Migration
             $table->uuid('id')->primary();
             $table->string('title');
             $table->string('content');
-            // course
-            // group
+            $table->unsignedSmallInteger('chars_limit')
+                ->default(6000);
             $table->timestamps();
         });
     }

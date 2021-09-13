@@ -13,7 +13,8 @@ class Problem extends Model
 
     protected $fillable = [
         'title',
-        'content'
+        'content',
+        'chars_limit'
     ];
 
     protected $hidden = [

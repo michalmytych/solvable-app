@@ -21,7 +21,6 @@ class TestSeeder extends Seeder
             'valid_outputs' => json_encode([3]),
             'time_limit' => 400,
             'memory_limit' => 100,
-            'chars_limit' => 200,
             'problem_id' => Problem::first()->id,
             'solution_id' => Solution::first()->id,
         ]);
@@ -31,7 +30,6 @@ class TestSeeder extends Seeder
             'valid_outputs' => json_encode([10]),
             'time_limit' => 400,
             'memory_limit' => 100,
-            'chars_limit' => 200,
             'problem_id' => Problem::first()->id,
             'solution_id' => Solution::first()->id,
         ]);
@@ -41,7 +39,6 @@ class TestSeeder extends Seeder
             'valid_outputs' => json_encode([290]),
             'time_limit' => 23,
             'memory_limit' => 123,
-            'chars_limit' => 122,
             'problem_id' => Problem::first()->id,
             'solution_id' => Solution::first()->id,
         ]);

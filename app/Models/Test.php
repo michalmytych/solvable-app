@@ -15,8 +15,7 @@ class Test extends Model
         'input',
         'valid_outputs',
         'time_limit',
-        'memory_limit',
-        'chars_limit'
+        'memory_limit'
     ];
 
     protected $hidden = [

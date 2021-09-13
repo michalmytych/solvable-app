@@ -34,10 +34,10 @@ class SolutionResource extends JsonResource
                     'output' => $execution->output,
                     'passed' => $execution->passed,
                     'test' => [
+                        'time_limit' => (float) $execution->test->time_limit,
+                        'memory_limit' => $execution->test->memory_limit,
                         'input' => $execution->test->input,
-                        'valid_outputs' => $execution->test->valid_outputs,
-                        'time_limit' => $execution->test->time_limit,
-                        'memory_limit' => $execution->test->memory_limit
+                        'valid_outputs' => json_decode($execution->test->valid_outputs)
                     ],
                 ];
             })

@@ -26,7 +26,6 @@ class CreateTestsTable extends Migration
             $table->json('valid_outputs');
             $table->decimal('time_limit');
             $table->unsignedSmallInteger('memory_limit');
-            $table->unsignedSmallInteger('chars_limit');
             $table->timestamps();
         });
     }
