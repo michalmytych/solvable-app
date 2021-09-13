@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Problem;
+use App\Models\Solution;
 use App\Services\SolutionService;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\SolutionResource;
 use App\Repositories\SolutionRepository;
 use App\Http\Requests\Api\Solution\CommitRequest;
 
@@ -23,6 +25,17 @@ class SolutionController extends Controller
     {
         $this->solutionRepository = $solutionRepository;
         $this->solutionService = $solutionService;
+    }
+
+    /**
+     * Find solution by id.
+     *
+     * @param Solution $solution
+     * @return SolutionResource
+     */
+    public function find(Solution $solution): SolutionResource
+    {
+        return new SolutionResource($this->solutionRepository->find($solution));
     }
 
     /**

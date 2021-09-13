@@ -27,6 +27,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['prefix' => 'solutions', 'as' => 'solution.'], function () {
         Route::get('/test-jdoodle', [SolutionController::class, 'testJdoodle'])->name('test_jdoodle');
 
+        Route::get('/{solution}', [SolutionController::class, 'find'])->name('find');
         Route::get('/{problem}', [SolutionController::class, 'findByProblemAndUser'])->name('find_by_problem_and_user');
         Route::post('/{problem}/commit', [SolutionController::class, 'commit'])->name('commit');
     });

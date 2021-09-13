@@ -34,4 +34,14 @@ class Execution extends Model
     {
         return $this->belongsTo(Solution::class);
     }
+
+    /**
+     * Test to which execution is related.
+     *
+     * @return BelongsTo
+     */
+    public function test(): BelongsTo
+    {
+        return $this->belongsTo(Test::class);
+    }
 }

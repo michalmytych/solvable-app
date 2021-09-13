@@ -11,6 +11,20 @@ use App\Contracts\SolutionRepositoryInterface;
 class SolutionRepository implements SolutionRepositoryInterface
 {
     /**
+     * Find solution by id.
+     *
+     * @param Solution $solution
+     * @return Solution|null
+     */
+    public function find(Solution $solution)
+    {
+        return Solution::query()
+            ->where('id', $solution->id)
+            ->with('executions', fn($execution) => $execution->with('test'))
+            ->first();
+    }
+
+    /**
      * Get all solutions for provided problem instance.
      *
      * @param Problem $problem
