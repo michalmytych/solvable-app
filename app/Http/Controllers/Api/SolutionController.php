@@ -5,12 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Models\Problem;
 use App\Models\Solution;
 use App\Services\SolutionService;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\SolutionResource;
 use App\Repositories\SolutionRepository;
 use App\Http\Requests\Api\Solution\CommitRequest;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class SolutionController extends Controller
 {
@@ -42,14 +42,12 @@ class SolutionController extends Controller
      * Get all solutions for provided problem.
      *
      * @param Problem $problem
-     * @return array
+     * @return LengthAwarePaginator
      */
-    public function findByProblemAndUser(Problem $problem): array
+    public function findByProblemAndUser(Problem $problem): LengthAwarePaginator
     {
-        return [
-            'solutions' => $this->solutionRepository
-                ->findByProblemAndUser($problem, Auth::user())
-        ];
+        return $this->solutionRepository
+                ->findByProblemAndUserWithPagination($problem, Auth::user());
     }
 
     /**

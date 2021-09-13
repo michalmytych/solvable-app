@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class SolutionResource extends JsonResource
 {
@@ -27,20 +28,33 @@ class SolutionResource extends JsonResource
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'executions' => $this->executions->map(function ($execution) {
-                return [
-                  'execution_time' => $execution->execution_time,
-                    'memory_used' => $execution->memory_used,
-                    'output' => $execution->output,
-                    'passed' => $execution->passed,
-                    'test' => [
-                        'time_limit' => (float) $execution->test->time_limit,
-                        'memory_limit' => $execution->test->memory_limit,
-                        'input' => $execution->test->input,
-                        'valid_outputs' => json_decode($execution->test->valid_outputs)
-                    ],
-                ];
-            })
+            'executions' => $this->executions->isNotEmpty()
+                ? $this->executions->map(function ($execution) {
+                    return [
+                        'execution_time' => $execution->execution_time,
+                        'memory_used' => $execution->memory_used,
+                        'output' => $execution->output,
+                        'passed' => $execution->passed,
+                        'test' => $execution->test ? [
+                            'time_limit' => (float)$execution->test->time_limit,
+                            'memory_limit' => $execution->test->memory_limit,
+                            'input' => $execution->test->input,
+                            'valid_outputs' => json_decode($execution->test->valid_outputs)
+                        ] : null,
+                    ];
+                })
+                : []
         ];
+    }
+
+    /**
+     * Get solutions collection.
+     *
+     * @param mixed $resource
+     * @return AnonymousResourceCollection
+     */
+    public static function collection($resource): AnonymousResourceCollection
+    {
+        return parent::collection($resource);
     }
 }

@@ -12,8 +12,19 @@ class ProblemRepository
      * @param string $id
      * @return mixed
      */
-    public function allByUserId(string $id)
+    public function findByUser(string $id)
     {
-        return Problem::where('user_id', $id);
+        return Problem::where('user_id', $id)->get();
+    }
+
+    /**
+     * Create and return new problem.
+     *
+     * @param array $problemData
+     * @return Problem
+     */
+    public function store(array $problemData): Problem
+    {
+        return Problem::create($problemData);
     }
 }

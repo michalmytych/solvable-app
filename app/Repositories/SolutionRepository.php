@@ -4,9 +4,9 @@ namespace App\Repositories;
 
 use App\Models\Problem;
 use App\Models\Solution;
-use Illuminate\Support\Collection;
 use Illuminate\Contracts\Auth\Authenticatable;
 use App\Contracts\SolutionRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class SolutionRepository implements SolutionRepositoryInterface
 {
@@ -29,9 +29,9 @@ class SolutionRepository implements SolutionRepositoryInterface
      *
      * @param Problem $problem
      * @param Authenticatable $user
-     * @return Collection
+     * @return LengthAwarePaginator
      */
-    public function findByProblemAndUser(Problem $problem, Authenticatable $user): Collection
+    public function findByProblemAndUserWithPagination(Problem $problem, Authenticatable $user): LengthAwarePaginator
     {
         return Solution::query()
             ->where('problem_id', $problem->id)
@@ -44,7 +44,7 @@ class SolutionRepository implements SolutionRepositoryInterface
                 'created_at',
                 'updated_at'
             ])
-            ->get();
+            ->paginate(10);
     }
 
     /**

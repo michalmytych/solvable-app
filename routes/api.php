@@ -28,12 +28,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/test-jdoodle', [SolutionController::class, 'testJdoodle'])->name('test_jdoodle');
 
         Route::get('/{solution}', [SolutionController::class, 'find'])->name('find');
-        Route::get('/{problem}', [SolutionController::class, 'findByProblemAndUser'])->name('find_by_problem_and_user');
         Route::post('/{problem}/commit', [SolutionController::class, 'commit'])->name('commit');
     });
 
     Route::group(['prefix' => 'problems', 'as' => 'problem.'], function () {
-       Route::get('/', [ProblemController::class, 'allByUser'])->name('all_by_user');
+        Route::get('/', [ProblemController::class, 'findByUser'])->name('find_by_user');
+        Route::post('/', [ProblemController::class, 'createWithRelations'])->name('create_with_relations');
+        Route::get('/{problem}/solutions', [SolutionController::class, 'findByProblemAndUser'])->name('find_by_problem_and_user');
     });
 });
 
