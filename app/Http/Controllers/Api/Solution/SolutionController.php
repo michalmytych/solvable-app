@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Solution;
 
 use App\Models\Problem;
 use App\Services\SolutionService;
@@ -31,11 +31,11 @@ class SolutionController extends Controller
      * @param Problem $problem
      * @return array
      */
-    public function allByProblem(Problem $problem): array
+    public function findByProblem(Problem $problem): array
     {
         return [
             'data' => $this->solutionRepository
-                ->allByProblem($problem)
+                ->findByProblem($problem)
         ];
     }
 

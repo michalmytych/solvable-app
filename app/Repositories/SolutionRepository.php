@@ -15,7 +15,7 @@ class SolutionRepository implements SolutionRepositoryInterface
      * @param Problem $problem
      * @return Collection
      */
-    public function allByProblem(Problem $problem): Collection
+    public function findByProblem(Problem $problem): Collection
     {
         return $problem->solutions;
     }

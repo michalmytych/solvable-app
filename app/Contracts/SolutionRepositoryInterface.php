@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface SolutionRepositoryInterface
 {
-    public function allByProblem(Problem $problem): Collection;
+    public function findByProblem(Problem $problem): Collection;
 
     public function update(Solution $solution, array $data): Solution;
 }
