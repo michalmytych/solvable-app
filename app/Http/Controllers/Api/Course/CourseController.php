@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Course;
 
 use App\Models\Course;
+use App\Services\Course\CourseService;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Repositories\CourseRepository;
@@ -14,9 +15,12 @@ class CourseController extends Controller
 {
     private CourseRepository $courseRepository;
 
-    public function __construct(CourseRepository $courseRepository)
+    private CourseService $courseService;
+
+    public function __construct(CourseRepository $courseRepository, CourseService $courseService)
     {
         $this->courseRepository = $courseRepository;
+        $this->courseService = $courseService;
     }
 
     /**
@@ -37,7 +41,10 @@ class CourseController extends Controller
      */
     public function store(StoreRequest $storeRequest): Course
     {
-        return $this->courseRepository->store($storeRequest->validated());
+        $courseData = $storeRequest->validated();
+        $courseData['user_id'] = Auth::id();
+
+        return $this->courseService->create($courseData);
     }
 
     /**
