@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\Api\Course\CourseController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ProblemController;
 use App\Http\Controllers\Api\Auth\UserController;
+use App\Http\Controllers\Api\Course\CourseController;
+use App\Http\Controllers\Api\Problem\ProblemController;
 use App\Http\Controllers\Api\Solution\SolutionController;
 
 /*
@@ -31,7 +31,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     Route::group(['prefix' => 'problems', 'as' => 'problem.'], function () {
-       Route::get('/', [ProblemController::class, 'allByUser'])->name('all_by_user');
+        Route::get('/', [ProblemController::class, 'allByUser'])->name('all_by_user');
+        Route::post('/{group}', [ProblemController::class, 'store'])->name('store');
     });
 
     Route::group(['prefix' => 'courses', 'as' => 'course.'], function () {

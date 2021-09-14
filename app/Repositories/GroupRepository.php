@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Models\Course;
 use App\Models\Group;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class GroupRepository
@@ -29,5 +31,29 @@ class GroupRepository
     public function syncProblems(Group $group, array $problemsIds): void
     {
         DB::transaction(fn() => $group->problems()->sync($problemsIds));
+    }
+
+    /**
+     * Get groups of course by course id.
+     *
+     * @param string $courseId
+     * @return Collection|null
+     */
+    public function findByCourseId(string $courseId): ?Collection
+    {
+        $course = Course::find($courseId);
+
+        return optional($course)->groups;
+    }
+
+    /**
+     * Find group by id.
+     *
+     * @param string $groupId
+     * @return mixed
+     */
+    public function findById(string $groupId)
+    {
+        return Group::find($groupId);
     }
 }

@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Solution;
 
 use App\Models\Problem;
 use App\Models\Solution;
+use Illuminate\Http\JsonResponse;
 use App\Services\SolutionService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +21,7 @@ class SolutionController extends Controller
 
     public function __construct(
         SolutionRepository $solutionRepository,
-        SolutionService    $solutionService
+        SolutionService $solutionService
     )
     {
         $this->solutionRepository = $solutionRepository;
@@ -47,7 +48,7 @@ class SolutionController extends Controller
     public function findByProblemAndUser(Problem $problem): LengthAwarePaginator
     {
         return $this->solutionRepository
-                ->findByProblemAndUserWithPagination($problem, Auth::user());
+            ->findByProblemAndUserWithPagination($problem, Auth::user());
     }
 
     /**
@@ -55,9 +56,9 @@ class SolutionController extends Controller
      *
      * @param CommitRequest $commitRequest
      * @param Problem $problem
-     * @return SolutionResource
+     * @return JsonResponse
      */
-    public function commit(CommitRequest $commitRequest, Problem $problem): SolutionResource
+    public function commit(CommitRequest $commitRequest, Problem $problem): JsonResponse
     {
         $solutionData = $commitRequest->input('data');
 
@@ -70,6 +71,9 @@ class SolutionController extends Controller
             ->delegateExecution()
             ->getProcessedSolution();
 
-        return new SolutionResource($solution);
+        return response()->json([
+            'message' => 'messages.solution-processing',
+            'data' => new SolutionResource($solution)
+        ], 202);
     }
 }
