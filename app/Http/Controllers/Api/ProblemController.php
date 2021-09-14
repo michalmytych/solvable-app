@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Problem;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Problem\CreateRequest;
+use App\Http\Requests\Api\Solution\CommitRequest;
+use App\Http\Resources\ProblemResource;
+use App\Http\Resources\SolutionResource;
+use App\Models\Problem;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 use App\Repositories\ProblemRepository;
-use App\Http\Requests\Api\Problem\StoreRequest;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class ProblemController extends Controller
@@ -23,20 +27,37 @@ class ProblemController extends Controller
      *
      * @return EloquentCollection
      */
-    public function allByUser(): EloquentCollection
+    public function findByUser(): EloquentCollection
     {
-        return $this->problemRepository->allByUserId(Auth::id());
+        return $this->problemRepository->findByUser(Auth::id());
     }
 
     /**
-     * Create new problem in database with validated data.
-     * move to course controller and group controller
+     * Create new problem.
      *
-     * @param StoreRequest $storeRequest
-     * @return Problem
+     * @param CreateRequest $createRequest
+     * @return ProblemResource
      */
-    public function store(StoreRequest $storeRequest): Problem
+    public function createWithRelations(CreateRequest $createRequest): ProblemResource
     {
-        return $this->problemRepository->store($storeRequest->validated());
+        $problemData = collect($createRequest->input());     // todo - change to validated()
+        $problemData['user_id'] = Auth::id();
+
+        $tests = collect($problemData->get('tests'));
+        $codeLanguagesIds = collect($problemData->get('code_languages_ids'));
+
+        $problemData = $problemData->forget('tests');
+
+        $problem = $this->problemRepository->store($problemData->toArray());
+
+        if ($tests->isNotEmpty()) {
+            $problem->tests()->createMany($tests);
+        }
+
+        if ($codeLanguagesIds->isNotEmpty()) {
+            $problem->codeLanguages()->sync($codeLanguagesIds);
+        }
+
+        return new ProblemResource($problem);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -13,7 +14,9 @@ class Problem extends Model
 
     protected $fillable = [
         'title',
-        'content'
+        'content',
+        'chars_limit',
+        'user_id'
     ];
 
     protected $hidden = [
@@ -51,12 +54,12 @@ class Problem extends Model
     }
 
     /**
-     * Groups to which problem is related.
+     * Get user related to problem.
      *
-     * @return BelongsToMany
+     * @return BelongsTo
      */
-    public function groups(): BelongsToMany
+    public function user(): BelongsTo
     {
-        return $this->belongsToMany(Group::class, 'group_problem');
+        return $this->belongsTo(User::class);
     }
 }

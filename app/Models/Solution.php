@@ -6,6 +6,7 @@ use App\Enums\SolutionStatusType;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Solution extends Model
@@ -45,5 +46,15 @@ class Solution extends Model
     public function codeLanguage(): HasOne
     {
         return $this->hasOne(CodeLanguage::class, 'id', 'code_language_id');
+    }
+
+    /**
+     * Executions of this test.
+     *
+     * @return HasMany
+     */
+    public function executions(): HasMany
+    {
+        return $this->hasMany(Execution::class);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Solution;
 
+use Exception;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Problem;
@@ -71,6 +72,9 @@ class SolutionControllerTest extends TestCase
             );
     }
 
+    /**
+     * @throws Exception
+     */
     public function test_commit_executes_solution_code_and_returns_solution()
     {
         $startSolutionsCount = Solution::query()->count();
@@ -88,9 +92,10 @@ class SolutionControllerTest extends TestCase
         $externalServiceConfigured = collect(config('services.external-compiler-client'))->every(fn($e) => $e);
 
         if (!$externalServiceConfigured) {
-            print_r('<msg> Maybe you forgot to set external compiler service credentials in config?');
-
-            return;
+            throw new Exception(
+                'External service configuration lacking. ' .
+                'Maybe you have forgotten to set external compiler service credentials in config?'
+            );
         }
 
         $this->assertEquals(

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateProblemsTable extends Migration
 {
@@ -15,8 +15,14 @@ class CreateProblemsTable extends Migration
     {
         Schema::create('problems', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('title', 96);
-            $table->string('content', 1028);
+            $table->foreignId('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
+            $table->string('title');
+            $table->string('content');
+            $table->unsignedSmallInteger('chars_limit')
+                ->default(6000);
             $table->timestamps();
         });
     }

@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Api\Solution;
+namespace App\Http\Controllers\Api;
 
 use App\Models\Problem;
+use App\Models\Solution;
 use App\Services\SolutionService;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\SolutionResource;
 use App\Repositories\SolutionRepository;
 use App\Http\Requests\Api\Solution\CommitRequest;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class SolutionController extends Controller
 {
@@ -26,17 +28,26 @@ class SolutionController extends Controller
     }
 
     /**
+     * Find solution by id.
+     *
+     * @param Solution $solution
+     * @return SolutionResource
+     */
+    public function find(Solution $solution): SolutionResource
+    {
+        return new SolutionResource($this->solutionRepository->find($solution));
+    }
+
+    /**
      * Get all solutions for provided problem.
      *
      * @param Problem $problem
-     * @return array
+     * @return LengthAwarePaginator
      */
-    public function findByProblem(Problem $problem): array
+    public function findByProblemAndUser(Problem $problem): LengthAwarePaginator
     {
-        return [
-            'data' => $this->solutionRepository
-                ->findByProblem($problem)
-        ];
+        return $this->solutionRepository
+                ->findByProblemAndUserWithPagination($problem, Auth::user());
     }
 
     /**
@@ -44,9 +55,9 @@ class SolutionController extends Controller
      *
      * @param CommitRequest $commitRequest
      * @param Problem $problem
-     * @return JsonResponse
+     * @return SolutionResource
      */
-    public function commit(CommitRequest $commitRequest, Problem $problem): JsonResponse
+    public function commit(CommitRequest $commitRequest, Problem $problem): SolutionResource
     {
         $solutionData = $commitRequest->input('data');
 
@@ -59,17 +70,6 @@ class SolutionController extends Controller
             ->delegateExecution()
             ->getProcessedSolution();
 
-        return response()->json([
-            'message' => 'solution.messages.processing',
-            'data' => [
-                'id' => $solution->id,
-                'code' => $solution->code,
-                'created_at' => $solution->created_at,
-                'characters' => $solution->characters,
-                'code_language' => [
-                    'name' => $solution->codeLanguage->name,
-                ]
-            ]
-        ], 202);
+        return new SolutionResource($solution);
     }
 }

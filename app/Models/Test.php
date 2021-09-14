@@ -15,12 +15,15 @@ class Test extends Model
         'input',
         'valid_outputs',
         'time_limit',
-        'memory_limit',
-        'chars_limit'
+        'memory_limit'
     ];
 
     protected $hidden = [
         'id'
+    ];
+
+    protected $casts = [
+        'valid_outputs' => 'json'
     ];
 
     /**
