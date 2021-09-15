@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api\Course;
 
 use App\Models\Course;
-use App\Services\Course\CourseService;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Repositories\CourseRepository;
+use App\Services\Course\CourseService;
 use App\Http\Requests\Api\Course\StoreRequest;
 use App\Http\Requests\Api\Group\UpdateRequest;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
