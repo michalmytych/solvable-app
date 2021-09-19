@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Course;
+use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -30,6 +31,7 @@ class CourseFactory extends Factory
             'name' => $courseName,
             'description' => $this->faker->realText(512),
             'slug' => Str::slug($courseName) . '_' . $courseId,
+            'user_id' => User::first()->id,
             'updated_at' => now(),
             'created_at' => now(),
         ];

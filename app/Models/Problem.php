@@ -62,4 +62,14 @@ class Problem extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get groups to which problem is attached.
+     *
+     * @return BelongsToMany
+     */
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(Group::class);
+    }
 }

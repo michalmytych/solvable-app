@@ -42,11 +42,11 @@ class Group extends Model
     /**
      * Return problems related to group.
      *
-     * @return HasMany
+     * @return BelongsToMany
      */
-    public function problems(): HasMany
+    public function problems(): BelongsToMany
     {
-        return $this->hasMany(Problem::class);
+        return $this->belongsToMany(Problem::class);
     }
 
     /**

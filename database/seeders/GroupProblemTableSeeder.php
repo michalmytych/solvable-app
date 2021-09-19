@@ -17,6 +17,6 @@ class GroupProblemTableSeeder extends Seeder
     {
         Problem::first()
             ->groups()
-            ->attach(Group::first());
+            ->sync([Group::first()->id]);
     }
 }

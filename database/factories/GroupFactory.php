@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Course;
 use App\Models\Group;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -35,6 +36,7 @@ class GroupFactory extends Factory
             'name' => $name,
             'description' => $this->faker->realText(512),
             'code' => $mainGroupOfCourseCode,
+            'user_id' => User::first()->id,
             'updated_at' => now(),
             'created_at' => now(),
         ];
