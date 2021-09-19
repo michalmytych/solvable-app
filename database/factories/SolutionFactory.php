@@ -29,7 +29,7 @@ class SolutionFactory extends Factory
             'user_id' => User::first()->id,
             'problem_id' => Problem::first()->id,
             'code_language_id' => CodeLanguage::first()->id,
-            'code' => $this->faker->sentence,
+            'code' => $this->faker->sentence(),
             'score' => 10,
             'execution_time' => 300,
             'memory_used' => 400,

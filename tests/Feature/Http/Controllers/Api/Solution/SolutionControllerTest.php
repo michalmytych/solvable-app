@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\Api\Solution;
 
+use App\Enums\SolutionStatusType;
 use Exception;
 use Tests\TestCase;
 use App\Models\User;
@@ -22,6 +23,8 @@ class SolutionControllerTest extends TestCase
     private array $solutionData;
 
     private array $solutionResourceJsonStructure;
+
+    private array $solutionInCollectionJsonStructure;
 
     /**
      * Set up test case.
@@ -49,6 +52,15 @@ class SolutionControllerTest extends TestCase
             'executions' => 'array'
         ];
 
+        $this->solutionInCollectionJsonStructure = [
+            'id' => 'string',
+            'problem_id' => 'string',
+            'code_language_id' => 'string',
+            'status' => 'integer',
+            'created_at' => 'string',
+            'updated_at' => 'string'
+        ];
+
         $this->solutionData = [
             'data' => [
                 'code' => base64_encode($this->faker->realTextBetween(150, 960)),
@@ -59,17 +71,45 @@ class SolutionControllerTest extends TestCase
         $this->user = User::factory()->create();
     }
 
-    public function test_returns_list_of_solutions_by_problem()
+    public function test_returns_list_of_solutions_by_user_and_query_filters()
     {
+        $cpp = CodeLanguage::factory()->create();
+        $java = CodeLanguage::factory()->create();
+
+        $firstProblem = Problem::factory()->create();
+        $secondProblem = Problem::factory()->create();
+
         Solution::factory()
-            ->count(3)
+            ->create([
+                'user_id' => $this->user->id,
+                'code_language_id' => $cpp->id,
+                'problem_id' => $firstProblem->id,
+                'status' => SolutionStatusType::INVALID
+            ]);
+
+        Solution::factory()
+            ->create([
+                'user_id' => $this->user->id,
+                'code_language_id' => $java->id,
+                'problem_id' => $firstProblem->id,
+                'status' => SolutionStatusType::INVALID
+            ]);
+
+        Solution::factory()
+            ->create([
+                'user_id' => $this->user->id,
+                'code_language_id' => $java->id,
+                'problem_id' => $secondProblem->id,
+            ]);
+
+        Solution::factory()
             ->create([
                 'user_id' => $this->user->id
             ]);
 
         $response = $this
             ->actingAs($this->user)
-            ->getJson(route('solution.find_by_problem', ['problem' => Problem::first()->id]));
+            ->getJson(route('solution.all'));
 
         $response
             ->assertOk()
@@ -77,23 +117,88 @@ class SolutionControllerTest extends TestCase
                 ->has('data', fn(AssertableJson $json) => $json
                     ->count(Solution::where('user_id', $this->user->id)->count())
                     ->each(fn(AssertableJson $json) => $json
-                        ->whereAllType([
-                            'id' => 'string',
-                            'problem_id' => 'string',
-                            'code_language_id' => 'string',
-                            'status' => 'integer',
-                            'created_at' => 'string',
-                            'updated_at' => 'string'
-                        ])
+                        ->whereAllType($this->solutionInCollectionJsonStructure)
                     )
                 )
                 ->etc()
             );
+
+        $response = $this
+            ->actingAs($this->user)
+            ->getJson(route('solution.all', ['code_language_id' => $java->id]));
+
+        $response
+            ->assertOk()
+            ->assertJson(fn(AssertableJson $json) => $json
+                ->has('data', fn(AssertableJson $json) => $json
+                    ->count(Solution::where([
+                        'user_id' => $this->user->id,
+                        'code_language_id' => $java->id
+                    ])->count())
+                    ->each(fn(AssertableJson $json) => $json
+                        ->whereAllType($this->solutionInCollectionJsonStructure)
+                    )
+                )
+                ->etc()
+            );
+
+        $response = $this
+            ->actingAs($this->user)
+            ->getJson(route(
+                'solution.all',
+                ['code_language_id' => $java->id, 'status' => SolutionStatusType::INVALID]
+            ));
+
+        $response
+            ->assertOk()
+            ->assertJson(fn(AssertableJson $json) => $json
+                ->has('data', fn(AssertableJson $json) => $json
+                    ->count(Solution::where([
+                        'user_id' => $this->user->id,
+                        'code_language_id' => $java->id,
+                        'status' => SolutionStatusType::INVALID
+                    ])->count())
+                    ->each(fn(AssertableJson $json) => $json
+                        ->whereAllType($this->solutionInCollectionJsonStructure)
+                    )
+                )
+                ->etc()
+            );
+
+        $response = $this
+            ->actingAs($this->user)
+            ->getJson(route('solution.all', ['problem_id' => $secondProblem->id]));
+
+        $response
+            ->assertOk()
+            ->assertJson(fn(AssertableJson $json) => $json
+                ->has('data', fn(AssertableJson $json) => $json
+                    ->count(Solution::where([
+                        'user_id' => $this->user->id,
+                        'problem_id' => $secondProblem->id
+                    ])->count())
+                    ->each(fn(AssertableJson $json) => $json
+                        ->whereAllType($this->solutionInCollectionJsonStructure)
+                    )
+                )
+                ->etc()
+            );
+
+        $response = $this
+            ->actingAs($this->user)
+            ->getJson(route(
+                'solution.all',
+                ['code_language_id' => $java->id, 'status' => SolutionStatusType::INVALID_LANGUAGE_USED]
+            ));
+
+        $response
+            ->assertOk()
+            ->assertJson(fn(AssertableJson $json) => $json
+                ->has('data', fn(AssertableJson $json) => $json->count(0))
+                ->etc()
+            );
     }
 
-    /**
-     * @throws Exception
-     */
     public function test_commit_executes_solution_code_and_returns_solution()
     {
         $startSolutionsCount = Solution::where('user_id', $this->user->id)->count();

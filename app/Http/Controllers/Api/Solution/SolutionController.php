@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Api\Solution;
 
 use App\Models\Problem;
 use App\Models\Solution;
+use Illuminate\Http\Request;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Http\JsonResponse;
 use App\Services\SolutionService;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\SolutionResource;
 use App\Repositories\SolutionRepository;
@@ -41,15 +42,13 @@ class SolutionController extends Controller
     }
 
     /**
-     * Get all solutions for provided problem.
+     * Get all solutions for authenticated user.
      *
-     * @param Request $request
      * @return LengthAwarePaginator
      */
-    public function all(Request $request): LengthAwarePaginator
+    public function all(): LengthAwarePaginator
     {
-        return $this->solutionRepository
-            ->all($request->query(), Auth::user());
+        return $this->solutionRepository->all(Auth::user());
     }
 
     /**
