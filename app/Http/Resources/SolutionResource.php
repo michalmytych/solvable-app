@@ -26,6 +26,7 @@ class SolutionResource extends JsonResource
             'characters' => $this->characters,
             'problem_chars_limit' => $this->problem->chars_limit,
             'status' => $this->status,
+            'score' => $this->score,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'executions' => $this->executions->isNotEmpty()

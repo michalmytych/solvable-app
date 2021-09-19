@@ -7,6 +7,7 @@ use App\Models\Solution;
 use Illuminate\Http\JsonResponse;
 use App\Services\SolutionService;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\SolutionResource;
 use App\Repositories\SolutionRepository;
@@ -42,13 +43,13 @@ class SolutionController extends Controller
     /**
      * Get all solutions for provided problem.
      *
-     * @param Problem $problem
+     * @param Request $request
      * @return LengthAwarePaginator
      */
-    public function findByProblemAndUser(Problem $problem): LengthAwarePaginator
+    public function all(Request $request): LengthAwarePaginator
     {
         return $this->solutionRepository
-            ->findByProblemAndUserWithPagination($problem, Auth::user());
+            ->all($request->query(), Auth::user());
     }
 
     /**

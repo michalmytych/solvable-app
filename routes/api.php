@@ -26,7 +26,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
     Route::group(['prefix' => 'solutions', 'as' => 'solution.'], function () {
-        Route::get('/{problem}', [SolutionController::class, 'findByProblem'])->name('find_by_problem');
+        Route::get('/', [SolutionController::class, 'all'])->name('all');
         Route::post('/{problem}/commit', [SolutionController::class, 'commit'])->name('commit');
     });
 

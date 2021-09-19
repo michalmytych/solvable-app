@@ -27,15 +27,21 @@ class SolutionRepository implements SolutionRepositoryInterface
     /**
      * Get all solutions for provided problem instance.
      *
-     * @param Problem $problem
+     * @param array $params
      * @param Authenticatable $user
      * @return LengthAwarePaginator
      */
-    public function findByProblemAndUserWithPagination(Problem $problem, Authenticatable $user): LengthAwarePaginator
+    public function all(array $params, Authenticatable $user): LengthAwarePaginator
     {
+        $params = collect($params);
+
+        $problemId = $params->get('problem_id');
+
         return Solution::query()
-            ->where('problem_id', $problem->id)
             ->where('user_id', $user->id)
+            ->when(!empty($problemId), fn($builder) =>
+                $builder->where('problem_id', $problemId)
+            )
             ->select([
                 'id',
                 'problem_id',
