@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Problem;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProblemRepository
 {
@@ -10,11 +11,11 @@ class ProblemRepository
      * Get all problems related to user by user id.
      *
      * @param string $id
-     * @return mixed
+     * @return LengthAwarePaginator
      */
-    public function all(string $id): mixed
+    public function all(string $id): LengthAwarePaginator
     {
-        return Problem::where('user_id', $id)->get();
+        return Problem::where('user_id', $id)->paginate(10);
     }
 
     /**

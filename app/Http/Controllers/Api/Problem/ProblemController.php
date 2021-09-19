@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\Problem;
 
+use App\Models\Problem;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -21,13 +23,24 @@ class ProblemController extends Controller
     }
 
     /**
-     * Get all problems by user.
+     * Get all problems for user.
      *
-     * @return EloquentCollection
+     * @return LengthAwarePaginator
      */
-    public function all(): EloquentCollection
+    public function all(): LengthAwarePaginator
     {
-        return $this->problemRepository->all(Auth::id());
+        return $this->problemRepository->all(Auth::user());
+    }
+
+    /**
+     * Find problem.
+     *
+     * @param Problem $problem
+     * @return Problem
+     */
+    public function find(Problem $problem): Problem
+    {
+        return $problem;
     }
 
     /**
@@ -36,16 +49,12 @@ class ProblemController extends Controller
      *
      * @param CreateRequest $createRequest
      * @param ProblemService $problemService
-     * @return ProblemResource|JsonResponse
+     * @return ProblemResource
      */
     public function store(CreateRequest $createRequest, ProblemService $problemService)
     {
         $problem = $problemService->createWithRelations($createRequest);
 
-        return $problem
-            ? new ProblemResource($problem)
-            : response()->json([
-                'message' => 'errors.error-while-creating'
-            ], 500);
+        return new ProblemResource($problem);
     }
 }

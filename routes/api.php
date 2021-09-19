@@ -17,22 +17,22 @@ use App\Http\Controllers\Api\Solution\SolutionController;
 |
 */
 
-// Public routes
 Route::post('/register', [UserController::class, 'register'])->name('register');
 Route::post('/login', [UserController::class, 'login'])->name('login');
 
-// Protected routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
     Route::group(['prefix' => 'solutions', 'as' => 'solution.'], function () {
         Route::get('/', [SolutionController::class, 'all'])->name('all');
+        Route::get('/{solution}', [SolutionController::class, 'find'])->name('find');
         Route::post('/{problem}/commit', [SolutionController::class, 'commit'])->name('commit');
     });
 
     Route::group(['prefix' => 'problems', 'as' => 'problem.'], function () {
-        Route::get('/', [ProblemController::class, 'allByUser'])->name('all_by_user');
-        Route::post('/{group}', [ProblemController::class, 'store'])->name('store');
+        Route::get('/', [ProblemController::class, 'all'])->name('all');
+        Route::get('/{problem}', [ProblemController::class, 'find'])->name('find');
+        Route::post('/{group}', [ProblemController::class, 'store'])->name('store');    // todo do groups ?
     });
 
     Route::group(['prefix' => 'courses', 'as' => 'course.'], function () {
