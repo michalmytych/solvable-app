@@ -25,9 +25,9 @@ class ProblemController extends Controller
      *
      * @return EloquentCollection
      */
-    public function findByUser(): EloquentCollection
+    public function all(): EloquentCollection
     {
-        return $this->problemRepository->findByUser(Auth::id());
+        return $this->problemRepository->all(Auth::id());
     }
 
     /**

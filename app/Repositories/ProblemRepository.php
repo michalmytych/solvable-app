@@ -12,7 +12,7 @@ class ProblemRepository
      * @param string $id
      * @return mixed
      */
-    public function findByUser(string $id)
+    public function all(string $id): mixed
     {
         return Problem::where('user_id', $id)->get();
     }
@@ -31,11 +31,23 @@ class ProblemRepository
     /**
      * Store new problem in database.
      *
+     * @param Problem $problem
      * @param array $data
      * @return Problem
      */
-    public function store(array $data): Problem
+    public function update(Problem $problem, array $data): Problem
     {
-        return Problem::create($data);
+        return tap($problem)->update($data);
+    }
+
+    /**
+     * Delete problem by id.
+     *
+     * @param Problem $problem
+     * @return bool
+     */
+    public function delete(Problem $problem): bool
+    {
+        return $problem->delete();
     }
 }
