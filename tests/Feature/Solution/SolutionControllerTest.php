@@ -45,10 +45,7 @@ class SolutionControllerTest extends TestCase
     {
         $response = $this
             ->actingAs($this->user)
-            ->get(
-                route('solution.all_by_problem',
-                    ['problem' => Problem::first()->id])
-            );
+            ->get(route('solution.find_by_problem', ['problem' => Problem::first()->id]));
 
         $response
             ->assertOk()
@@ -83,11 +80,7 @@ class SolutionControllerTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->post(
-                route('solution.commit',
-                    ['problem' => $problem->id]),
-                $this->solutionData
-            );
+            ->post(route('solution.commit', ['problem' => $problem->id]), $this->solutionData);
 
         $externalServiceConfigured = collect(config('services.external-compiler-client'))->every(fn($e) => $e);
 
