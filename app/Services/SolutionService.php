@@ -85,12 +85,15 @@ class SolutionService
             $this->solutionValidationService->validateCodeString($this->solutionData);
 
         } catch (ValidationException $validationException) {
+            $this->solutionData['status'] = SolutionStatusType::MALFORMED_UTF8_CODE_STRING;
             $this->solutionData['code'] = 'data-placeholder.solution-code-data-was-malformed';
 
             $this->storeSolution();
 
             throw $validationException;
         }
+
+        $this->storeSolution();
 
         $this->solutionValidationService
             ->setSolution($this->solution)
@@ -150,9 +153,6 @@ class SolutionService
      */
     private function updateSolution(array $data): void
     {
-        $this->solution = $this->solutionRepository->update(
-            $this->solution,
-            $data
-        );
+        $this->solution = $this->solutionRepository->update($this->solution, $data);
     }
 }
