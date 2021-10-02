@@ -57,7 +57,7 @@ class SolutionValidationService
             ]);
 
             throw ValidationException::withMessages([
-                'errors' => ['solutions.validation.characters-limit-exceeded']
+                'errors' => ['code' => 'solutions.validation.characters-limit-exceeded']
             ]);
         }
 
@@ -79,7 +79,7 @@ class SolutionValidationService
             $this->updateSolution(['status' => SolutionStatusType::INVALID_LANGUAGE_USED]);
 
             throw ValidationException::withMessages([
-                'errors' => ['solutions.validation.invalid-language-chosen']
+                'errors' => ['code_language_id' => 'solutions.validation.invalid-language-chosen']
             ]);
         }
 
