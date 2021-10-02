@@ -2,21 +2,21 @@
 
 namespace Tests\Feature\Http\Controllers\Api\Solution;
 
-use App\Enums\SolutionStatusType;
-use Exception;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Problem;
 use App\Models\Solution;
 use App\Models\Execution;
 use App\Models\CodeLanguage;
+use App\Enums\SolutionStatusType;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Feature\Support\CodeExecutor\Traits\MocksJdoodleClient;
 
 class SolutionControllerTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase, WithFaker, MocksJdoodleClient;
 
     private User $user;
 
@@ -25,6 +25,8 @@ class SolutionControllerTest extends TestCase
     private array $solutionResourceJsonStructure;
 
     private array $solutionInCollectionJsonStructure;
+
+    private CodeLanguage $codeLanguage;
 
     /**
      * Set up test case.
@@ -35,6 +37,14 @@ class SolutionControllerTest extends TestCase
         parent::setUp();
 
         $this->seed();
+
+        $this->codeLanguage = CodeLanguage::factory()->create([
+            'name' => 'Python 3.7.4',
+            'identifier' => 'python3',
+            'version' => 3,
+            'updated_at' => now(),
+            'created_at' => now(),
+        ]);
 
         $this->solutionResourceJsonStructure = [
             'id' => 'string',
@@ -63,8 +73,8 @@ class SolutionControllerTest extends TestCase
 
         $this->solutionData = [
             'data' => [
-                'code' => base64_encode($this->faker->realTextBetween(150, 960)),
-                'code_language_id' => CodeLanguage::first()->id
+                'code' => 'print(int(input()) + int(input()))',
+                'code_language_id' => $this->codeLanguage->id
             ]
         ];
 
@@ -201,39 +211,29 @@ class SolutionControllerTest extends TestCase
             );
     }
 
-    public function test_commit_executes_solution_code_and_returns_solution()
+    public function test_commit_executes_solution_code_and_returns_solution_when_external_api_responds_with_http_ok()
     {
         $startSolutionsCount = Solution::where('user_id', $this->user->id)->count();
         $startExecutionsCount = Execution::count();
-        $problem = Problem::first();
+        $problem = Problem::factory()->create();
+
+        $problem
+            ->codeLanguages()
+            ->save($this->codeLanguage);
 
         $response = $this
             ->actingAs($this->user)
             ->postJson(route('solution.commit', ['problem' => $problem->id]), $this->solutionData);
 
-        $externalServiceConfigured = collect(config('services.external-compiler-client'))->every(fn($e) => $e);
+        $this->assertEquals(
+            $startSolutionsCount + 1,
+            Solution::count()
+        );
 
-        if (!$externalServiceConfigured) {
-            throw new Exception(
-                'External service configuration lacking. ' .
-                'Maybe you have forgotten to set external compiler service credentials in config?'
-            );
-        }
-
-        /**
-         * todo
-         * $this->assertEquals(
-         * $startSolutionsCount + 1,
-         * Solution::count()
-         * );
-         * todo
-         * $this->assertEquals(
-         * $startExecutionsCount + $problem->tests()->count(),
-         * Execution::count()
-         * );
-         * */
-
-        //dd(json_decode($response->getContent()));
+        $this->assertEquals(
+            $startExecutionsCount + $problem->tests()->count(),
+            Execution::count()
+        );
 
         $response
             ->assertStatus(202)

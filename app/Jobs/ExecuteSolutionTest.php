@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Services\Websockets\BroadcastingService;
 use Exception;
 use App\Models\Test;
 use App\Models\Solution;
@@ -14,6 +13,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use App\Services\Websockets\BroadcastingService;
 use App\Exceptions\CodeExecutor\ExternalCompilerRequestException;
 use App\Support\ExternalCompiler\Client as ExternalCompilerClient;
 
@@ -55,12 +55,14 @@ class ExecuteSolutionTest implements ShouldQueue
         $solutionLanguage = $solution->codeLanguage->identifier;
         $solutionLanguageVersionIndex = $solution->codeLanguage->version;
 
-        $responseData = $externalCompilerClient
+        $response = $externalCompilerClient
             ->postCodeToExecute([
                 'script' => $codeToExecute,
                 'language' => $solutionLanguage,
                 'versionIndex' => $solutionLanguageVersionIndex
             ]);
+
+        $responseData = collect(json_decode($response->getBody(), true));
 
         if ((int) $responseData['statusCode'] !== Response::HTTP_OK) {
             throw new ExternalCompilerRequestException($responseData['error'], $responseData['statusCode']);

@@ -2,7 +2,7 @@
 
 namespace App\Contracts\ExternalCompiler;
 
-use Illuminate\Support\Collection;
+use GuzzleHttp\Psr7\Response;
 
 interface ExternalCompilerClientInterface
 {
@@ -17,9 +17,9 @@ interface ExternalCompilerClientInterface
      * Post data to external service, get response data as Collection.
      *
      * @param array $data
-     * @return Collection
+     * @return Response
      */
-    public function postCodeToExecute(array $data): Collection;
+    public function postCodeToExecute(array $data): Response;
 
     /**
      * Get name of external service.
