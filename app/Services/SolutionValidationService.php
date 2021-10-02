@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Enums\SolutionStatusType;
 use App\Models\Problem;
 use App\Models\Solution;
+use App\Enums\SolutionStatusType;
 use Illuminate\Validation\ValidationException;
 
 class SolutionValidationService
@@ -44,6 +44,7 @@ class SolutionValidationService
      * characters limit provided in problem instance.
      *
      * @return $this
+     * @throws ValidationException
      */
     public function validateCharsCount(): self
     {
@@ -52,7 +53,7 @@ class SolutionValidationService
         if ($charactersCount > $this->problem->chars_limit) {
             $this->markSolutionAsInvalid(SolutionStatusType::CHARACTERS_LIMIT_EXCEEDED);
 
-            ValidationException::withMessages([
+            throw ValidationException::withMessages([
                 'errors' => [ 'solutions.validation.characters-limit-exceeded' ]
             ]);
         }
@@ -67,6 +68,7 @@ class SolutionValidationService
      * was allowed in provided problem.
      *
      * @return $this
+     * @throws ValidationException
      */
     public function validateLanguageUsed(): self
     {
@@ -75,12 +77,37 @@ class SolutionValidationService
         if (! optional($this->problem->codingLanguages)->contains('id', $chosenCodingLanguageId)) {
             $this->markSolutionAsInvalid(SolutionStatusType::INVALID_LANGUAGE_USED);
 
-            ValidationException::withMessages([
+            throw ValidationException::withMessages([
                 'errors' => [ 'solutions.validation.invalid-language-chosen' ]
             ]);
         }
 
         return $this;
+    }
+
+    /**
+     * Validate if provided encoded programming language code data is valid.
+     *
+     * @param array $data
+     * @throws ValidationException
+     */
+    public function validateCodeString(array &$data): void
+    {
+        if (!$data['code']) {
+            $data['status'] = SolutionStatusType::INVALID_SOLUTION_CODE_DATA;
+
+            throw ValidationException::withMessages([
+                'errors' => ['code' => 'solution.errors.invalid-code-data-provided.empty-data']
+            ]);
+        }
+
+        if (!mb_check_encoding($data['code'], 'UTF-8')) {
+            $data['status'] = SolutionStatusType::MALFORMED_UTF8_CODE_STRING;
+
+            throw ValidationException::withMessages([
+                'errors' => ['code' => 'solution.errors.invalid-code-data-provided.malformed-utf8-string']
+            ]);
+        }
     }
 
     /**
