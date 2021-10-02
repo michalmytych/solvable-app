@@ -21,8 +21,6 @@ class SolutionResource extends JsonResource
             'problem_id' => $this->problem_id,
             'code_language_id' => $this->code_language_id,
             'code' => $this->code,
-            'execution_time' => $this->execution_time,
-            'memory_used' => $this->memory_used,
             'characters' => $this->characters,
             'problem_chars_limit' => $this->problem->chars_limit,
             'status' => $this->status,

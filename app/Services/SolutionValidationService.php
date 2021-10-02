@@ -72,9 +72,7 @@ class SolutionValidationService
      */
     public function validateLanguageUsed(): self
     {
-        $chosenCodingLanguageId = strlen($this->solution->code_language_id);
-
-        if (! optional($this->problem->codingLanguages)->contains('id', $chosenCodingLanguageId)) {
+        if (! $this->problem->codeLanguages->contains($this->solution->code_language_id)) {
             $this->markSolutionAsInvalid(SolutionStatusType::INVALID_LANGUAGE_USED);
 
             throw ValidationException::withMessages([

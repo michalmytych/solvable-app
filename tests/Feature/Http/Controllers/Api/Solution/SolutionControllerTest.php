@@ -52,8 +52,6 @@ class SolutionControllerTest extends TestCase
             'code_language_id' => 'string',
             'code' => 'string',
             'score' => ['integer', 'null'],
-            'execution_time' => ['integer', 'null'],
-            'memory_used' => ['integer', 'null'],
             'problem_chars_limit' => 'integer',
             'characters' => 'integer',
             'status' => 'integer',
@@ -213,7 +211,7 @@ class SolutionControllerTest extends TestCase
 
     public function test_commit_executes_solution_code_and_returns_solution_when_external_api_responds_with_http_ok()
     {
-        $startSolutionsCount = Solution::where('user_id', $this->user->id)->count();
+        $startSolutionsCount = Solution::count();
         $startExecutionsCount = Execution::count();
         $problem = Problem::factory()->create();
 
@@ -225,8 +223,6 @@ class SolutionControllerTest extends TestCase
             ->actingAs($this->user)
             ->postJson(route('solution.commit', ['problem' => $problem->id]), $this->solutionData);
 
-        dd(json_decode($response->getContent(), true));
-
         $this->assertEquals(
             $startSolutionsCount + 1,
             Solution::count()
@@ -237,12 +233,16 @@ class SolutionControllerTest extends TestCase
             Execution::count()
         );
 
+        $processedSolutionJsonStructure = $this->solutionResourceJsonStructure;
+
+        unset($processedSolutionJsonStructure['executions']);
+
         $response
             ->assertStatus(202)
             ->assertJson(fn($json) => $json
                 ->has('message')
                 ->has('data', fn($json) => $json
-                    ->whereAllType($this->solutionResourceJsonStructure))
+                    ->whereAllType($processedSolutionJsonStructure))
             );
     }
 
