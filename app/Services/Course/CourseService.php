@@ -8,11 +8,8 @@ use App\Repositories\CourseRepository;
 
 class CourseService
 {
-    private CourseRepository $courseRepository;
-
-    public function __construct(CourseRepository $courseRepository)
+    public function __construct(private CourseRepository $courseRepository)
     {
-        $this->courseRepository = $courseRepository;
     }
 
     /**

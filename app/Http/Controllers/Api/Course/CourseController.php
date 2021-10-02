@@ -13,14 +13,11 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class CourseController extends Controller
 {
-    private CourseRepository $courseRepository;
-
-    private CourseService $courseService;
-
-    public function __construct(CourseRepository $courseRepository, CourseService $courseService)
+    public function __construct(
+        private CourseRepository $courseRepository,
+        private CourseService    $courseService
+    )
     {
-        $this->courseRepository = $courseRepository;
-        $this->courseService = $courseService;
     }
 
     /**

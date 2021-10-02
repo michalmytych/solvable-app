@@ -13,11 +13,8 @@ use App\Contracts\Auth\UserControllerInterface;
 
 class UserController extends Controller implements UserControllerInterface
 {
-    private UserRepository $userRepository;
-
-    public function __construct(UserRepository $userRepository)
+    public function __construct(private UserRepository $userRepository)
     {
-        $this->userRepository = $userRepository;
     }
 
     /**

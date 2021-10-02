@@ -20,20 +20,17 @@ use App\Support\ExternalCompiler\Client as ExternalCompilerClient;
 class ExecuteSolutionTest implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    private Test $test;
-
-    private Solution $solution;
-
+    
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Test $test, Solution $solution)
+    public function __construct(
+        private Test     $test,
+        private Solution $solution
+    )
     {
-        $this->test = $test;
-        $this->solution = $solution;
     }
 
     /**
@@ -44,7 +41,7 @@ class ExecuteSolutionTest implements ShouldQueue
      */
     public function handle(
         ExternalCompilerClient $externalCompilerClient,
-        BroadcastingService $broadcastingService
+        BroadcastingService    $broadcastingService
     )
     {
         $solution = $this->solution;
@@ -64,7 +61,7 @@ class ExecuteSolutionTest implements ShouldQueue
 
         $responseData = collect(json_decode($response->getBody(), true));
 
-        if ((int) $responseData['statusCode'] !== Response::HTTP_OK) {
+        if ((int)$responseData['statusCode'] !== Response::HTTP_OK) {
             throw new ExternalCompilerRequestException($responseData['error'], $responseData['statusCode']);
         }
 
@@ -100,7 +97,7 @@ class ExecuteSolutionTest implements ShouldQueue
             $this->isOutputValid($this->test->valid_output, $execution->output),
             $this->test->time_execution_limit >= $execution->execution_time,
             $this->test->memory_limit > $execution->memory_used,
-        ])->every(fn ($result) => $result);
+        ])->every(fn($result) => $result);
     }
 
     /**
@@ -127,7 +124,7 @@ class ExecuteSolutionTest implements ShouldQueue
     {
         $outputLimit = config('services.external-compiler-client.max-chars-in-external-compiler-output') ?? 1028;
 
-        if (strlen($responseData['output']) > (int) $outputLimit) {
+        if (strlen($responseData['output']) > (int)$outputLimit) {
             // For some reason substr() works better here than
             // Str::limit() which gives different outputs some time (?)
             $responseData['output'] = substr($responseData['output'], 0, $outputLimit);

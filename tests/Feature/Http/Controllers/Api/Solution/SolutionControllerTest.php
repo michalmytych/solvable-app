@@ -235,6 +235,8 @@ class SolutionControllerTest extends TestCase
             Execution::count()
         );
 
+        dd(json_decode($response->getContent(), true));
+
         $response
             ->assertStatus(202)
             ->assertJson(fn($json) => $json

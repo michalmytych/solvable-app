@@ -19,21 +19,12 @@ class SolutionService
 
     private array $solutionData;
 
-    private SolutionRepository $solutionRepository;
-
-    private CodeExecutorServiceInterface $codeExecutorService;
-
-    private SolutionValidationService $solutionValidationService;
-
     public function __construct(
-        SolutionRepository $solutionRepository,
-        SolutionValidationService $solutionValidationService,
-        CodeExecutorServiceInterface $codeExecutorService
+        private SolutionRepository           $solutionRepository,
+        private SolutionValidationService    $solutionValidationService,
+        private CodeExecutorServiceInterface $codeExecutorService
     )
     {
-        $this->solutionRepository = $solutionRepository;
-        $this->codeExecutorService = $codeExecutorService;
-        $this->solutionValidationService = $solutionValidationService;
     }
 
     /**
@@ -131,7 +122,7 @@ class SolutionService
 
         if (!$data['code']) {
             ValidationException::withMessages([
-                'errors' => [ 'code' => 'solution.errors.invalid-code-data-provided' ]
+                'errors' => ['code' => 'solution.errors.invalid-code-data-provided']
             ]);
         }
 

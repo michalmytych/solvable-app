@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Api\Group\UpdateRequest;
 use App\Models\Group;
 use App\Repositories\GroupRepository;
+use App\Http\Requests\Api\Group\UpdateRequest;
 
 class GroupController extends Controller
 {
-    private GroupRepository $groupRepository;
-
-    public function __construct(GroupRepository $groupRepository)
+    public function __construct(private GroupRepository $groupRepository)
     {
-        $this->groupRepository = $groupRepository;
     }
 
     /**

@@ -15,14 +15,11 @@ use Throwable;
 
 class ProblemService
 {
-    private ProblemRepository $problemRepository;
-
-    private GroupRepository $groupRepository;
-
-    public function __construct(ProblemRepository $problemRepository, GroupRepository $groupRepository)
+    public function __construct(
+        private ProblemRepository $problemRepository,
+        private GroupRepository   $groupRepository
+    )
     {
-        $this->problemRepository = $problemRepository;
-        $this->groupRepository = $groupRepository;
     }
 
     /**

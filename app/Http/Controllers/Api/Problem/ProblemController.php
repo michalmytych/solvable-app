@@ -15,11 +15,8 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class ProblemController extends Controller
 {
-    private ProblemRepository $problemRepository;
-
-    public function __construct(ProblemRepository $problemRepository)
+    public function __construct(private ProblemRepository $problemRepository)
     {
-        $this->problemRepository = $problemRepository;
     }
 
     /**

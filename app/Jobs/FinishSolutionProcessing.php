@@ -14,16 +14,13 @@ class FinishSolutionProcessing implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private Solution $solution;
-
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Solution $solution)
+    public function __construct(private Solution $solution)
     {
-        $this->solution = $solution;
     }
 
     /**

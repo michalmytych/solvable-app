@@ -17,17 +17,11 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class SolutionController extends Controller
 {
-    private SolutionRepository $solutionRepository;
-
-    private SolutionService $solutionService;
-
     public function __construct(
-        SolutionRepository $solutionRepository,
-        SolutionService $solutionService
+        private SolutionRepository $solutionRepository,
+        private SolutionService $solutionService
     )
     {
-        $this->solutionRepository = $solutionRepository;
-        $this->solutionService = $solutionService;
     }
 
     /**
