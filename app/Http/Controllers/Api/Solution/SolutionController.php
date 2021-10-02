@@ -10,10 +10,11 @@ use Illuminate\Http\JsonResponse;
 use App\Services\SolutionService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\SolutionResource;
+use App\Http\Resources\ProcessedSolutionResource;
 use App\Repositories\SolutionRepository;
 use App\Http\Requests\Api\Solution\CommitRequest;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Validation\ValidationException;
 
 class SolutionController extends Controller
 {
@@ -28,11 +29,11 @@ class SolutionController extends Controller
      * Find solution by id.
      *
      * @param Solution $solution
-     * @return SolutionResource
+     * @return ProcessedSolutionResource
      */
-    public function find(Solution $solution): SolutionResource
+    public function find(Solution $solution): ProcessedSolutionResource
     {
-        return new SolutionResource($this->solutionRepository->find($solution));
+        return new ProcessedSolutionResource($this->solutionRepository->find($solution));
     }
 
     /**
@@ -58,16 +59,26 @@ class SolutionController extends Controller
 
         $solutionData['user_id'] = Auth::id();
 
-        $solution = $this->solutionService
-            ->setProblem($problem)
-            ->setSolutionData($solutionData)
-            ->validate()
-            ->delegateExecution()
-            ->getProcessedSolution();
+        try {
+            $solution = $this->solutionService
+                ->setProblem($problem)
+                ->setSolutionData($solutionData)
+                ->commit()
+                ->getProcessedSolution();
+
+        } catch (ValidationException $validationException) {
+            $solution = $this->solutionService->getProcessedSolution();
+
+            return response()->json([
+                'message' => $validationException->getMessage(),
+                'errors' => $validationException->errors(),
+                'data' => new ProcessedSolutionResource($solution)
+            ], 422);
+        }
 
         return response()->json([
             'message' => 'messages.solution-processing',
-            'data' => new SolutionResource($solution)
+            'data' => new ProcessedSolutionResource($solution)
         ], 202);
     }
 }
