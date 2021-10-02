@@ -2,31 +2,20 @@
 
 namespace Tests\Feature\Support\CodeExecutor\Traits;
 
-use Mockery;
-use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Handler\MockHandler;
 use App\Support\ExternalCompiler\Client as JdoodleClient;
 
-/**
- * @method app() ->Application
- */
 trait MocksJdoodleClient
 {
-    protected function executeWithJdoodleClientMock(?Response $executionResponse)
+    protected function mockJdoodleClient(array ...$responses)
     {
-        $mock = Mockery::mock(JdoodleClient::class)
-            ->shouldReceive('postCodeToExecute')
-            ->andReturn(new Response(
-                200,
-                ['Content-Type' => 'application/json'],
-                json_encode([
-                    'output' => '4',
-                    'statusCode' => 200,
-                    'memory' => 100,
-                    'cpuTime' => 10
-                ])
-            ))
-            ->getMock();
+        app()->singleton(JdoodleClient::class, function ($app) use ($responses) {
+            $mock = new MockHandler(...$responses);
 
-        $this->app()->instance(JdoodleClient::class, $mock);
+            $handlerStack = HandlerStack::create($mock);
+
+            return new JdoodleClient(['handler' => $handlerStack]);
+        });
     }
 }

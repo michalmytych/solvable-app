@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\Api\Solution;
 
+use GuzzleHttp\Psr7\Response;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Problem;
@@ -77,6 +78,17 @@ class SolutionControllerTest extends TestCase
         ];
 
         $this->user = User::factory()->create();
+
+        $this->mockJdoodleClient([
+            new Response(
+                200, ['Content-Type' => 'application/json'],
+                json_encode([
+                    'output' => '4',
+                    'statusCode' => 200,
+                    'memory' => 100,
+                    'cpuTime' => 10
+                ]))
+        ]);
     }
 
     public function test_returns_list_of_solutions_by_user_and_query_filters()
@@ -211,7 +223,7 @@ class SolutionControllerTest extends TestCase
 
     public function test_commit_executes_solution_code_and_returns_solution_when_external_api_responds_with_http_ok()
     {
-        $startSolutionsCount = Solution::count();
+        $startSolutionsCount = Solution::where('user_id', $this->user->id)->count();
         $startExecutionsCount = Execution::count();
         $problem = Problem::factory()->create();
 
@@ -225,7 +237,7 @@ class SolutionControllerTest extends TestCase
 
         $this->assertEquals(
             $startSolutionsCount + 1,
-            Solution::count()
+            Solution::where('user_id', $this->user->id)->count()
         );
 
         $this->assertEquals(
@@ -243,6 +255,52 @@ class SolutionControllerTest extends TestCase
                 ->has('message')
                 ->has('data', fn($json) => $json
                     ->whereAllType($processedSolutionJsonStructure))
+            );
+    }
+
+    public function test_commit_returns_unprocessable_on_incomplete_request_data()
+    {
+        $problem = Problem::factory()->create();
+
+        $this->solutionData['data'] = [
+            'code' => null
+        ];
+
+        $response = $this
+            ->actingAs($this->user)
+            ->postJson(route('solution.commit', ['problem' => $problem->id]), $this->solutionData);
+
+        $response
+            ->assertStatus(422)
+            ->assertJson(fn($json) => $json
+                ->has('message')
+                ->has('errors', 2)
+            );
+    }
+
+    public function test_commit_returns_unprocessable_on_invalid_code_string_data_provided()
+    {
+        $problem = Problem::factory()->create();
+
+        $this->solutionData['data']['code'] = '# &@ ID IIDII OID ____)()()(()';   // not a base 64 string
+
+        $response = $this
+            ->actingAs($this->user)
+            ->postJson(route('solution.commit', ['problem' => $problem->id]), $this->solutionData);
+
+        unset($this->solutionResourceJsonStructure['executions']);
+
+        $this->solutionResourceJsonStructure['characters'] = 'null';
+
+        $response
+            ->assertStatus(422)
+            ->assertJson(fn($json) => $json
+                ->has('message')
+                ->has('errors', 1)
+                ->has('data', fn($json) => $json
+                    ->whereAllType($this->solutionResourceJsonStructure)
+                    ->where('status', SolutionStatusType::MALFORMED_UTF8_CODE_STRING)
+                )
             );
     }
 
