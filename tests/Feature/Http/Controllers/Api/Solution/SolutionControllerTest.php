@@ -73,7 +73,7 @@ class SolutionControllerTest extends TestCase
 
         $this->solutionData = [
             'data' => [
-                'code' => 'print(int(input()) + int(input()))',
+                'code' => base64_encode('print(int(input()) + int(input()))'),
                 'code_language_id' => $this->codeLanguage->id
             ]
         ];
@@ -225,6 +225,8 @@ class SolutionControllerTest extends TestCase
             ->actingAs($this->user)
             ->postJson(route('solution.commit', ['problem' => $problem->id]), $this->solutionData);
 
+        dd(json_decode($response->getContent(), true));
+
         $this->assertEquals(
             $startSolutionsCount + 1,
             Solution::count()
@@ -234,8 +236,6 @@ class SolutionControllerTest extends TestCase
             $startExecutionsCount + $problem->tests()->count(),
             Execution::count()
         );
-
-        dd(json_decode($response->getContent(), true));
 
         $response
             ->assertStatus(202)
