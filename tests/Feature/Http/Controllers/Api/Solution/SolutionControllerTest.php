@@ -371,6 +371,12 @@ class SolutionControllerTest extends TestCase
             );
     }
 
+    public function testCommitReturnsValidResponseOnExternalServiceInternalError()
+    {
+        $this->markTestSkipped();
+        // todo
+    }
+
     public function testReturnsSolutionByIdFromFindRoute()
     {
         $solution = Solution::first() ?? Solution::factory()->create();
