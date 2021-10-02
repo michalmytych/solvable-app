@@ -16,11 +16,17 @@ final class SolutionStatusType extends Enum
 
     public const CHARACTERS_LIMIT_EXCEEDED = 4;
 
-    public const INVALID = 5;
+    public const INVALID_SOLUTION_CODE_DATA = 5;
 
-    public const DELEGATED = 6;
+    public const MALFORMED_UTF8_CODE_STRING = 6;
 
-    public const PASSED_ALL_TESTS = 7;
+    public const INVALID = 7;
 
-    public const FAILED_TESTS = 8;
+    public const DELEGATED = 8;
+
+    public const PASSED_ALL_TESTS = 9;
+
+    public const FAILED_TESTS = 10;
+
+    public const INTERRUPTED = 11;
 }
