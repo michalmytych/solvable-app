@@ -51,10 +51,13 @@ class SolutionValidationService
         $charactersCount = strlen($this->solution->code);
 
         if ($charactersCount > $this->problem->chars_limit) {
-            $this->markSolutionAsInvalid(SolutionStatusType::CHARACTERS_LIMIT_EXCEEDED);
+            $this->updateSolution([
+                'status' => SolutionStatusType::CHARACTERS_LIMIT_EXCEEDED,
+                'characters' => $charactersCount
+            ]);
 
             throw ValidationException::withMessages([
-                'errors' => [ 'solutions.validation.characters-limit-exceeded' ]
+                'errors' => ['solutions.validation.characters-limit-exceeded']
             ]);
         }
 
@@ -72,11 +75,11 @@ class SolutionValidationService
      */
     public function validateLanguageUsed(): self
     {
-        if (! $this->problem->codeLanguages->contains($this->solution->code_language_id)) {
-            $this->markSolutionAsInvalid(SolutionStatusType::INVALID_LANGUAGE_USED);
+        if (!$this->problem->codeLanguages->contains($this->solution->code_language_id)) {
+            $this->updateSolution(['status' => SolutionStatusType::INVALID_LANGUAGE_USED]);
 
             throw ValidationException::withMessages([
-                'errors' => [ 'solutions.validation.invalid-language-chosen' ]
+                'errors' => ['solutions.validation.invalid-language-chosen']
             ]);
         }
 
@@ -109,12 +112,12 @@ class SolutionValidationService
     }
 
     /**
-     * Mark status of processed as invalid.
+     * Update solution record at database.
      *
-     * @param int $statusType
+     * @param array $data
      */
-    private function markSolutionAsInvalid(int $statusType = SolutionStatusType::INVALID): void
+    private function updateSolution(array $data): void
     {
-        $this->solution = tap($this->solution)->update(['status' => $statusType]);
+        $this->solution = tap($this->solution)->update($data);
     }
 }

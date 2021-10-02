@@ -280,6 +280,8 @@ class SolutionControllerTest extends TestCase
 
     public function testCommitReturnsUnprocessableOnInvalidCodeStringDataProvided()
     {
+        $startSolutionsCount = Solution::where('user_id', $this->user->id)->count();
+
         $problem = Problem::factory()->create();
 
         $this->solutionData['data']['code'] = '# &@ ID IIDII OID ____)()()(()';   // not a base 64 string
@@ -287,6 +289,11 @@ class SolutionControllerTest extends TestCase
         $response = $this
             ->actingAs($this->user)
             ->postJson(route('solution.commit', ['problem' => $problem->id]), $this->solutionData);
+
+        $this->assertEquals(
+            $startSolutionsCount + 1,
+            Solution::where('user_id', $this->user->id)->count()
+        );
 
         unset($this->solutionResourceJsonStructure['executions']);
 
@@ -300,6 +307,66 @@ class SolutionControllerTest extends TestCase
                 ->has('data', fn($json) => $json
                     ->whereAllType($this->solutionResourceJsonStructure)
                     ->where('status', SolutionStatusType::MALFORMED_UTF8_CODE_STRING)
+                )
+            );
+    }
+
+    public function testCommitReturnsUnprocessableOnCharactersLimitExceeded()
+    {
+        $startSolutionsCount = Solution::where('user_id', $this->user->id)->count();
+
+        $problem = Problem::factory()->create(['chars_limit' => 5]);
+
+        $this->solutionData['data']['code'] = 'YXdmc2Nz';
+
+        $response = $this
+            ->actingAs($this->user)
+            ->postJson(route('solution.commit', ['problem' => $problem->id]), $this->solutionData);
+
+        $this->assertEquals(
+            $startSolutionsCount + 1,
+            Solution::where('user_id', $this->user->id)->count()
+        );
+
+        unset($this->solutionResourceJsonStructure['executions']);
+
+        $response
+            ->assertStatus(422)
+            ->assertJson(fn($json) => $json
+                ->has('message')
+                ->has('errors', 1)
+                ->has('data', fn($json) => $json
+                    ->whereAllType($this->solutionResourceJsonStructure)
+                    ->where('status', SolutionStatusType::CHARACTERS_LIMIT_EXCEEDED)
+                    ->where('characters', 6)
+                )
+            );
+    }
+
+    public function testCommitReturnsUnprocessableOnNonAvailableLanguageChosen()
+    {
+        $startSolutionsCount = Solution::where('user_id', $this->user->id)->count();
+        $problem = Problem::factory()->create();
+
+        $response = $this
+            ->actingAs($this->user)
+            ->postJson(route('solution.commit', ['problem' => $problem->id]), $this->solutionData);
+
+        $this->assertEquals(
+            $startSolutionsCount + 1,
+            Solution::where('user_id', $this->user->id)->count()
+        );
+
+        unset($this->solutionResourceJsonStructure['executions']);
+
+        $response
+            ->assertStatus(422)
+            ->assertJson(fn($json) => $json
+                ->has('message')
+                ->has('errors', 1)
+                ->has('data', fn($json) => $json
+                    ->whereAllType($this->solutionResourceJsonStructure)
+                    ->where('status', SolutionStatusType::INVALID_LANGUAGE_USED)
                 )
             );
     }
