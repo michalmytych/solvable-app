@@ -6,10 +6,8 @@ use App\Models\Problem;
 use App\Models\Solution;
 use App\Enums\SolutionStatusType;
 use App\Repositories\SolutionRepository;
-use App\Contracts\CodeExecutor\CodeExecutorServiceInterface;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException;
+use App\Contracts\CodeExecutor\CodeExecutorServiceInterface;
 
 class SolutionService
 {
@@ -54,13 +52,45 @@ class SolutionService
     }
 
     /**
+     * Commit new solution for problem.
+     *
+     * @throws ValidationException
+     */
+    public function commit(): SolutionService
+    {
+        return $this
+            ->validate()
+            ->delegateExecution();
+    }
+
+    /**
+     * Return currently processed solution model.
+     *
+     * @return Solution
+     */
+    public function getProcessedSolution(): Solution
+    {
+        return $this->solution;
+    }
+
+    /**
      * Validate solution against custom business validation rules.
      *
      * @return $this
+     * @throws ValidationException
      */
-    public function validate(): self
+    private function validate(): self
     {
-        $this->storeSolution();
+        try {
+            $this->solutionValidationService->validateCodeString($this->solutionData);
+
+        } catch (ValidationException $validationException) {
+            $this->solutionData['code'] = 'data-placeholder.solution-code-data-was-malformed';
+
+            $this->storeSolution();
+
+            throw $validationException;
+        }
 
         $this->solutionValidationService
             ->setSolution($this->solution)
@@ -75,10 +105,10 @@ class SolutionService
 
     /**
      * Delegate execution of problem tests to CodeExecutorService,
-     * which can be used as abstraction / adapter for many different
+     * which can be used as abstraction / adapter for many
      * external code compilation & execution services.
      */
-    public function delegateExecution(): self
+    private function delegateExecution(): self
     {
         $this->codeExecutorService
             ->init()
@@ -87,16 +117,6 @@ class SolutionService
         $this->updateSolution(['status' => SolutionStatusType::DELEGATED]);
 
         return $this;
-    }
-
-    /**
-     * Return currently processed solution model.
-     *
-     * @return Solution
-     */
-    public function getProcessedSolution(): Solution
-    {
-        return $this->solution;
     }
 
     /**
@@ -119,12 +139,6 @@ class SolutionService
     private function decodeSolutionCodeFromBase(array $data): array
     {
         $data['code'] = base64_decode($data['code']);
-
-        if (!$data['code']) {
-            ValidationException::withMessages([
-                'errors' => ['code' => 'solution.errors.invalid-code-data-provided']
-            ]);
-        }
 
         return $data;
     }
