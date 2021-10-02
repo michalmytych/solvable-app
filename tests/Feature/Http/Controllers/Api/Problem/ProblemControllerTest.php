@@ -48,19 +48,19 @@ class ProblemControllerTest extends TestCase
         $this->user = User::factory()->create();
     }
 
-    public function test_returns_list_of_problems_by_user_from_all_route()
+    public function testReturnsListOfProblemsByUserFromAllRoute()
     {
         $this->markTestSkipped();
         // todo
     }
 
-    public function test_can_store_problem_through_store_route()
+    public function testCanStoreProblemThroughStoreRoute()
     {
         $this->markTestSkipped();
         // todo
     }
 
-    public function test_returns_problem_from_find_route()
+    public function testReturnsProblemFromFindRoute()
     {
         $this->markTestSkipped();
         // todo

@@ -23,11 +23,11 @@ class SolutionControllerTest extends TestCase
 
     private array $solutionData;
 
+    private CodeLanguage $codeLanguage;
+
     private array $solutionResourceJsonStructure;
 
     private array $solutionInCollectionJsonStructure;
-
-    private CodeLanguage $codeLanguage;
 
     /**
      * Set up test case.
@@ -91,7 +91,7 @@ class SolutionControllerTest extends TestCase
         ]);
     }
 
-    public function test_returns_list_of_solutions_by_user_and_query_filters()
+    public function testReturnsListOfSolutionsByUserAndQueryFilters()
     {
         $this->markTestSkipped();
 
@@ -221,7 +221,7 @@ class SolutionControllerTest extends TestCase
             );
     }
 
-    public function test_commit_executes_solution_code_and_returns_solution_when_external_api_responds_with_http_ok()
+    public function testCommitExecutesSolutionCodeAndReturnsSolutionWhenExternalApiRespondsWithHttpOk()
     {
         $startSolutionsCount = Solution::where('user_id', $this->user->id)->count();
         $startExecutionsCount = Execution::count();
@@ -258,7 +258,7 @@ class SolutionControllerTest extends TestCase
             );
     }
 
-    public function test_commit_returns_unprocessable_on_incomplete_request_data()
+    public function testCommitReturnsUnprocessableOnIncompleteRequestData()
     {
         $problem = Problem::factory()->create();
 
@@ -278,7 +278,7 @@ class SolutionControllerTest extends TestCase
             );
     }
 
-    public function test_commit_returns_unprocessable_on_invalid_code_string_data_provided()
+    public function testCommitReturnsUnprocessableOnInvalidCodeStringDataProvided()
     {
         $problem = Problem::factory()->create();
 
@@ -304,7 +304,7 @@ class SolutionControllerTest extends TestCase
             );
     }
 
-    public function test_returns_solution_by_id_from_find_route()
+    public function testReturnsSolutionByIdFromFindRoute()
     {
         $solution = Solution::first() ?? Solution::factory()->create();
 

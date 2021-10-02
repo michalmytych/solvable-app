@@ -31,7 +31,7 @@ class UserControllerTest extends TestCase
         ];
     }
 
-    public function test_it_registers_new_user_if_input_is_valid()
+    public function testItRegistersNewUserIfInputIsValid()
     {
         $tokensCount = DB::table('personal_access_tokens')->count();
 
@@ -65,7 +65,7 @@ class UserControllerTest extends TestCase
         $this->assertDatabaseCount('personal_access_tokens', $tokensCount + 1);
     }
 
-    public function test_register_route_returns_422_when_input_is_invalid()
+    public function testRegisterRouteReturns422WhenInputIsInvalid()
     {
         $response = $this->post(route('register'), []);
 
@@ -77,7 +77,7 @@ class UserControllerTest extends TestCase
             );
     }
 
-    public function test_it_logs_in_new_user_if_input_is_valid()
+    public function testItLogsInNewUserIfInputIsValid()
     {
         $tokensCount = DB::table('personal_access_tokens')->count();
 
@@ -112,7 +112,7 @@ class UserControllerTest extends TestCase
         $this->assertDatabaseCount('personal_access_tokens', $tokensCount + 2);
     }
 
-    public function test_login_route_returns_422_when_input_is_invalid()
+    public function testLoginRouteReturns422WhenInputIsInvalid()
     {
         $response = $this->post(route('login'), []);
 
@@ -124,7 +124,7 @@ class UserControllerTest extends TestCase
             );
     }
 
-    public function test_logout_route_is_protected()
+    public function testLogoutRouteIsProtected()
     {
         $response = $this
             ->postJson(route('logout'));
@@ -141,7 +141,7 @@ class UserControllerTest extends TestCase
         $response->assertRedirect();
     }
 
-    public function test_it_logs_out_user_on_request_when_logged_in()
+    public function testItLogsOutUserOnRequestWhenLoggedIn()
     {
         $tokensCount = DB::table('personal_access_tokens')->count();
 
