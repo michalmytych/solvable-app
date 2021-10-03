@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Problem;
 use App\Models\Solution;
 use App\Enums\SolutionStatusType;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Model;
 use App\Repositories\SolutionRepository;
 use Illuminate\Validation\ValidationException;
 use App\Contracts\CodeExecutor\CodeExecutorServiceInterface;
@@ -58,6 +60,8 @@ class SolutionService
      */
     public function commit(): SolutionService
     {
+        $this->solution = $this->createSolutionRecord();
+
         return $this
             ->validate()
             ->delegateExecution();
@@ -70,7 +74,7 @@ class SolutionService
      */
     public function getProcessedSolution(): Solution
     {
-        return $this->solution;
+        return $this->solution->refresh();
     }
 
     /**
@@ -81,27 +85,16 @@ class SolutionService
      */
     private function validate(): self
     {
-        try {
-            $this->solutionValidationService->validateCodeString($this->solutionData);
-
-        } catch (ValidationException $validationException) {
-            $this->solutionData['status'] = SolutionStatusType::MALFORMED_UTF8_CODE_STRING;
-            $this->solutionData['code'] = 'data-placeholder.solution-code-data-was-malformed';
-
-            $this->storeSolution();
-
-            throw $validationException;
-        }
-
-        $this->storeSolution();
-
         $this->solutionValidationService
             ->setSolution($this->solution)
             ->setProblem($this->problem)
-            ->validateCharsCount()
-            ->validateLanguageUsed();
+            ->validateCodeString($this->solutionData)
+            ->validateCharsCount($this->solutionData)
+            ->validateLanguageUsed($this->solutionData);
 
-        $this->updateSolution(['status' => SolutionStatusType::VALIDATED]);
+        $this->solutionData['status'] = SolutionStatusType::VALIDATED;
+
+        $this->updateSolution($this->solutionData);
 
         return $this;
     }
@@ -120,16 +113,6 @@ class SolutionService
         $this->updateSolution(['status' => SolutionStatusType::DELEGATED]);
 
         return $this;
-    }
-
-    /**
-     * Store solution record in the database.
-     */
-    private function storeSolution(): void
-    {
-        $this->solution = $this->problem
-            ->solutions()
-            ->create($this->solutionData);
     }
 
     /**
@@ -154,5 +137,21 @@ class SolutionService
     private function updateSolution(array $data): void
     {
         $this->solution = $this->solutionRepository->update($this->solution, $data);
+    }
+
+    /**
+     * Persist solution record.
+     *
+     * @return Model
+     */
+    private function createSolutionRecord(): Model
+    {
+        return $this
+            ->problem
+            ->solutions()
+            ->create([
+                'user_id' => Auth::id(),
+                'code_language_id' => $this->solutionData['code_language_id']
+            ]);
     }
 }

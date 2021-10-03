@@ -2,14 +2,16 @@
 
 namespace Tests\Feature\Http\Controllers\Api\Solution;
 
-use GuzzleHttp\Psr7\Response;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Problem;
 use App\Models\Solution;
-use App\Models\Execution;
 use App\Models\CodeLanguage;
+use GuzzleHttp\Psr7\Response;
+use App\Jobs\ExecuteSolutionTest;
 use App\Enums\SolutionStatusType;
+use Illuminate\Support\Facades\Queue;
+use App\Jobs\FinishSolutionProcessing;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -28,6 +30,8 @@ class SolutionControllerTest extends TestCase
     private array $solutionResourceJsonStructure;
 
     private array $solutionInCollectionJsonStructure;
+
+    private Problem $problem;
 
     /**
      * Set up test case.
@@ -78,6 +82,12 @@ class SolutionControllerTest extends TestCase
         ];
 
         $this->user = User::factory()->create();
+
+        $this->problem = Problem::factory()->create();
+
+        $this->problem
+            ->codeLanguages()
+            ->save($this->codeLanguage);
 
         $this->mockJdoodleClient([
             new Response(
@@ -223,26 +233,50 @@ class SolutionControllerTest extends TestCase
 
     public function testCommitExecutesSolutionCodeAndReturnsSolutionWhenExternalApiRespondsWithHttpOk()
     {
-        $startSolutionsCount = Solution::where('user_id', $this->user->id)->count();
-        $startExecutionsCount = Execution::count();
-        $problem = Problem::factory()->create();
+        Queue::fake();
 
-        $problem
+        $startSolutionsCount = Solution::where('user_id', $this->user->id)->count();
+
+        $this->problem
+            ->tests()
+            ->createMany([
+                [
+                    'input' => '2\\n5',
+                    'valid_outputs' => [7],
+                    'time_limit' => 500,
+                    'memory_limit' => 500
+                ],
+                [
+                    'input' => '3\\n6',
+                    'valid_outputs' => [9],
+                    'time_limit' => 500,
+                    'memory_limit' => 500
+                ],
+                [
+                    'input' => '129\\n321',
+                    'valid_outputs' => [450],
+                    'time_limit' => 500,
+                    'memory_limit' => 500
+                ]
+            ]);
+
+        $this->problem
             ->codeLanguages()
             ->save($this->codeLanguage);
 
+        Queue::assertNothingPushed();
+
         $response = $this
             ->actingAs($this->user)
-            ->postJson(route('solution.commit', ['problem' => $problem->id]), $this->solutionData);
+            ->postJson(route('solution.commit', ['problem' => $this->problem->id]), $this->solutionData);
+
+        Queue::assertPushed(ExecuteSolutionTest::class, 3);
+
+        Queue::assertPushed(FinishSolutionProcessing::class, 1);
 
         $this->assertEquals(
             $startSolutionsCount + 1,
             Solution::where('user_id', $this->user->id)->count()
-        );
-
-        $this->assertEquals(
-            $startExecutionsCount + $problem->tests()->count(),
-            Execution::count()
         );
 
         $processedSolutionJsonStructure = $this->solutionResourceJsonStructure;
@@ -260,15 +294,13 @@ class SolutionControllerTest extends TestCase
 
     public function testCommitReturnsUnprocessableOnIncompleteRequestData()
     {
-        $problem = Problem::factory()->create();
-
         $this->solutionData['data'] = [
             'code' => null
         ];
 
         $response = $this
             ->actingAs($this->user)
-            ->postJson(route('solution.commit', ['problem' => $problem->id]), $this->solutionData);
+            ->postJson(route('solution.commit', ['problem' => $this->problem->id]), $this->solutionData);
 
         $response
             ->assertStatus(422)
@@ -282,13 +314,11 @@ class SolutionControllerTest extends TestCase
     {
         $startSolutionsCount = Solution::where('user_id', $this->user->id)->count();
 
-        $problem = Problem::factory()->create();
-
         $this->solutionData['data']['code'] = '# &@ ID IIDII OID ____)()()(()';   // not a base 64 string
 
         $response = $this
             ->actingAs($this->user)
-            ->postJson(route('solution.commit', ['problem' => $problem->id]), $this->solutionData);
+            ->postJson(route('solution.commit', ['problem' => $this->problem->id]), $this->solutionData);
 
         $this->assertEquals(
             $startSolutionsCount + 1,
@@ -298,6 +328,7 @@ class SolutionControllerTest extends TestCase
         unset($this->solutionResourceJsonStructure['executions']);
 
         $this->solutionResourceJsonStructure['characters'] = 'null';
+        $this->solutionResourceJsonStructure['code'] = 'string';
 
         $response
             ->assertStatus(422)
@@ -315,13 +346,15 @@ class SolutionControllerTest extends TestCase
     {
         $startSolutionsCount = Solution::where('user_id', $this->user->id)->count();
 
-        $problem = Problem::factory()->create(['chars_limit' => 5]);
+        $this->problem->update(['chars_limit' => 5]);
+
+        $this->problem->refresh();
 
         $this->solutionData['data']['code'] = 'YXdmc2Nz';
 
         $response = $this
             ->actingAs($this->user)
-            ->postJson(route('solution.commit', ['problem' => $problem->id]), $this->solutionData);
+            ->postJson(route('solution.commit', ['problem' => $this->problem->id]), $this->solutionData);
 
         $this->assertEquals(
             $startSolutionsCount + 1,
@@ -329,6 +362,7 @@ class SolutionControllerTest extends TestCase
         );
 
         unset($this->solutionResourceJsonStructure['executions']);
+        $this->solutionResourceJsonStructure['code'] = 'null';
 
         $response
             ->assertStatus(422)
@@ -358,6 +392,8 @@ class SolutionControllerTest extends TestCase
         );
 
         unset($this->solutionResourceJsonStructure['executions']);
+
+        $this->solutionResourceJsonStructure['code'] = 'null';
 
         $response
             ->assertStatus(422)

@@ -16,7 +16,7 @@ final class SolutionStatusType extends Enum
 
     public const CHARACTERS_LIMIT_EXCEEDED = 4;
 
-    public const INVALID_SOLUTION_CODE_DATA = 5;
+    public const EMPTY_DECODING_RESULT = 5;
 
     public const MALFORMED_UTF8_CODE_STRING = 6;
 

@@ -10,9 +10,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\SolutionResource;
 use App\Repositories\SolutionRepository;
+use Illuminate\Validation\ValidationException;
 use App\Http\Resources\ProcessedSolutionResource;
 use App\Http\Requests\Api\Solution\CommitRequest;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class SolutionController extends Controller
@@ -55,8 +55,6 @@ class SolutionController extends Controller
     public function commit(CommitRequest $commitRequest, Problem $problem): JsonResponse
     {
         $solutionData = $commitRequest->input('data');
-
-        $solutionData['user_id'] = Auth::id();
 
         try {
             $solution = $this->solutionService

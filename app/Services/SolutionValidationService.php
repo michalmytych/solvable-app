@@ -9,9 +9,9 @@ use Illuminate\Validation\ValidationException;
 
 class SolutionValidationService
 {
-    private Solution $solution;
-
     private Problem $problem;
+
+    private Solution $solution;
 
     /**
      * Set solution instance to validate.
@@ -40,15 +40,37 @@ class SolutionValidationService
     }
 
     /**
+     * Validate if language related to solution
+     * was allowed in provided problem.
+     *
+     * @return $this
+     * @param array $data
+     * @throws ValidationException
+     */
+    public function validateLanguageUsed(array $data): self
+    {
+        if (!$this->problem->codeLanguages->contains($data['code_language_id'])) {
+            $this->updateSolution(['status' => SolutionStatusType::INVALID_LANGUAGE_USED]);
+
+            throw ValidationException::withMessages([
+                'errors' => ['code_language_id' => 'solutions.validation.invalid-language-chosen']
+            ]);
+        }
+
+        return $this;
+    }
+
+    /**
      * Validate solution code characters count against
      * characters limit provided in problem instance.
      *
+     * @param array $data
      * @return $this
      * @throws ValidationException
      */
-    public function validateCharsCount(): self
+    public function validateCharsCount(array $data): self
     {
-        $charactersCount = strlen($this->solution->code);
+        $charactersCount = strlen($data['code']);
 
         if ($charactersCount > $this->problem->chars_limit) {
             $this->updateSolution([
@@ -61,27 +83,7 @@ class SolutionValidationService
             ]);
         }
 
-        $this->solution->update(['characters' => $charactersCount]);
-
-        return $this;
-    }
-
-    /**
-     * Validate if language related to solution
-     * was allowed in provided problem.
-     *
-     * @return $this
-     * @throws ValidationException
-     */
-    public function validateLanguageUsed(): self
-    {
-        if (!$this->problem->codeLanguages->contains($this->solution->code_language_id)) {
-            $this->updateSolution(['status' => SolutionStatusType::INVALID_LANGUAGE_USED]);
-
-            throw ValidationException::withMessages([
-                'errors' => ['code_language_id' => 'solutions.validation.invalid-language-chosen']
-            ]);
-        }
+        $this->updateSolution(['characters' => $charactersCount]);
 
         return $this;
     }
@@ -89,35 +91,47 @@ class SolutionValidationService
     /**
      * Validate if provided encoded programming language code data is valid.
      *
+     * @return $this
      * @param array $data
      * @throws ValidationException
      */
-    public function validateCodeString(array &$data): void
+    public function validateCodeString(array $data): self
     {
         if (!$data['code']) {
-            $data['status'] = SolutionStatusType::INVALID_SOLUTION_CODE_DATA;
+            $this->updateSolution([
+                'status' => SolutionStatusType::EMPTY_DECODING_RESULT,
+                'code' => 'data-placeholder.empty-decoding-result'
+            ]);
 
             throw ValidationException::withMessages([
-                'errors' => ['code' => 'solution.errors.invalid-code-data-provided.empty-data']
+                'errors' => ['code' => 'solution.errors.invalid-code-data-provided.empty-decoding-result']
             ]);
         }
 
         if (!mb_check_encoding($data['code'], 'UTF-8')) {
-            $data['status'] = SolutionStatusType::MALFORMED_UTF8_CODE_STRING;
+            $this->updateSolution([
+                'status' => SolutionStatusType::MALFORMED_UTF8_CODE_STRING,
+                'code' => 'data-placeholder.solution-code-data-was-malformed'
+            ]);
 
             throw ValidationException::withMessages([
                 'errors' => ['code' => 'solution.errors.invalid-code-data-provided.malformed-utf8-string']
             ]);
         }
+
+        return $this;
     }
 
     /**
      * Update solution record at database.
      *
      * @param array $data
+     * @return SolutionValidationService
      */
-    private function updateSolution(array $data): void
+    public function updateSolution(array $data): self
     {
         $this->solution = tap($this->solution)->update($data);
+
+        return $this;
     }
 }
