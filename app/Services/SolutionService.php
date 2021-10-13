@@ -84,7 +84,7 @@ class SolutionService
 
     /**
      * Delegate execution of problem tests to CodeExecutorService,
-     * which can be used as abstraction / adapter for many different
+     * which can be used as abstraction / adapter for many
      * external code compilation & execution services.
      */
     public function delegateExecution(): self
