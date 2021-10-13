@@ -14,20 +14,12 @@ class UpdateSolutionStateAtClients implements ShouldBroadcastNow
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * Data to be broadcast with the event.
-     *
-     * @var Execution
-     */
-    public Execution $broadcastData;
-
-    /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Execution $execution)
+    public function __construct(public Execution $execution)
     {
-        $this->broadcastData = $execution;
     }
 
     /**

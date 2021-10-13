@@ -12,11 +12,8 @@ use App\Support\ExternalCompiler\Client as ExternalCompilerClient;
 
 class CodeExecutorService implements CodeExecutorServiceInterface
 {
-    private ExternalCompilerClient $externalCompilerClient;
-
-    public function __construct(ExternalCompilerClient $externalCompilerClient)
+    public function __construct(private ExternalCompilerClient $externalCompilerClient)
     {
-        $this->externalCompilerClient = $externalCompilerClient;
     }
 
     /**

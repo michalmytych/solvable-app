@@ -5,11 +5,11 @@ namespace App\Services;
 use App\Models\Problem;
 use App\Models\Solution;
 use App\Enums\SolutionStatusType;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Model;
 use App\Repositories\SolutionRepository;
-use App\Contracts\CodeExecutor\CodeExecutorServiceInterface;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException;
+use App\Contracts\CodeExecutor\CodeExecutorServiceInterface;
 
 class SolutionService
 {
@@ -19,21 +19,12 @@ class SolutionService
 
     private array $solutionData;
 
-    private SolutionRepository $solutionRepository;
-
-    private CodeExecutorServiceInterface $codeExecutorService;
-
-    private SolutionValidationService $solutionValidationService;
-
     public function __construct(
-        SolutionRepository $solutionRepository,
-        SolutionValidationService $solutionValidationService,
-        CodeExecutorServiceInterface $codeExecutorService
+        private SolutionRepository           $solutionRepository,
+        private SolutionValidationService    $solutionValidationService,
+        private CodeExecutorServiceInterface $codeExecutorService
     )
     {
-        $this->solutionRepository = $solutionRepository;
-        $this->codeExecutorService = $codeExecutorService;
-        $this->solutionValidationService = $solutionValidationService;
     }
 
     /**
@@ -63,39 +54,17 @@ class SolutionService
     }
 
     /**
-     * Validate solution against custom business validation rules.
+     * Commit new solution for problem.
      *
-     * @return $this
+     * @throws ValidationException
      */
-    public function validate(): self
+    public function commit(): SolutionService
     {
-        $this->storeSolution();
+        $this->solution = $this->createSolutionRecord();
 
-        $this->solutionValidationService
-            ->setSolution($this->solution)
-            ->setProblem($this->problem)
-            ->validateCharsCount()
-            ->validateLanguageUsed();
-
-        $this->updateSolution(['status' => SolutionStatusType::VALIDATED]);
-
-        return $this;
-    }
-
-    /**
-     * Delegate execution of problem tests to CodeExecutorService,
-     * which can be used as abstraction / adapter for many different
-     * external code compilation & execution services.
-     */
-    public function delegateExecution(): self
-    {
-        $this->codeExecutorService
-            ->init()
-            ->executeSolution($this->solution);
-
-        $this->updateSolution(['status' => SolutionStatusType::DELEGATED]);
-
-        return $this;
+        return $this
+            ->validate()
+            ->delegateExecution();
     }
 
     /**
@@ -105,17 +74,45 @@ class SolutionService
      */
     public function getProcessedSolution(): Solution
     {
-        return $this->solution;
+        return $this->solution->refresh();
     }
 
     /**
-     * Store solution record in the database.
+     * Validate solution against custom business validation rules.
+     *
+     * @return $this
+     * @throws ValidationException
      */
-    private function storeSolution(): void
+    private function validate(): self
     {
-        $this->solution = $this->problem
-            ->solutions()
-            ->create($this->solutionData);
+        $this->solutionValidationService
+            ->setSolution($this->solution)
+            ->setProblem($this->problem)
+            ->validateCodeString($this->solutionData)
+            ->validateCharsCount($this->solutionData)
+            ->validateLanguageUsed($this->solutionData);
+
+        $this->solutionData['status'] = SolutionStatusType::VALIDATED;
+
+        $this->updateSolution($this->solutionData);
+
+        return $this;
+    }
+
+    /**
+     * Delegate execution of problem tests to CodeExecutorService,
+     * which can be used as abstraction / adapter for many
+     * external code compilation & execution services.
+     */
+    private function delegateExecution(): self
+    {
+        $this->codeExecutorService
+            ->init()
+            ->executeSolution($this->solution);
+
+        $this->updateSolution(['status' => SolutionStatusType::DELEGATED]);
+
+        return $this;
     }
 
     /**
@@ -129,12 +126,6 @@ class SolutionService
     {
         $data['code'] = base64_decode($data['code']);
 
-        if (!$data['code']) {
-            ValidationException::withMessages([
-                'errors' => [ 'code' => 'solution.errors.invalid-code-data-provided' ]
-            ]);
-        }
-
         return $data;
     }
 
@@ -145,9 +136,22 @@ class SolutionService
      */
     private function updateSolution(array $data): void
     {
-        $this->solution = $this->solutionRepository->update(
-            $this->solution,
-            $data
-        );
+        $this->solution = $this->solutionRepository->update($this->solution, $data);
+    }
+
+    /**
+     * Persist solution record.
+     *
+     * @return Model
+     */
+    private function createSolutionRecord(): Model
+    {
+        return $this
+            ->problem
+            ->solutions()
+            ->create([
+                'user_id' => Auth::id(),
+                'code_language_id' => $this->solutionData['code_language_id']
+            ]);
     }
 }

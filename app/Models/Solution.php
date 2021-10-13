@@ -3,7 +3,12 @@
 namespace App\Models;
 
 use App\Enums\SolutionStatusType;
+use App\QueryFilters\Solution\CodeLanguageFilter;
+use App\QueryFilters\Solution\ProblemFilter;
+use App\QueryFilters\Solution\StatusFilter;
+use App\Traits\HasQueryFilters;
 use App\Traits\HasUuid;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Solution extends Model
 {
-    use HasUuid;
+    use HasUuid, HasFactory, HasQueryFilters;
 
     protected $fillable = [
         'code',
@@ -25,8 +30,22 @@ class Solution extends Model
     ];
 
     protected $casts = [
-      'status' => SolutionStatusType::class
+        'status' => SolutionStatusType::class
     ];
+
+    /**
+     * Get model's available filters.
+     *
+     * @return string[]
+     */
+    protected function getFilters(): array
+    {
+        return [
+            StatusFilter::class,
+            ProblemFilter::class,
+            CodeLanguageFilter::class,
+        ];
+    }
 
     /**
      * Problem to which solution is attached.

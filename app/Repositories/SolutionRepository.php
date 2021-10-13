@@ -2,11 +2,14 @@
 
 namespace App\Repositories;
 
-use App\Models\Problem;
 use App\Models\Solution;
+use App\QueryFilters\Solution\CodeLanguageFilter;
+use App\QueryFilters\Solution\ProblemFilter;
+use App\QueryFilters\Solution\StatusFilter;
 use Illuminate\Contracts\Auth\Authenticatable;
 use App\Contracts\SolutionRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Pipeline\Pipeline;
 
 class SolutionRepository implements SolutionRepositoryInterface
 {
@@ -27,15 +30,14 @@ class SolutionRepository implements SolutionRepositoryInterface
     /**
      * Get all solutions for provided problem instance.
      *
-     * @param Problem $problem
      * @param Authenticatable $user
      * @return LengthAwarePaginator
      */
-    public function findByProblemAndUserWithPagination(Problem $problem, Authenticatable $user): LengthAwarePaginator
+    public function all(Authenticatable $user): LengthAwarePaginator
     {
         return Solution::query()
-            ->where('problem_id', $problem->id)
             ->where('user_id', $user->id)
+            ->withQueryFilters()
             ->select([
                 'id',
                 'problem_id',

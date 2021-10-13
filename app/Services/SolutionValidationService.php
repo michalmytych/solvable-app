@@ -2,16 +2,16 @@
 
 namespace App\Services;
 
-use App\Enums\SolutionStatusType;
 use App\Models\Problem;
 use App\Models\Solution;
+use App\Enums\SolutionStatusType;
 use Illuminate\Validation\ValidationException;
 
 class SolutionValidationService
 {
-    private Solution $solution;
-
     private Problem $problem;
+
+    private Solution $solution;
 
     /**
      * Set solution instance to validate.
@@ -40,43 +40,20 @@ class SolutionValidationService
     }
 
     /**
-     * Validate solution code characters count against
-     * characters limit provided in problem instance.
-     *
-     * @return $this
-     */
-    public function validateCharsCount(): self
-    {
-        $charactersCount = strlen($this->solution->code);
-
-        if ($charactersCount > $this->problem->chars_limit) {
-            $this->markSolutionAsInvalid(SolutionStatusType::CHARACTERS_LIMIT_EXCEEDED);
-
-            ValidationException::withMessages([
-                'errors' => [ 'solutions.validation.characters-limit-exceeded' ]
-            ]);
-        }
-
-        $this->solution->update(['characters' => $charactersCount]);
-
-        return $this;
-    }
-
-    /**
      * Validate if language related to solution
      * was allowed in provided problem.
      *
      * @return $this
+     * @param array $data
+     * @throws ValidationException
      */
-    public function validateLanguageUsed(): self
+    public function validateLanguageUsed(array $data): self
     {
-        $chosenCodingLanguageId = strlen($this->solution->code_language_id);
+        if (!$this->problem->codeLanguages->contains($data['code_language_id'])) {
+            $this->updateSolution(['status' => SolutionStatusType::INVALID_LANGUAGE_USED]);
 
-        if (! optional($this->problem->codingLanguages)->contains('id', $chosenCodingLanguageId)) {
-            $this->markSolutionAsInvalid(SolutionStatusType::INVALID_LANGUAGE_USED);
-
-            ValidationException::withMessages([
-                'errors' => [ 'solutions.validation.invalid-language-chosen' ]
+            throw ValidationException::withMessages([
+                'errors' => ['code_language_id' => 'solutions.validation.invalid-language-chosen']
             ]);
         }
 
@@ -84,12 +61,77 @@ class SolutionValidationService
     }
 
     /**
-     * Mark status of processed as invalid.
+     * Validate solution code characters count against
+     * characters limit provided in problem instance.
      *
-     * @param int $statusType
+     * @param array $data
+     * @return $this
+     * @throws ValidationException
      */
-    private function markSolutionAsInvalid(int $statusType = SolutionStatusType::INVALID): void
+    public function validateCharsCount(array $data): self
     {
-        $this->solution = tap($this->solution)->update(['status' => $statusType]);
+        $charactersCount = strlen($data['code']);
+
+        if ($charactersCount > $this->problem->chars_limit) {
+            $this->updateSolution([
+                'status' => SolutionStatusType::CHARACTERS_LIMIT_EXCEEDED,
+                'characters' => $charactersCount
+            ]);
+
+            throw ValidationException::withMessages([
+                'errors' => ['code' => 'solutions.validation.characters-limit-exceeded']
+            ]);
+        }
+
+        $this->updateSolution(['characters' => $charactersCount]);
+
+        return $this;
+    }
+
+    /**
+     * Validate if provided encoded programming language code data is valid.
+     *
+     * @return $this
+     * @param array $data
+     * @throws ValidationException
+     */
+    public function validateCodeString(array $data): self
+    {
+        if (!$data['code']) {
+            $this->updateSolution([
+                'status' => SolutionStatusType::EMPTY_DECODING_RESULT,
+                'code' => 'data-placeholder.empty-decoding-result'
+            ]);
+
+            throw ValidationException::withMessages([
+                'errors' => ['code' => 'solution.errors.invalid-code-data-provided.empty-decoding-result']
+            ]);
+        }
+
+        if (!mb_check_encoding($data['code'], 'UTF-8')) {
+            $this->updateSolution([
+                'status' => SolutionStatusType::MALFORMED_UTF8_CODE_STRING,
+                'code' => 'data-placeholder.solution-code-data-was-malformed'
+            ]);
+
+            throw ValidationException::withMessages([
+                'errors' => ['code' => 'solution.errors.invalid-code-data-provided.malformed-utf8-string']
+            ]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Update solution record at database.
+     *
+     * @param array $data
+     * @return SolutionValidationService
+     */
+    public function updateSolution(array $data): self
+    {
+        $this->solution = tap($this->solution)->update($data);
+
+        return $this;
     }
 }
