@@ -22,7 +22,7 @@ class SolutionResource extends JsonResource
             'code_language_id' => $this->code_language_id,
             'code' => $this->code,
             'characters' => $this->characters,
-            'problem_chars_limit' => $this->problem->chars_limit,
+            'problem_chars_limit' => (int) $this->problem->chars_limit,
             'status' => $this->status,
             'score' => $this->score,
             'created_at' => $this->created_at,
