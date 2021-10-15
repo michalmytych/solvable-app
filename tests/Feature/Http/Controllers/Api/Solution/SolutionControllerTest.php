@@ -320,6 +320,8 @@ class SolutionControllerTest extends TestCase
             ->actingAs($this->user)
             ->postJson(route('solution.commit', ['problem' => $this->problem->id]), $this->solutionData);
 
+        echo $response->getContent();
+
         $this->assertEquals(
             $startSolutionsCount + 1,
             Solution::where('user_id', $this->user->id)->count()
