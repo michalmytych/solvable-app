@@ -15,7 +15,7 @@ class CreateProblemsTable extends Migration
     {
         Schema::create('problems', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignId('user_id')
+            $table->foreignUuid('user_id')
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');

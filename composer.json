@@ -16,7 +16,8 @@
         "laravel/tinker": "^2.5",
         "php-http/curl-client": "^2.2",
         "pusher/pusher-php-server": "~5.0",
-        "ramsey/uuid": "^4.2"
+        "ramsey/uuid": "^4.2",
+        "spatie/laravel-permission": "^5.4"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

@@ -23,7 +23,9 @@ class DatabaseSeeder extends Seeder
             CourseSeeder::class,
             GroupSeeder::class,
             GroupCourseTableSeeder::class,
-            GroupProblemTableSeeder::class
+            GroupProblemTableSeeder::class,
+            // PermissionSeeder::class,
+            // RoleSeeder::class
         ]);
     }
 }
