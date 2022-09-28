@@ -31,6 +31,15 @@ class UserFactory extends Factory
         ];
     }
 
+    public function developer(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'email' => 'developer@solvable.com',
+            ];
+        });
+    }
+
     /**
      * Indicate that the model's email address should be unverified.
      *

@@ -16,3 +16,15 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/auth/login', function () {
+    return view('auth.login');
+});
+
+Route::get('/commit', function () {
+    // @todo
+    return view('solution.commit', [
+        'problems' => \App\Models\Problem::all(),
+        'languages' => \App\Models\CodeLanguage::all()
+    ]);
+});

@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use Throwable;
 use App\Models\Problem;
 use App\Models\Solution;
+use Illuminate\Support\Str;
 use App\Enums\SolutionStatusType;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
@@ -23,8 +25,7 @@ class SolutionService
         private SolutionRepository           $solutionRepository,
         private SolutionValidationService    $solutionValidationService,
         private CodeExecutorServiceInterface $codeExecutorService
-    )
-    {
+    ) {
     }
 
     /**
@@ -124,7 +125,11 @@ class SolutionService
      */
     private function decodeSolutionCodeFromBase(array $data): array
     {
-        $data['code'] = base64_decode($data['code']);
+        $code = $data['code'];
+
+        $code = $this->tryToHandleBase64Prefix($code);
+
+        $data['code'] = base64_decode($code);
 
         return $data;
     }
@@ -150,8 +155,26 @@ class SolutionService
             ->problem
             ->solutions()
             ->create([
-                'user_id' => Auth::id(),
-                'code_language_id' => $this->solutionData['code_language_id']
+                'user_id'          => Auth::id(),
+                'code_language_id' => $this->solutionData['code_language_id'],
             ]);
+    }
+
+    /**
+     * Some apps add prefixes such as 'data:application/octet-stream;base64,'
+     * at the start of encoded base64 string. This method tries to get rid of it.
+     *
+     * @param string $base
+     * @return string
+     */
+    private function tryToHandleBase64Prefix(string $base): string
+    {
+        $base64prefix = 'base64,';
+
+        if (str_contains($base, $base64prefix)) {
+            return Str::after($base, $base64prefix);
+        }
+
+        return $base;
     }
 }
