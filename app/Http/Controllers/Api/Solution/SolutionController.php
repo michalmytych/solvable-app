@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Solution;
 use App\Models\Problem;
 use App\Models\Solution;
 use Illuminate\Http\JsonResponse;
-use App\Services\SolutionService;
+use App\Services\SolutionProcessingService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\SolutionResource;
@@ -19,7 +19,7 @@ class SolutionController extends Controller
 {
     public function __construct(
         private SolutionRepository $solutionRepository,
-        private SolutionService $solutionService
+        private SolutionProcessingService $solutionService
     )
     {
     }
