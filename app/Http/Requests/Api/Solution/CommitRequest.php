@@ -7,16 +7,6 @@ use Illuminate\Foundation\Http\FormRequest;
 class CommitRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -38,7 +28,7 @@ class CommitRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'data.code_language_id.exists' => 'Code language of this id does not exists in database.'
+            'data.code_language_id.exists' => 'Code language of this id does not exist in database.'
         ];
     }
 }
