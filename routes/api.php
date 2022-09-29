@@ -32,7 +32,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['prefix' => 'problems', 'as' => 'problem.'], function () {
         Route::get('/', [ProblemController::class, 'all'])->name('all');
         Route::get('/{problem}', [ProblemController::class, 'find'])->name('find');
-        Route::post('/{group}', [ProblemController::class, 'store'])->name('store');    // todo do groups ?
+        Route::post('/{group}', [ProblemController::class, 'store'])->name('store');
     });
 
     Route::group(['prefix' => 'courses', 'as' => 'course.'], function () {

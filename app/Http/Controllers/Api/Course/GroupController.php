@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\Course;
 
 use App\Models\Group;
+use App\Http\Controllers\Controller;
 use App\Repositories\GroupRepository;
 use App\Http\Requests\Api\Group\UpdateRequest;
 
