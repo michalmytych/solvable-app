@@ -12,12 +12,7 @@ use App\Contracts\ExternalCompiler\ExternalCompilerClientInterface;
 
 class Client extends BaseClient implements ExternalCompilerClientInterface
 {
-    /**
-     * Name of the external compiler service.
-     *
-     * @var string
-     */
-    private string $name = 'Jdoodle';
+    private const NAME = 'Jdoodle';
 
     /**
      * Limit of requests allowed in free plan.
@@ -82,7 +77,7 @@ class Client extends BaseClient implements ExternalCompilerClientInterface
      */
     public function getName(): string
     {
-        return Str::slug($this->name);
+        return Str::slug(self::NAME);
     }
 
     /**
@@ -92,14 +87,14 @@ class Client extends BaseClient implements ExternalCompilerClientInterface
      * @return mixed
      * @throws CurlError3Exception
      */
-    private function templateRequest(callable $request)
+    private function templateRequest(callable $request): mixed
     {
         try {
             return $request();
         } catch (RequestException $exception) {
             if (Str::of($exception->getMessage())->contains('cURL error 3')) {
                 throw new CurlError3Exception(
-                    'Request error: check provided ' . $this->name . ' service credentials, thrown '
+                    'Request error: check provided ' . self::NAME . ' service credentials, thrown '
                 );
             }
 
