@@ -17,10 +17,6 @@ class CodeLanguage extends Model
         'version'
     ];
 
-    protected $hidden = [
-        'id'
-    ];
-
     /**
      * Related problems.
      *

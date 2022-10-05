@@ -15,7 +15,8 @@ class ProblemRepository
      */
     public function all(string $id): LengthAwarePaginator
     {
-        return Problem::where('user_id', $id)->paginate(10);
+        // return Problem::where('user_id', $id)->paginate(10); // OG
+        return Problem::paginate(10);
     }
 
     /**

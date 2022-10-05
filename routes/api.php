@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Auth\UserController;
 use App\Http\Controllers\Api\Course\CourseController;
 use App\Http\Controllers\Api\Problem\ProblemController;
 use App\Http\Controllers\Api\Solution\SolutionController;
+use App\Models\CodeLanguage;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/{course}', [CourseController::class, 'store'])->name('store');
         Route::put('/{course}', [CourseController::class, 'update'])->name('update');
         Route::delete('/{course}', [CourseController::class, 'delete'])->name('delete');
+    });
+
+    Route::group(['prefix' => 'courses', 'as' => 'course.'], function () {
+        Route::get('/', [CourseController::class, 'all'])->name('all');
+        Route::post('/{course}', [CourseController::class, 'store'])->name('store');
+        Route::put('/{course}', [CourseController::class, 'update'])->name('update');
+        Route::delete('/{course}', [CourseController::class, 'delete'])->name('delete');
+    });
+
+    Route::group(['prefix' => 'code-languages', 'as' => 'code-language.'], function () {
+        Route::get('/', function() {  return CodeLanguage::all(); })->name('all');
     });
 });
 

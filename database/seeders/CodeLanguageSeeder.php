@@ -19,5 +19,17 @@ class CodeLanguageSeeder extends Seeder
             'identifier' => 'cpp17',
             'version' => 0
         ]);
+
+        CodeLanguage::firstOrCreate([
+            'name' => 'C#',
+            'identifier' => 'cs',
+            'version' => 0
+        ]);
+
+        CodeLanguage::firstOrCreate([
+            'name' => 'Php 8.0',
+            'identifier' => 'php8',
+            'version' => 0
+        ]);
     }
 }

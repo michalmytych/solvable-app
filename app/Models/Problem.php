@@ -20,10 +20,6 @@ class Problem extends Model
         'user_id'
     ];
 
-    protected $hidden = [
-        'id'
-    ];
-
     /**
      * Solutions related to the problem.
      *
