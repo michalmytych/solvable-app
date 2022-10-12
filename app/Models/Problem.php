@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasUuid;
+use App\Traits\HasQueryParams;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Problem extends Model
 {
-    use HasUuid, HasFactory;
+    use HasUuid, HasFactory, HasQueryParams;
 
     protected $fillable = [
         'title',
@@ -68,5 +69,11 @@ class Problem extends Model
     public function groups(): BelongsToMany
     {
         return $this->belongsToMany(Group::class);
+    }
+
+    protected static function queryParams(): array
+    {
+        // TODO: Implement queryParams() method.
+        return [];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasQueryParams;
 use App\Enums\SolutionStatusType;
 use App\QueryFilters\Solution\CodeLanguageFilter;
 use App\QueryFilters\Solution\ProblemFilter;
@@ -16,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Solution extends Model
 {
-    use HasUuid, HasFactory, HasQueryFilters;
+    use HasUuid, HasFactory, HasQueryFilters, HasQueryParams;
 
     protected $fillable = [
         'code',
@@ -75,5 +76,11 @@ class Solution extends Model
     public function executions(): HasMany
     {
         return $this->hasMany(Execution::class);
+    }
+
+    protected static function queryParams(): array
+    {
+        // TODO: Implement queryParams() method.
+        return [];
     }
 }

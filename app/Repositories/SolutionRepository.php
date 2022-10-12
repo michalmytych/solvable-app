@@ -19,9 +19,10 @@ class SolutionRepository implements SolutionRepositoryInterface
      * @param Solution $solution
      * @return Solution|null
      */
-    public function find(Solution $solution)
+    public function find(Solution $solution): ?Solution
     {
         return Solution::query()
+            ->withQueryParams()
             ->where('id', $solution->id)
             ->with('executions', fn($execution) => $execution->with('test'))
             ->first();
@@ -37,6 +38,7 @@ class SolutionRepository implements SolutionRepositoryInterface
     {
         return Solution::query()
             ->where('user_id', $user->id)
+            ->withQueryParams()
             ->withQueryFilters()
             ->select([
                 'id',
