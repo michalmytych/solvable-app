@@ -40,7 +40,7 @@ class CodeExecutorService implements CodeExecutorServiceInterface
         $tests = $solution->problem->tests;
 
         foreach ($tests as $test) {
-            ExecuteSolutionTest::dispatch($test, $solution);
+            ExecuteSolutionTest::dispatch($test, $solution, auth()->user());
         }
 
         FinishSolutionProcessing::dispatch($solution);      // todo moze sprawdzic czy wszystkie joby ExecuteSolutionTest sie wykonaly

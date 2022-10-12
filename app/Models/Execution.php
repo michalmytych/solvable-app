@@ -21,10 +21,6 @@ class Execution extends Model
         'error'
     ];
 
-    protected $hidden = [
-        'id'
-    ];
-
     /**
      * Solution to which execution is related.
      *

@@ -1,6 +1,6 @@
-<?php /** @noinspection ALL */
+<?php
 
-namespace Tests\Feature\Auth;
+namespace Tests\Feature\Http\Controllers\Api\Auth;
 
 use Tests\TestCase;
 use App\Models\User;
@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 
 class UserControllerTest extends TestCase
@@ -81,12 +80,12 @@ class UserControllerTest extends TestCase
     {
         $tokensCount = DB::table('personal_access_tokens')->count();
 
-        $registeResponse = $this->post(
+        $registerResponse = $this->post(
             route('register'),
             $this->userData
         );
 
-        $registeResponse
+        $registerResponse
             ->assertCreated();
 
         $this->assertDatabaseCount('personal_access_tokens', $tokensCount + 1);
@@ -155,7 +154,7 @@ class UserControllerTest extends TestCase
 
         $this->assertDatabaseCount('personal_access_tokens', $tokensCount + 1);
 
-        $loginResponse = $this->post(
+        $this->post(
             route('login'),
             $this->userData
         );
