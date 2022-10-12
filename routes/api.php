@@ -50,7 +50,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/{course}', [CourseController::class, 'delete'])->name('delete');
     });
 
-    Route::group(['prefix' => 'code-languages', 'as' => 'code-language.'], function () {
+    Route::group(['prefix' => 'code-languages', 'as' => 'code_language.'], function () {
         Route::get('/', function() {  return CodeLanguage::all(); })->name('all');
     });
 });
