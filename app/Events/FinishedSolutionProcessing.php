@@ -21,8 +21,20 @@ class FinishedSolutionProcessing implements ShouldBroadcast
         // @todo - implement
     }
 
-    public function broadcastOn()
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return array
+     */
+    public function broadcastOn(): array
     {
-        return ['finished-solution-processing'];
+        return [
+            'solution-tests-executions-updates' // . $this->user->getRememberToken() @todo - implement
+        ];
+    }
+
+    public function broadcastAs(): string
+    {
+        return 'finished-new-solution-testing';
     }
 }
