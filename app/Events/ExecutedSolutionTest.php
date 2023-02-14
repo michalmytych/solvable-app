@@ -15,8 +15,6 @@ class ExecutedSolutionTest implements ShouldBroadcast
 
     /**
      * Create a new event instance.
-     *
-     * @return void
      */
     public function __construct(public Execution $execution, public User $user)
     {
@@ -24,8 +22,6 @@ class ExecutedSolutionTest implements ShouldBroadcast
 
     /**
      * Get the channels the event should broadcast on.
-     *
-     * @return array
      */
     public function broadcastOn(): array
     {

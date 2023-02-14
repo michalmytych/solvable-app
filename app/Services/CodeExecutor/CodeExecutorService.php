@@ -18,10 +18,6 @@ class CodeExecutorService implements CodeExecutorServiceInterface
 
     /**
      * Initialize service.
-     *
-     * @return $this
-     * @throws CurlError3Exception
-     * @throws ExternalServiceInitializationException
      */
     public function init(): self
     {
@@ -32,8 +28,6 @@ class CodeExecutorService implements CodeExecutorServiceInterface
 
     /**
      * Execute solution code.
-     *
-     * @param Solution $solution
      */
     public function executeSolution(Solution $solution): void
     {

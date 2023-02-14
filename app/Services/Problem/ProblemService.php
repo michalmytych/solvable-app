@@ -4,14 +4,14 @@
 namespace App\Services\Problem;
 
 
-use App\Http\Requests\Api\Problem\CreateRequest;
+use Throwable;
 use App\Models\Problem;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Repositories\GroupRepository;
 use App\Repositories\ProblemRepository;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Throwable;
+use App\Http\Requests\Api\Problem\CreateRequest;
 
 class ProblemService
 {
@@ -25,9 +25,6 @@ class ProblemService
     /**
      * Create new problem with relations in transaction,
      * rollback on database error.
-     *
-     * @param CreateRequest $createRequest
-     * @return Problem|null
      */
     public function createWithRelations(CreateRequest $createRequest): ?Problem
     {

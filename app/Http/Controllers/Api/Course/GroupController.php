@@ -15,9 +15,6 @@ class GroupController extends Controller
 
     /**
      * Update group and sync problems.
-     *
-     * @param Group $group
-     * @param UpdateRequest $updateRequest
      */
     public function update(Group $group, UpdateRequest $updateRequest)
     {

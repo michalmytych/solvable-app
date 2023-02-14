@@ -3,21 +3,14 @@
 namespace App\Repositories;
 
 use App\Models\Solution;
-use App\QueryFilters\Solution\CodeLanguageFilter;
-use App\QueryFilters\Solution\ProblemFilter;
-use App\QueryFilters\Solution\StatusFilter;
 use Illuminate\Contracts\Auth\Authenticatable;
 use App\Contracts\SolutionRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Pipeline\Pipeline;
 
 class SolutionRepository implements SolutionRepositoryInterface
 {
     /**
      * Find solution by id.
-     *
-     * @param Solution $solution
-     * @return Solution|null
      */
     public function find(Solution $solution): ?Solution
     {
@@ -30,9 +23,6 @@ class SolutionRepository implements SolutionRepositoryInterface
 
     /**
      * Get all solutions for provided problem instance.
-     *
-     * @param Authenticatable $user
-     * @return LengthAwarePaginator
      */
     public function all(Authenticatable $user): LengthAwarePaginator
     {
@@ -53,10 +43,6 @@ class SolutionRepository implements SolutionRepositoryInterface
 
     /**
      * Update provided Solution database record with data.
-     *
-     * @param Solution $solution
-     * @param array $data
-     * @return Solution
      */
     public function update(Solution $solution, array $data): Solution
     {

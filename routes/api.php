@@ -22,6 +22,7 @@ Route::post('/register', [UserController::class, 'register'])->name('register');
 Route::post('/login', [UserController::class, 'login'])->name('login');
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/user', [UserController::class, 'user'])->name('user');
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
     Route::group(['prefix' => 'solutions', 'as' => 'solution.'], function () {

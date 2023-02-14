@@ -10,6 +10,7 @@ use App\Repositories\UserRepository;
 use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Requests\Api\Auth\RegisterRequest;
 use App\Contracts\Auth\UserControllerInterface;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller implements UserControllerInterface
 {
@@ -19,9 +20,6 @@ class UserController extends Controller implements UserControllerInterface
 
     /**
      * Register new user if provided data is valid.
-     *
-     * @param RegisterRequest $request
-     * @return Response
      */
     public function register(RegisterRequest $request): Response
     {
@@ -41,9 +39,6 @@ class UserController extends Controller implements UserControllerInterface
 
     /**
      * Create token for user if user of provided credentials exists.
-     *
-     * @param LoginRequest $request
-     * @return Response
      */
     public function login(LoginRequest $request): Response
     {
@@ -67,9 +62,6 @@ class UserController extends Controller implements UserControllerInterface
 
     /**
      * Logout currently logged user.
-     *
-     * @param Request $request
-     * @return Response
      */
     public function logout(Request $request): Response
     {
@@ -77,6 +69,17 @@ class UserController extends Controller implements UserControllerInterface
 
         return response([
             'message' => 'auth.messages.logged-out'
+        ]);
+    }
+
+    /**
+     * Get authorized user.
+     */
+    public function user(Request $request): Response
+    {
+        return response([
+            'user'  => Auth::user(),
+            'token' => $request->bearerToken()
         ]);
     }
 }

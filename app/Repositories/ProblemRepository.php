@@ -9,9 +9,6 @@ class ProblemRepository
 {
     /**
      * Get all problems related to user by user id.
-     *
-     * @param string $id
-     * @return LengthAwarePaginator
      */
     public function all(string $id): LengthAwarePaginator
     {
@@ -23,9 +20,6 @@ class ProblemRepository
 
     /**
      * Create and return new problem.
-     *
-     * @param array $problemData
-     * @return Problem
      */
     public function store(array $problemData): Problem
     {
@@ -34,10 +28,6 @@ class ProblemRepository
 
     /**
      * Store new problem in database.
-     *
-     * @param Problem $problem
-     * @param array $data
-     * @return Problem
      */
     public function update(Problem $problem, array $data): Problem
     {
@@ -46,9 +36,6 @@ class ProblemRepository
 
     /**
      * Delete problem by id.
-     *
-     * @param Problem $problem
-     * @return bool
      */
     public function delete(Problem $problem): bool
     {

@@ -25,9 +25,6 @@ class SolutionProcessingService
 
     /**
      * Set problem for which solution is processed.
-     *
-     * @param Problem $problem
-     * @return $this
      */
     public function setProblem(Problem $problem): SolutionProcessingService
     {
@@ -38,9 +35,6 @@ class SolutionProcessingService
 
     /**
      * Set data to create a Solution of.
-     *
-     * @param array $data
-     * @return $this
      */
     public function setSolutionData(array $data): self
     {
@@ -51,8 +45,6 @@ class SolutionProcessingService
 
     /**
      * Commit new solution for problem.
-     *
-     * @throws ValidationException
      */
     public function commit(): SolutionProcessingService
     {
@@ -68,8 +60,6 @@ class SolutionProcessingService
 
     /**
      * Return currently processed solution model.
-     *
-     * @return Solution
      */
     public function getProcessedSolution(): Solution
     {
@@ -78,15 +68,15 @@ class SolutionProcessingService
 
     /**
      * Validate solution against custom business validation rules.
-     *
-     * @return $this
      * @throws ValidationException
      */
     private function validate(): self
     {
-        $this->solutionValidationService
+        $this
+            ->solutionValidationService
             ->setSolution($this->solution)
             ->setProblem($this->problem)
+            ->markReceived()
             ->validateCodeString($this->solutionData)
             ->validateCharsCount($this->solutionData)
             ->validateLanguageUsed($this->solutionData);
@@ -120,9 +110,6 @@ class SolutionProcessingService
     /**
      * Decode stored solution code data from base 64 to string,
      * throw validation error if provided code data is invalid.
-     *
-     * @param array $data
-     * @return array
      */
     private function decodeSolutionCodeFromBase(array $data): array
     {

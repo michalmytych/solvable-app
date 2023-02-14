@@ -3,15 +3,13 @@
 namespace App\Http\Controllers\Api\Problem;
 
 use App\Models\Problem;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Repositories\ProblemRepository;
 use App\Http\Resources\ProblemResource;
 use App\Services\Problem\ProblemService;
 use App\Http\Requests\Api\Problem\CreateRequest;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ProblemController extends Controller
 {
@@ -21,8 +19,6 @@ class ProblemController extends Controller
 
     /**
      * Get all problems for user.
-     *
-     * @return LengthAwarePaginator
      */
     public function all(): LengthAwarePaginator
     {
@@ -31,9 +27,6 @@ class ProblemController extends Controller
 
     /**
      * Find problem.
-     *
-     * @param Problem $problem
-     * @return Problem
      */
     public function find(Problem $problem): Problem
     {
@@ -43,12 +36,8 @@ class ProblemController extends Controller
     /**
      * Create new problem with relations,
      * or return error message on fail.
-     *
-     * @param CreateRequest $createRequest
-     * @param ProblemService $problemService
-     * @return ProblemResource
      */
-    public function store(CreateRequest $createRequest, ProblemService $problemService)
+    public function store(CreateRequest $createRequest, ProblemService $problemService): ProblemResource
     {
         $problem = $problemService->createWithRelations($createRequest);
 

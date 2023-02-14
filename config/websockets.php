@@ -4,6 +4,8 @@ use BeyondCode\LaravelWebSockets\Dashboard\Http\Middleware\Authorize;
 
 return [
 
+    // @todo - probably to delete
+
     /*
      * Set a custom dashboard configuration
      */

@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Models\Course;
 use App\Models\Group;
+use App\Models\Course;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -11,10 +11,6 @@ class GroupRepository
 {
     /**
      * Update provided group with data and return it.
-     *
-     * @param Group $group
-     * @param array $data
-     * @return Group
      */
     public function update(Group $group, array $data): Group
     {
@@ -23,10 +19,6 @@ class GroupRepository
 
     /**
      * Sync problems at group with ones from provided ids array.
-     *
-     * @param Group $group
-     * @param array $problemsIds
-     * @return void
      */
     public function syncProblems(Group $group, array $problemsIds): void
     {
@@ -35,9 +27,6 @@ class GroupRepository
 
     /**
      * Get groups of course by course id.
-     *
-     * @param string $courseId
-     * @return Collection|null
      */
     public function findByCourseId(string $courseId): ?Collection
     {
@@ -48,9 +37,6 @@ class GroupRepository
 
     /**
      * Find group by id.
-     *
-     * @param string $groupId
-     * @return mixed
      */
     public function findById(string $groupId)
     {

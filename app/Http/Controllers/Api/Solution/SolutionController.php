@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Api\Solution;
 use App\Models\Problem;
 use App\Models\Solution;
 use Illuminate\Http\JsonResponse;
-use App\Services\SolutionProcessingService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\SolutionResource;
 use App\Repositories\SolutionRepository;
+use App\Services\SolutionProcessingService;
 use Illuminate\Validation\ValidationException;
 use App\Http\Resources\ProcessedSolutionResource;
 use App\Http\Requests\Api\Solution\CommitRequest;
@@ -26,9 +26,6 @@ class SolutionController extends Controller
 
     /**
      * Find solution by id.
-     *
-     * @param Solution $solution
-     * @return SolutionResource
      */
     public function find(Solution $solution): SolutionResource
     {
@@ -37,8 +34,6 @@ class SolutionController extends Controller
 
     /**
      * Get all solutions for authenticated user.
-     *
-     * @return LengthAwarePaginator
      */
     public function all(): LengthAwarePaginator
     {
@@ -47,10 +42,6 @@ class SolutionController extends Controller
 
     /**
      * Commit a new solution for a problem.
-     *
-     * @param CommitRequest $commitRequest
-     * @param Problem $problem
-     * @return JsonResponse
      */
     public function commit(CommitRequest $commitRequest, Problem $problem): JsonResponse
     {

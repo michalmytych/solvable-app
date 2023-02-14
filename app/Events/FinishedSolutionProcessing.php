@@ -13,8 +13,6 @@ class FinishedSolutionProcessing implements ShouldBroadcast
 
     /**
      * Create a new event instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -23,8 +21,6 @@ class FinishedSolutionProcessing implements ShouldBroadcast
 
     /**
      * Get the channels the event should broadcast on.
-     *
-     * @return array
      */
     public function broadcastOn(): array
     {

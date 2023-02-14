@@ -21,7 +21,6 @@ class Client extends BaseClient implements ExternalCompilerClientInterface
 
     /**
      * Initialize external service client.
-     *
      * @throws ExternalServiceInitializationException|CurlError3Exception
      */
     public function init()
@@ -37,9 +36,6 @@ class Client extends BaseClient implements ExternalCompilerClientInterface
 
     /**
      * Post solution code to be executed at external service.
-     *
-     * @param array $data
-     * @return Response
      * @throws CurlError3Exception
      */
     public function postCodeToExecute(array $data): Response
@@ -61,8 +57,6 @@ class Client extends BaseClient implements ExternalCompilerClientInterface
     /**
      * Request external service and get amount of request that was made
      * by client in last 24 hours.
-     *
-     * @return Response
      * @throws CurlError3Exception
      */
     private function checkCreditSpent(): Response
@@ -72,8 +66,6 @@ class Client extends BaseClient implements ExternalCompilerClientInterface
 
     /**
      * Get name of client's external service.
-     *
-     * @return string
      */
     public function getName(): string
     {
@@ -82,9 +74,6 @@ class Client extends BaseClient implements ExternalCompilerClientInterface
 
     /**
      * Wrapper for pure GuzzleHttp requests, with specific exception rethrow.
-     *
-     * @param callable $request
-     * @return mixed
      * @throws CurlError3Exception
      */
     private function templateRequest(callable $request): mixed

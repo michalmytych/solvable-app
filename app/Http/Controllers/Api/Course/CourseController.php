@@ -16,29 +16,24 @@ class CourseController extends Controller
     public function __construct(
         private CourseRepository $courseRepository,
         private CourseService    $courseService
-    )
-    {
+    ) {
     }
 
     /**
      * Get all courses by user.
-     *
-     * @return EloquentCollection
      */
     public function all(): EloquentCollection
     {
-        return $this->courseRepository->allByUserId(Auth::id());
+        return Course::all(); // @todo
+//        return $this->courseRepository->allByUserId(Auth::id());
     }
 
     /**
      * Create new course in database with validated data.
-     *
-     * @param StoreRequest $storeRequest
-     * @return Course
      */
     public function store(StoreRequest $storeRequest): Course
     {
-        $courseData = $storeRequest->validated();
+        $courseData            = $storeRequest->validated();
         $courseData['user_id'] = Auth::id();
 
         return $this->courseService->create($courseData);
@@ -46,10 +41,6 @@ class CourseController extends Controller
 
     /**
      * Update course in database with validated data.
-     *
-     * @param Course $course
-     * @param UpdateRequest $storeRequest
-     * @return Course
      */
     public function update(Course $course, UpdateRequest $storeRequest): Course
     {
@@ -58,9 +49,6 @@ class CourseController extends Controller
 
     /**
      * Delete course by id.
-     *
-     * @param Course $course
-     * @return bool
      */
     public function delete(Course $course): bool
     {

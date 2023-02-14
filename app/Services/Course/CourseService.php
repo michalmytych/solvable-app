@@ -14,9 +14,6 @@ class CourseService
 
     /**
      * Create new course and add default group to it.
-     *
-     * @param array $data
-     * @return Course
      */
     public function create(array $data): Course
     {
@@ -28,8 +25,6 @@ class CourseService
 
     /**
      * Add default group to newly created course.
-     *
-     * @param Course $course
      */
     private function createDefaultGroupAtCourse(Course $course): void
     {

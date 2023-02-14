@@ -15,9 +15,6 @@ class SolutionValidationService
 
     /**
      * Set solution instance to validate.
-     *
-     * @param Solution $solution
-     * @return $this
      */
     public function setSolution(Solution $solution): self
     {
@@ -28,9 +25,6 @@ class SolutionValidationService
 
     /**
      * Set problem to get validation rules.
-     *
-     * @param Problem $problem
-     * @return $this
      */
     public function setProblem(Problem $problem): self
     {
@@ -42,9 +36,6 @@ class SolutionValidationService
     /**
      * Validate if language related to solution
      * was allowed in provided problem.
-     *
-     * @return $this
-     * @param array $data
      * @throws ValidationException
      */
     public function validateLanguageUsed(array $data): self
@@ -63,9 +54,6 @@ class SolutionValidationService
     /**
      * Validate solution code characters count against
      * characters limit provided in problem instance.
-     *
-     * @param array $data
-     * @return $this
      * @throws ValidationException
      */
     public function validateCharsCount(array $data): self
@@ -90,9 +78,6 @@ class SolutionValidationService
 
     /**
      * Validate if provided encoded programming language code data is valid.
-     *
-     * @return $this
-     * @param array $data
      * @throws ValidationException
      */
     public function validateCodeString(array $data): self
@@ -123,10 +108,17 @@ class SolutionValidationService
     }
 
     /**
+     * Update solution status to received.
+     */
+    public function markReceived(): self
+    {
+        $this->updateSolution(['status' => SolutionStatusType::RECEIVED]);
+
+        return $this;
+    }
+
+    /**
      * Update solution record at database.
-     *
-     * @param array $data
-     * @return SolutionValidationService
      */
     public function updateSolution(array $data): self
     {

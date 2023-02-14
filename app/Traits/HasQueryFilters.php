@@ -8,8 +8,6 @@ trait HasQueryFilters
 {
     /**
      * Use in Model extending classes.
-     *
-     * @param $builder
      */
     public function scopeWithQueryFilters($builder)
     {
