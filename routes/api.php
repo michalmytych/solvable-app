@@ -18,41 +18,42 @@ use App\Models\CodeLanguage;
 |
 */
 
-Route::post('/register', [UserController::class, 'register'])->name('register');
-Route::post('/login', [UserController::class, 'login'])->name('login');
+Route::group(['as' => 'api.'], function () {
+    Route::post('/login', [UserController::class, 'login'])->name('login');
+    Route::post('/register', [UserController::class, 'register'])->name('register');
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::get('/user', [UserController::class, 'user'])->name('user');
-    Route::post('/logout', [UserController::class, 'logout'])->name('logout');
+    Route::group(['middleware' => ['auth:sanctum']], function () {
+        Route::get('/user', [UserController::class, 'user'])->name('user');
+        Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
-    Route::group(['prefix' => 'solutions', 'as' => 'solution.'], function () {
-        Route::get('/', [SolutionController::class, 'all'])->name('all');
-        Route::get('/{solution}', [SolutionController::class, 'find'])->name('find');
-        Route::post('/{problem}/commit', [SolutionController::class, 'commit'])->name('commit');
-    });
+        Route::group(['prefix' => 'solutions', 'as' => 'solution.'], function () {
+            Route::get('/', [SolutionController::class, 'all'])->name('all');
+            Route::get('/{solution}', [SolutionController::class, 'find'])->name('find');
+            Route::post('/{problem}/commit', [SolutionController::class, 'commit'])->name('commit');
+        });
 
-    Route::group(['prefix' => 'problems', 'as' => 'problem.'], function () {
-        Route::get('/', [ProblemController::class, 'all'])->name('all');
-        Route::get('/{problem}', [ProblemController::class, 'find'])->name('find');
-        Route::post('/{group}', [ProblemController::class, 'store'])->name('store');
-    });
+        Route::group(['prefix' => 'problems', 'as' => 'problem.'], function () {
+            Route::get('/', [ProblemController::class, 'all'])->name('all');
+            Route::get('/{problem}', [ProblemController::class, 'find'])->name('find');
+            Route::post('/{group}', [ProblemController::class, 'store'])->name('store');
+        });
 
-    Route::group(['prefix' => 'courses', 'as' => 'course.'], function () {
-        Route::get('/', [CourseController::class, 'all'])->name('all');
-        Route::post('/{course}', [CourseController::class, 'store'])->name('store');
-        Route::put('/{course}', [CourseController::class, 'update'])->name('update');
-        Route::delete('/{course}', [CourseController::class, 'delete'])->name('delete');
-    });
+        Route::group(['prefix' => 'courses', 'as' => 'course.'], function () {
+            Route::get('/', [CourseController::class, 'all'])->name('all');
+            Route::post('/{course}', [CourseController::class, 'store'])->name('store');
+            Route::put('/{course}', [CourseController::class, 'update'])->name('update');
+            Route::delete('/{course}', [CourseController::class, 'delete'])->name('delete');
+        });
 
-    Route::group(['prefix' => 'courses', 'as' => 'course.'], function () {
-        Route::get('/', [CourseController::class, 'all'])->name('all');
-        Route::post('/{course}', [CourseController::class, 'store'])->name('store');
-        Route::put('/{course}', [CourseController::class, 'update'])->name('update');
-        Route::delete('/{course}', [CourseController::class, 'delete'])->name('delete');
-    });
+        Route::group(['prefix' => 'courses', 'as' => 'course.'], function () {
+            Route::get('/', [CourseController::class, 'all'])->name('all');
+            Route::post('/{course}', [CourseController::class, 'store'])->name('store');
+            Route::put('/{course}', [CourseController::class, 'update'])->name('update');
+            Route::delete('/{course}', [CourseController::class, 'delete'])->name('delete');
+        });
 
-    Route::group(['prefix' => 'code-languages', 'as' => 'code_language.'], function () {
-        Route::get('/', function() {  return CodeLanguage::all(); })->name('all');
+        Route::group(['prefix' => 'code-languages', 'as' => 'code_language.'], function () {
+            Route::get('/', function () { return CodeLanguage::all(); })->name('all');
+        });
     });
 });
-

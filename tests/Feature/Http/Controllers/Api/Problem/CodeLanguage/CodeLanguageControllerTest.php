@@ -27,7 +27,7 @@ class CodeLanguageControllerTest extends TestCase
 
         $this
             ->authenticate()
-            ->getJson(route('code_language.all'))
+            ->getJson(route('api.code_language.all'))
             ->assertOk()
             ->assertJson(fn(AssertableJson $json) => $json
                 ->count(3)
