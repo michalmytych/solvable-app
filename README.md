@@ -3,7 +3,7 @@
 ### Setup
 
 To run this app you need:
-* Php 8
+* Php ^8.1
 * Composer 2
 * MySQL/MariaDB
 * Node.js
