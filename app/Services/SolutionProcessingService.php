@@ -81,7 +81,7 @@ class SolutionProcessingService
             ->validateCharsCount($this->solutionData)
             ->validateLanguageUsed($this->solutionData);
 
-        $this->solutionData['status'] = SolutionStatusType::VALIDATED;
+        $this->solutionData['status'] = SolutionStatusType::VALIDATED->value;
 
         $this->solutionService->updateSolution($this->solution, $this->solutionData);
 
@@ -101,7 +101,7 @@ class SolutionProcessingService
 
         $this->solutionService->updateSolution(
             $this->solution,
-            ['status' => SolutionStatusType::DELEGATED]
+            ['status' => SolutionStatusType::DELEGATED->value]
         );
 
         return $this;

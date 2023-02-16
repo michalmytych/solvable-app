@@ -43,7 +43,7 @@ class CreateSolutionsTable extends Migration
                 ->unsigned()
                 ->nullable();
             $table->unsignedSmallInteger('status')
-                ->default(SolutionStatusType::EMPTY);
+                ->default(SolutionStatusType::EMPTY->value);
             $table->timestamps();
         });
     }

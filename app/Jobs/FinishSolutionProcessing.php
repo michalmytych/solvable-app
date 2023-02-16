@@ -33,7 +33,7 @@ class FinishSolutionProcessing implements ShouldQueue
         $passed = $this->getSolutionStatusByTestsExecutionsResults();
 
         $this->solution = tap($this->solution)->update([
-            'status' => $passed ? SolutionStatusType::PASSED_ALL_TESTS : SolutionStatusType::FAILED_TESTS
+            'status' => $passed ? SolutionStatusType::PASSED_ALL_TESTS->value : SolutionStatusType::FAILED_TESTS->value
         ]);
     }
 
