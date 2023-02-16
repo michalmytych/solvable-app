@@ -70,7 +70,7 @@ class SolutionValidationService
      */
     public function validateCharsCount(array $data): self
     {
-        $charactersCount = strlen($data['code']);
+        $charactersCount = strlen(data_get($data, 'code'));
 
         if ($charactersCount > $this->problem->chars_limit) {
             $this->updateSolution([
@@ -97,7 +97,7 @@ class SolutionValidationService
      */
     public function validateCodeString(array $data): self
     {
-        if (!$data['code']) {
+        if (!data_get($data, 'code')) {
             $this->updateSolution([
                 'status' => SolutionStatusType::EMPTY_DECODING_RESULT,
                 'code' => 'data-placeholder.empty-decoding-result'
@@ -108,7 +108,7 @@ class SolutionValidationService
             ]);
         }
 
-        if (!mb_check_encoding($data['code'], 'UTF-8')) {
+        if (!mb_check_encoding(data_get($data, 'code'), 'UTF-8')) {
             $this->updateSolution([
                 'status' => SolutionStatusType::MALFORMED_UTF8_CODE_STRING,
                 'code' => 'data-placeholder.solution-code-data-was-malformed'
