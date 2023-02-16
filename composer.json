@@ -10,7 +10,7 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.3",
         "laravel/framework": "^9.19",
-        "laravel/sanctum": "^3.0",
+        "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.7",
         "php-http/curl-client": "^2.2",
         "pusher/pusher-php-server": "^7.2",

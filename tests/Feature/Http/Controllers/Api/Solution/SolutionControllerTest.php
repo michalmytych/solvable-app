@@ -142,7 +142,7 @@ class SolutionControllerTest extends TestCase
 
         $this
             ->actingAs($this->user)
-            ->getJson(route('solution.all'))
+            ->getJson(route('api.solution.all'))
             ->assertOk()
             ->assertJson(fn(AssertableJson $json) => $json
                 ->has('data', fn(AssertableJson $json) => $json
@@ -156,7 +156,7 @@ class SolutionControllerTest extends TestCase
 
         $this
             ->actingAs($this->user)
-            ->getJson(route('solution.all', ['code_language_id' => $java->id]))
+            ->getJson(route('api.solution.all', ['code_language_id' => $java->id]))
             ->assertOk()
             ->assertJson(fn(AssertableJson $json) => $json
                 ->has('data', fn(AssertableJson $json) => $json
@@ -174,7 +174,7 @@ class SolutionControllerTest extends TestCase
         $this
             ->actingAs($this->user)
             ->getJson(route(
-                'solution.all',
+                'api.solution.all',
                 ['code_language_id' => $java->id, 'status' => SolutionStatusType::INVALID->value]
             ))
             ->assertOk()
@@ -194,7 +194,7 @@ class SolutionControllerTest extends TestCase
 
         $this
             ->actingAs($this->user)
-            ->getJson(route('solution.all', ['problem_id' => $secondProblem->id]))
+            ->getJson(route('api.solution.all', ['problem_id' => $secondProblem->id]))
             ->assertOk()
             ->assertJson(fn(AssertableJson $json) => $json
                 ->has('data', fn(AssertableJson $json) => $json
@@ -212,7 +212,7 @@ class SolutionControllerTest extends TestCase
         $this
             ->actingAs($this->user)
             ->getJson(route(
-                'solution.all',
+                'api.solution.all',
                 ['code_language_id' => $java->id, 'status' => SolutionStatusType::INVALID_LANGUAGE_USED->value]
             ))
             ->assertOk()
@@ -261,7 +261,7 @@ class SolutionControllerTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->postJson(route('solution.commit', ['problem' => $this->problem->id]), $this->solutionData);
+            ->postJson(route('api.solution.commit', ['problem' => $this->problem->id]), $this->solutionData);
 
         Queue::assertPushed(ExecuteSolutionTest::class, 3);
 
@@ -293,7 +293,7 @@ class SolutionControllerTest extends TestCase
 
         $this
             ->actingAs($this->user)
-            ->postJson(route('solution.commit', ['problem' => $this->problem->id]), $this->solutionData)
+            ->postJson(route('api.solution.commit', ['problem' => $this->problem->id]), $this->solutionData)
             ->assertStatus(422)
             ->assertJson(fn($json) => $json
                 ->has('message')
@@ -309,7 +309,7 @@ class SolutionControllerTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->postJson(route('solution.commit', ['problem' => $this->problem->id]), $this->solutionData);
+            ->postJson(route('api.solution.commit', ['problem' => $this->problem->id]), $this->solutionData);
 
         $this->assertEquals(
             $startSolutionsCount + 1,
@@ -345,7 +345,7 @@ class SolutionControllerTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->postJson(route('solution.commit', ['problem' => $this->problem->id]), $this->solutionData);
+            ->postJson(route('api.solution.commit', ['problem' => $this->problem->id]), $this->solutionData);
 
         $this->assertEquals(
             $startSolutionsCount + 1,
@@ -375,7 +375,7 @@ class SolutionControllerTest extends TestCase
 
         $response = $this
             ->actingAs($this->user)
-            ->postJson(route('solution.commit', ['problem' => $problem->id]), $this->solutionData);
+            ->postJson(route('api.solution.commit', ['problem' => $problem->id]), $this->solutionData);
 
         $this->assertEquals(
             $startSolutionsCount + 1,
@@ -410,7 +410,7 @@ class SolutionControllerTest extends TestCase
 
         $this
             ->actingAs($this->user)
-            ->getJson(route('solution.find', ['solution' => $solution->id]))
+            ->getJson(route('api.solution.find', ['solution' => $solution->id]))
             ->assertStatus(200)
             ->assertJson(fn($json) => $json
                 ->has('data', fn($json) => $json

@@ -34,8 +34,8 @@ class UserControllerTest extends TestCase
     {
         $tokensCount = DB::table('personal_access_tokens')->count();
 
-        $response = $this->post(
-            route('register'),
+        $response = $this->postJson(
+            route('api.register'),
             $this->userData
         );
 
@@ -66,7 +66,7 @@ class UserControllerTest extends TestCase
 
     public function testRegisterRouteReturns422WhenInputIsInvalid()
     {
-        $response = $this->post(route('register'), []);
+        $response = $this->postJson(route('api.register'), []);
 
         $response
             ->assertStatus(422)
@@ -80,8 +80,8 @@ class UserControllerTest extends TestCase
     {
         $tokensCount = DB::table('personal_access_tokens')->count();
 
-        $registerResponse = $this->post(
-            route('register'),
+        $registerResponse = $this->postJson(
+            route('api.register'),
             $this->userData
         );
 
@@ -90,8 +90,8 @@ class UserControllerTest extends TestCase
 
         $this->assertDatabaseCount('personal_access_tokens', $tokensCount + 1);
 
-        $loginResponse = $this->post(
-            route('login'),
+        $loginResponse = $this->postJson(
+            route('api.login'),
             $this->userData
         );
 
@@ -113,7 +113,7 @@ class UserControllerTest extends TestCase
 
     public function testLoginRouteReturns422WhenInputIsInvalid()
     {
-        $response = $this->post(route('login'), []);
+        $response = $this->postJson(route('api.login'), []);
 
         $response
             ->assertStatus(422)
@@ -126,7 +126,7 @@ class UserControllerTest extends TestCase
     public function testLogoutRouteIsProtected()
     {
         $response = $this
-            ->postJson(route('logout'));
+            ->postJson(route('api.logout'));
 
         $response
             ->assertUnauthorized()
@@ -135,31 +135,31 @@ class UserControllerTest extends TestCase
             );
 
         $response = $this
-            ->post(route('logout'));
+            ->postJson(route('api.logout'));
 
-        $response->assertRedirect();
+        $response->assertUnauthorized();
     }
 
     public function testItLogsOutUserOnRequestWhenLoggedIn()
     {
         $tokensCount = DB::table('personal_access_tokens')->count();
 
-        $registeResponse = $this->post(
-            route('register'),
+        $registerResponse = $this->postJson(
+            route('api.register'),
             $this->userData
         );
 
-        $registeResponse
+        $registerResponse
             ->assertCreated();
 
         $this->assertDatabaseCount('personal_access_tokens', $tokensCount + 1);
 
-        $this->post(
-            route('login'),
+        $this->postJson(
+            route('api.login'),
             $this->userData
         );
 
-        $registeResponse
+        $registerResponse
             ->assertCreated();
 
         $this->assertDatabaseCount('personal_access_tokens', $tokensCount + 2);
@@ -168,7 +168,7 @@ class UserControllerTest extends TestCase
 
         $response = $this
             ->actingAs($user)
-            ->post(route('logout'));
+            ->postJson(route('api.logout'));
 
         $response
             ->assertOk()
