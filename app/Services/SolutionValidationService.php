@@ -41,7 +41,7 @@ class SolutionValidationService
     public function validateLanguageUsed(array $data): self
     {
         if (!$this->problem->codeLanguages->contains($data['code_language_id'])) {
-            $this->updateSolution(['status' => SolutionStatusType::INVALID_LANGUAGE_USED]);
+            $this->updateSolution(['status' => SolutionStatusType::INVALID_LANGUAGE_USED->value]);
 
             throw ValidationException::withMessages([
                 'errors' => ['code_language_id' => 'solutions.validation.invalid-language-chosen']
@@ -58,11 +58,11 @@ class SolutionValidationService
      */
     public function validateCharsCount(array $data): self
     {
-        $charactersCount = strlen($data['code']);
+        $charactersCount = strlen(data_get($data, 'code'));
 
         if ($charactersCount > $this->problem->chars_limit) {
             $this->updateSolution([
-                'status' => SolutionStatusType::CHARACTERS_LIMIT_EXCEEDED,
+                'status' => SolutionStatusType::CHARACTERS_LIMIT_EXCEEDED->value,
                 'characters' => $charactersCount
             ]);
 
@@ -82,9 +82,9 @@ class SolutionValidationService
      */
     public function validateCodeString(array $data): self
     {
-        if (!$data['code']) {
+        if (!data_get($data, 'code')) {
             $this->updateSolution([
-                'status' => SolutionStatusType::EMPTY_DECODING_RESULT,
+                'status' => SolutionStatusType::EMPTY_DECODING_RESULT->value,
                 'code' => 'data-placeholder.empty-decoding-result'
             ]);
 
@@ -93,9 +93,9 @@ class SolutionValidationService
             ]);
         }
 
-        if (!mb_check_encoding($data['code'], 'UTF-8')) {
+        if (!mb_check_encoding(data_get($data, 'code'), 'UTF-8')) {
             $this->updateSolution([
-                'status' => SolutionStatusType::MALFORMED_UTF8_CODE_STRING,
+                'status' => SolutionStatusType::MALFORMED_UTF8_CODE_STRING->value,
                 'code' => 'data-placeholder.solution-code-data-was-malformed'
             ]);
 
@@ -112,7 +112,7 @@ class SolutionValidationService
      */
     public function markReceived(): self
     {
-        $this->updateSolution(['status' => SolutionStatusType::RECEIVED]);
+        $this->updateSolution(['status' => SolutionStatusType::RECEIVED->value]);
 
         return $this;
     }

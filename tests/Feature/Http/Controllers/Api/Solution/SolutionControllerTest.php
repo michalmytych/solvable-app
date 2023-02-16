@@ -117,7 +117,7 @@ class SolutionControllerTest extends TestCase
                 'user_id'          => $this->user->id,
                 'code_language_id' => $cpp->id,
                 'problem_id'       => $firstProblem->id,
-                'status'           => SolutionStatusType::INVALID,
+                'status'           => SolutionStatusType::INVALID->value,
             ]);
 
         Solution::factory()
@@ -125,7 +125,7 @@ class SolutionControllerTest extends TestCase
                 'user_id'          => $this->user->id,
                 'code_language_id' => $java->id,
                 'problem_id'       => $firstProblem->id,
-                'status'           => SolutionStatusType::INVALID,
+                'status'           => SolutionStatusType::INVALID->value,
             ]);
 
         Solution::factory()
@@ -175,7 +175,7 @@ class SolutionControllerTest extends TestCase
             ->actingAs($this->user)
             ->getJson(route(
                 'solution.all',
-                ['code_language_id' => $java->id, 'status' => SolutionStatusType::INVALID]
+                ['code_language_id' => $java->id, 'status' => SolutionStatusType::INVALID->value]
             ))
             ->assertOk()
             ->assertJson(fn(AssertableJson $json) => $json
@@ -183,7 +183,7 @@ class SolutionControllerTest extends TestCase
                     ->count(Solution::where([
                         'user_id'          => $this->user->id,
                         'code_language_id' => $java->id,
-                        'status'           => SolutionStatusType::INVALID,
+                        'status'           => SolutionStatusType::INVALID->value,
                     ])->count())
                     ->each(fn(AssertableJson $json) => $json
                         ->whereAllType($this->solutionInCollectionJsonStructure)
@@ -213,7 +213,7 @@ class SolutionControllerTest extends TestCase
             ->actingAs($this->user)
             ->getJson(route(
                 'solution.all',
-                ['code_language_id' => $java->id, 'status' => SolutionStatusType::INVALID_LANGUAGE_USED]
+                ['code_language_id' => $java->id, 'status' => SolutionStatusType::INVALID_LANGUAGE_USED->value]
             ))
             ->assertOk()
             ->assertJson(fn(AssertableJson $json) => $json
@@ -328,7 +328,7 @@ class SolutionControllerTest extends TestCase
                 ->has('errors', 1)
                 ->has('data', fn($json) => $json
                     ->whereAllType($this->solutionResourceJsonStructure)
-                    ->where('status', SolutionStatusType::MALFORMED_UTF8_CODE_STRING)
+                    ->where('status', SolutionStatusType::MALFORMED_UTF8_CODE_STRING->value)
                 )
             );
     }
@@ -362,7 +362,7 @@ class SolutionControllerTest extends TestCase
                 ->has('errors', 1)
                 ->has('data', fn($json) => $json
                     ->whereAllType($this->solutionResourceJsonStructure)
-                    ->where('status', SolutionStatusType::CHARACTERS_LIMIT_EXCEEDED)
+                    ->where('status', SolutionStatusType::CHARACTERS_LIMIT_EXCEEDED->value)
                     ->where('characters', 6)
                 )
             );
@@ -393,7 +393,7 @@ class SolutionControllerTest extends TestCase
                 ->has('errors', 1)
                 ->has('data', fn($json) => $json
                     ->whereAllType($this->solutionResourceJsonStructure)
-                    ->where('status', SolutionStatusType::INVALID_LANGUAGE_USED)
+                    ->where('status', SolutionStatusType::INVALID_LANGUAGE_USED->value)
                 )
             );
     }

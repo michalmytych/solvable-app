@@ -2,31 +2,29 @@
 
 namespace App\Enums;
 
-use BenSampo\Enum\Enum;
-
-final class SolutionStatusType extends Enum
+enum SolutionStatusType: int
 {
-    public const EMPTY = 0;
+    case EMPTY = 0;
 
-    public const RECEIVED = 1;
+    case RECEIVED = 1;
 
-    public const VALIDATED = 2;
+    case VALIDATED = 2;
 
-    public const INVALID_LANGUAGE_USED = 3;
+    case INVALID_LANGUAGE_USED = 3;
 
-    public const CHARACTERS_LIMIT_EXCEEDED = 4;
+    case CHARACTERS_LIMIT_EXCEEDED = 4;
 
-    public const EMPTY_DECODING_RESULT = 5;
+    case EMPTY_DECODING_RESULT = 5;
 
-    public const MALFORMED_UTF8_CODE_STRING = 6;
+    case MALFORMED_UTF8_CODE_STRING = 6;
 
-    public const INVALID = 7;
+    case INVALID = 7;
 
-    public const DELEGATED = 8;
+    case DELEGATED = 8;
 
-    public const PASSED_ALL_TESTS = 9;
+    case PASSED_ALL_TESTS = 9;
 
-    public const FAILED_TESTS = 10;
+    case FAILED_TESTS = 10;
 
-    public const INTERRUPTED = 11;
+    case INTERRUPTED = 11;
 }
