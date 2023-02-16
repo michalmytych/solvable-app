@@ -12,19 +12,12 @@ use App\Support\ExternalCompiler\Client as ExternalCompilerClient;
 
 class CodeExecutorService implements CodeExecutorServiceInterface
 {
-    private ExternalCompilerClient $externalCompilerClient;
-
-    public function __construct(ExternalCompilerClient $externalCompilerClient)
+    public function __construct(private ExternalCompilerClient $externalCompilerClient)
     {
-        $this->externalCompilerClient = $externalCompilerClient;
     }
 
     /**
      * Initialize service.
-     *
-     * @return $this
-     * @throws CurlError3Exception
-     * @throws ExternalServiceInitializationException
      */
     public function init(): self
     {
@@ -35,15 +28,13 @@ class CodeExecutorService implements CodeExecutorServiceInterface
 
     /**
      * Execute solution code.
-     *
-     * @param Solution $solution
      */
     public function executeSolution(Solution $solution): void
     {
         $tests = $solution->problem->tests;
 
         foreach ($tests as $test) {
-            ExecuteSolutionTest::dispatch($test, $solution);
+            ExecuteSolutionTest::dispatch($test, $solution, auth()->user());
         }
 
         FinishSolutionProcessing::dispatch($solution);      // todo moze sprawdzic czy wszystkie joby ExecuteSolutionTest sie wykonaly

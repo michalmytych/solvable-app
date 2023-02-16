@@ -10,10 +10,8 @@ class ExternalCompilerRequestException extends Exception
 {
     /**
      * Report or log an exception.
-     *
-     * @return void
      */
-    public function report()
+    public function report(): void
     {
         Log::error(
             'Error when requesting external compiler service at ' . now(),

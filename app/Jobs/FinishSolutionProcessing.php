@@ -14,16 +14,13 @@ class FinishSolutionProcessing implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private Solution $solution;
-
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Solution $solution)
+    public function __construct(private Solution $solution)
     {
-        $this->solution = $solution;
     }
 
     /**
@@ -36,7 +33,7 @@ class FinishSolutionProcessing implements ShouldQueue
         $passed = $this->getSolutionStatusByTestsExecutionsResults();
 
         $this->solution = tap($this->solution)->update([
-            'status' => $passed ? SolutionStatusType::PASSED_ALL_TESTS : SolutionStatusType::FAILED_TESTS
+            'status' => $passed ? SolutionStatusType::PASSED_ALL_TESTS->value : SolutionStatusType::FAILED_TESTS->value
         ]);
     }
 

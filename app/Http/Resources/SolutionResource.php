@@ -21,11 +21,10 @@ class SolutionResource extends JsonResource
             'problem_id' => $this->problem_id,
             'code_language_id' => $this->code_language_id,
             'code' => $this->code,
-            'execution_time' => $this->execution_time,
-            'memory_used' => $this->memory_used,
             'characters' => $this->characters,
-            'problem_chars_limit' => $this->problem->chars_limit,
+            'problem_chars_limit' => (int) $this->problem->chars_limit,
             'status' => $this->status,
+            'score' => $this->score,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'executions' => $this->executions->isNotEmpty()

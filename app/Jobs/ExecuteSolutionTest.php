@@ -2,14 +2,15 @@
 
 namespace App\Jobs;
 
-use App\Services\Websockets\BroadcastingService;
 use Exception;
 use App\Models\Test;
+use App\Models\User;
 use App\Models\Solution;
 use App\Models\Execution;
 use Illuminate\Bus\Queueable;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use App\Events\ExecutedSolutionTest;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -21,19 +22,16 @@ class ExecuteSolutionTest implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private Test $test;
-
-    private Solution $solution;
-
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Test $test, Solution $solution)
-    {
-        $this->test = $test;
-        $this->solution = $solution;
+    public function __construct(
+        private Test     $test,
+        private Solution $solution,
+        private User     $user
+    ) {
     }
 
     /**
@@ -42,25 +40,24 @@ class ExecuteSolutionTest implements ShouldQueue
      * @return void
      * @throws Exception
      */
-    public function handle(
-        ExternalCompilerClient $externalCompilerClient,
-        BroadcastingService $broadcastingService
-    )
+    public function handle(ExternalCompilerClient $externalCompilerClient)
     {
         $solution = $this->solution;
 
         $solution->loadMissing(['codeLanguage']);
 
-        $codeToExecute = $solution->code;
-        $solutionLanguage = $solution->codeLanguage->identifier;
+        $codeToExecute                = $solution->code;
+        $solutionLanguage             = $solution->codeLanguage->identifier;
         $solutionLanguageVersionIndex = $solution->codeLanguage->version;
 
-        $responseData = $externalCompilerClient
+        $response = $externalCompilerClient
             ->postCodeToExecute([
-                'script' => $codeToExecute,
-                'language' => $solutionLanguage,
-                'versionIndex' => $solutionLanguageVersionIndex
+                'script'       => $codeToExecute,
+                'language'     => $solutionLanguage,
+                'versionIndex' => $solutionLanguageVersionIndex,
             ]);
+
+        $responseData = collect(json_decode($response->getBody(), true));
 
         if ((int) $responseData['statusCode'] !== Response::HTTP_OK) {
             throw new ExternalCompilerRequestException($responseData['error'], $responseData['statusCode']);
@@ -69,10 +66,10 @@ class ExecuteSolutionTest implements ShouldQueue
         $responseData = $this->prepareExternalServiceResponseData($responseData);
 
         $testResult = [
-            'output' => $responseData['output'],
+            'output'         => $responseData['output'],
             'execution_time' => $responseData['cpuTime'],
-            'memory_used' => $responseData['memory'],
-            'solution_id' => $solution->id
+            'memory_used'    => $responseData['memory'],
+            'solution_id'    => $solution->id,
         ];
 
         $execution = $this->test
@@ -80,10 +77,10 @@ class ExecuteSolutionTest implements ShouldQueue
             ->create($testResult);
 
         $execution = tap($execution)->update([
-            'passed' => $this->checkIfExecutionPassedTest($execution)
+            'passed' => $this->checkIfExecutionPassedTest($execution),
         ]);
 
-        $broadcastingService->broadcastExecutionState($execution);
+        ExecutedSolutionTest::dispatch($execution, $this->user);
     }
 
     /**
@@ -98,7 +95,7 @@ class ExecuteSolutionTest implements ShouldQueue
             $this->isOutputValid($this->test->valid_output, $execution->output),
             $this->test->time_execution_limit >= $execution->execution_time,
             $this->test->memory_limit > $execution->memory_used,
-        ])->every(fn ($result) => $result);
+        ])->every(fn($result) => $result);
     }
 
     /**
@@ -111,7 +108,7 @@ class ExecuteSolutionTest implements ShouldQueue
      */
     private function isOutputValid($validOutput, $executionOutput): bool
     {
-        return (string)$validOutput === (string)$executionOutput;
+        return (string) $validOutput === (string) $executionOutput;
     }
 
     /**

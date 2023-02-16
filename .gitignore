@@ -15,3 +15,10 @@ yarn-error.log
 /.vscode
 
 .env.testing
+phpunit.xml
+
+# Mac specific
+.DS_store
+
+# Local tests configuration
+/.run

@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Traits\HasUuid;
+use App\Traits\HasQueryParams;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Execution extends Model
 {
-    use HasFactory, HasUuid;
+    use HasFactory, HasUuid, HasQueryParams;
 
     protected $fillable = [
         'output',
@@ -19,10 +20,6 @@ class Execution extends Model
         'passed',
         'status_code',
         'error'
-    ];
-
-    protected $hidden = [
-        'id'
     ];
 
     /**
@@ -43,5 +40,11 @@ class Execution extends Model
     public function test(): BelongsTo
     {
         return $this->belongsTo(Test::class);
+    }
+
+    protected static function queryParams(): array
+    {
+        // TODO: Implement queryParams() method.
+        return [];
     }
 }

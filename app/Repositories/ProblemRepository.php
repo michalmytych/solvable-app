@@ -3,25 +3,23 @@
 namespace App\Repositories;
 
 use App\Models\Problem;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProblemRepository
 {
     /**
      * Get all problems related to user by user id.
-     *
-     * @param string $id
-     * @return mixed
      */
-    public function findByUser(string $id)
+    public function all(string $id): LengthAwarePaginator
     {
-        return Problem::where('user_id', $id)->get();
+        // return Problem::where('user_id', $id)->paginate(10); // OG @todo
+        return Problem::query()
+            ->withQueryParams()
+            ->paginate(10);
     }
 
     /**
      * Create and return new problem.
-     *
-     * @param array $problemData
-     * @return Problem
      */
     public function store(array $problemData): Problem
     {
@@ -30,12 +28,17 @@ class ProblemRepository
 
     /**
      * Store new problem in database.
-     *
-     * @param array $data
-     * @return Problem
      */
-    public function store(array $data): Problem
+    public function update(Problem $problem, array $data): Problem
     {
-        return Problem::create($data);
+        return tap($problem)->update($data);
+    }
+
+    /**
+     * Delete problem by id.
+     */
+    public function delete(Problem $problem): bool
+    {
+        return $problem->delete();
     }
 }

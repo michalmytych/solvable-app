@@ -3,24 +3,30 @@
 namespace App\Models;
 
 use App\Traits\HasUuid;
+use App\Traits\HasQueryParams;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * @property CodeLanguage[]|Collection $codeLanguages
+ * @property int $chars_limit
+ * @property string $title
+ * @property string $content
+ * @property string $user_id
+ */
 class Problem extends Model
 {
-    use HasUuid;
+    use HasUuid, HasFactory, HasQueryParams;
 
     protected $fillable = [
         'title',
         'content',
         'chars_limit',
-        'user_id'
-    ];
-
-    protected $hidden = [
-        'id'
+        'user_id',
     ];
 
     /**
@@ -61,5 +67,21 @@ class Problem extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get groups to which problem is attached.
+     *
+     * @return BelongsToMany
+     */
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(Group::class);
+    }
+
+    protected static function queryParams(): array
+    {
+        // TODO: Implement queryParams() method.
+        return [];
     }
 }

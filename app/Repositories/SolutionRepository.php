@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Models\Problem;
 use App\Models\Solution;
 use Illuminate\Contracts\Auth\Authenticatable;
 use App\Contracts\SolutionRepositoryInterface;
@@ -12,13 +11,11 @@ class SolutionRepository implements SolutionRepositoryInterface
 {
     /**
      * Find solution by id.
-     *
-     * @param Solution $solution
-     * @return Solution|null
      */
-    public function find(Solution $solution)
+    public function find(Solution $solution): ?Solution
     {
         return Solution::query()
+            ->withQueryParams()
             ->where('id', $solution->id)
             ->with('executions', fn($execution) => $execution->with('test'))
             ->first();
@@ -26,16 +23,13 @@ class SolutionRepository implements SolutionRepositoryInterface
 
     /**
      * Get all solutions for provided problem instance.
-     *
-     * @param Problem $problem
-     * @param Authenticatable $user
-     * @return LengthAwarePaginator
      */
-    public function findByProblemAndUserWithPagination(Problem $problem, Authenticatable $user): LengthAwarePaginator
+    public function all(Authenticatable $user): LengthAwarePaginator
     {
         return Solution::query()
-            ->where('problem_id', $problem->id)
             ->where('user_id', $user->id)
+            ->withQueryParams()
+            ->withQueryFilters()
             ->select([
                 'id',
                 'problem_id',
@@ -49,10 +43,6 @@ class SolutionRepository implements SolutionRepositoryInterface
 
     /**
      * Update provided Solution database record with data.
-     *
-     * @param Solution $solution
-     * @param array $data
-     * @return Solution
      */
     public function update(Solution $solution, array $data): Solution
     {

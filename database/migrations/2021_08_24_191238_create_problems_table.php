@@ -15,14 +15,16 @@ class CreateProblemsTable extends Migration
     {
         Schema::create('problems', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignId('user_id')
+            $table->string('title');
+            $table->string('content');
+            $table
+                ->unsignedSmallInteger('chars_limit')
+                ->default(6000);
+            $table
+                ->foreignId('user_id')
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');
-            $table->string('title');
-            $table->string('content');
-            $table->unsignedSmallInteger('chars_limit')
-                ->default(6000);
             $table->timestamps();
         });
     }
