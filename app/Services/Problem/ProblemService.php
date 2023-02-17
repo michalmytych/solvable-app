@@ -5,6 +5,7 @@ namespace App\Services\Problem;
 
 
 use Throwable;
+use App\Models\User;
 use App\Models\Problem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Repositories\GroupRepository;
 use App\Repositories\ProblemRepository;
 use App\Http\Requests\Api\Problem\CreateRequest;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ProblemService
 {
@@ -20,6 +22,14 @@ class ProblemService
         private GroupRepository   $groupRepository
     )
     {
+    }
+
+    /**
+     * Get all problems for user.
+     */
+    public function all(User $user): LengthAwarePaginator
+    {
+        return $this->problemRepository->all($user);
     }
 
     /**
@@ -104,5 +114,14 @@ class ProblemService
         if ($codeLanguagesIds->isNotEmpty()) {
             $problem->codeLanguages()->sync($codeLanguagesIds);
         }
+    }
+
+    public function find(Problem|string $problem): ?Problem
+    {
+        if (is_string($problem)) {
+            return $this->problemRepository->findById($problem);
+        }
+
+        return $problem;
     }
 }

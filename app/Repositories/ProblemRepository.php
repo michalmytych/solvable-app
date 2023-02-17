@@ -4,8 +4,9 @@ namespace App\Repositories;
 
 use App\Models\Problem;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Contracts\Problem\ProblemRepositoryInterface;
 
-class ProblemRepository
+class ProblemRepository implements ProblemRepositoryInterface
 {
     /**
      * Get all problems related to user by user id.
@@ -40,5 +41,13 @@ class ProblemRepository
     public function delete(Problem $problem): bool
     {
         return $problem->delete();
+    }
+
+    /**
+     * Find problem by id.
+     */
+    public function findById(string $id): ?Problem
+    {
+        return Problem::find($id);
     }
 }

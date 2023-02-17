@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Api\Course;
 
 use App\Models\Course;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-use App\Repositories\CourseRepository;
 use App\Services\Course\CourseService;
 use App\Http\Requests\Api\Course\StoreRequest;
 use App\Http\Requests\Api\Group\UpdateRequest;
@@ -14,8 +12,7 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 class CourseController extends Controller
 {
     public function __construct(
-        private CourseRepository $courseRepository,
-        private CourseService    $courseService
+        private CourseService $courseService
     ) {
     }
 
@@ -24,8 +21,7 @@ class CourseController extends Controller
      */
     public function all(): EloquentCollection
     {
-        return Course::all(); // @todo
-//        return $this->courseRepository->allByUserId(Auth::id());
+        return $this->courseService->all();
     }
 
     /**
@@ -33,8 +29,8 @@ class CourseController extends Controller
      */
     public function store(StoreRequest $storeRequest): Course
     {
-        $courseData            = $storeRequest->validated();
-        $courseData['user_id'] = Auth::id();
+        $courseData = $storeRequest->validated();
+        data_set($courseData, 'user_id', $storeRequest->user());
 
         return $this->courseService->create($courseData);
     }
@@ -44,7 +40,7 @@ class CourseController extends Controller
      */
     public function update(Course $course, UpdateRequest $storeRequest): Course
     {
-        return $this->courseRepository->update($course, $storeRequest->validated());
+        return $this->courseService->update($course, $storeRequest->validated());
     }
 
     /**
@@ -52,6 +48,6 @@ class CourseController extends Controller
      */
     public function delete(Course $course): bool
     {
-        return $this->courseRepository->delete($course);
+        return $this->courseService->delete($course);
     }
 }
