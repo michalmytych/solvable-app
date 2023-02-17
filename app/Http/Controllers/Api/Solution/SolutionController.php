@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Api\Solution;
 
 use App\Models\Problem;
 use App\Models\Solution;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use App\Services\SolutionService;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\SolutionResource;
-use App\Repositories\SolutionRepository;
 use App\Services\SolutionProcessingService;
 use Illuminate\Validation\ValidationException;
 use App\Http\Resources\ProcessedSolutionResource;
@@ -18,10 +18,17 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class SolutionController extends Controller
 {
     public function __construct(
-        private SolutionRepository $solutionRepository,
-        private SolutionProcessingService $solutionService
-    )
+        private SolutionService           $solutionService,
+        private SolutionProcessingService $solutionProcessingService
+    ) {
+    }
+
+    /**
+     * Get all solutions for authenticated user.
+     */
+    public function all(Request $request): LengthAwarePaginator
     {
+        return $this->solutionService->all($request->user());
     }
 
     /**
@@ -29,15 +36,7 @@ class SolutionController extends Controller
      */
     public function find(Solution $solution): SolutionResource
     {
-        return new SolutionResource($this->solutionRepository->find($solution));
-    }
-
-    /**
-     * Get all solutions for authenticated user.
-     */
-    public function all(): LengthAwarePaginator
-    {
-        return $this->solutionRepository->all(Auth::user());
+        return new SolutionResource($this->solutionService->find($solution));
     }
 
     /**
@@ -48,25 +47,28 @@ class SolutionController extends Controller
         $solutionData = $commitRequest->input('data');
 
         try {
-            $solution = $this->solutionService
+            $solution = $this
+                ->solutionProcessingService
                 ->setProblem($problem)
                 ->setSolutionData($solutionData)
                 ->commit()
                 ->getProcessedSolution();
 
         } catch (ValidationException $validationException) {
-            $solution = $this->solutionService->getProcessedSolution();
+            $solution = $this
+                ->solutionProcessingService
+                ->getProcessedSolution();
 
             return response()->json([
                 'message' => $validationException->getMessage(),
-                'errors' => $validationException->errors(),
-                'data' => new ProcessedSolutionResource($solution)
+                'errors'  => $validationException->errors(),
+                'data'    => new ProcessedSolutionResource($solution),
             ], 422);
         }
 
         return response()->json([
             'message' => 'messages.solution-processing',
-            'data' => new ProcessedSolutionResource($solution)
+            'data'    => new ProcessedSolutionResource($solution),
         ], 202);
     }
 }

@@ -16,16 +16,16 @@ class ProcessedSolutionResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'id' => $this->id,
-            'problem_id' => $this->problem_id,
-            'code_language_id' => $this->code_language_id,
-            'code' => $this->code,
-            'characters' => $this->characters,
+            'id'                  => $this->id,
+            'problem_id'          => $this->problem_id,
+            'code_language_id'    => $this->code_language_id,
+            'code'                => $this->code,
+            'characters'          => $this->characters,
             'problem_chars_limit' => $this->problem->chars_limit,
-            'status' => $this->status,
-            'score' => $this->score,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'status'              => $this->status,
+            'score'               => $this->score,
+            'created_at'          => $this->created_at,
+            'updated_at'          => $this->updated_at,
         ];
     }
 }

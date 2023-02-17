@@ -14,9 +14,8 @@ class SolutionRepository implements SolutionRepositoryInterface
      */
     public function find(Solution $solution): ?Solution
     {
-        return Solution::query()
+        return $solution
             ->withQueryParams()
-            ->where('id', $solution->id)
             ->with('executions', fn($execution) => $execution->with('test'))
             ->first();
     }
@@ -47,5 +46,9 @@ class SolutionRepository implements SolutionRepositoryInterface
     public function update(Solution $solution, array $data): Solution
     {
         return tap($solution)->update($data);
+    }
+
+    public function findById(Solution $solution)
+    {
     }
 }
