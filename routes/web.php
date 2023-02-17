@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\RootController;
 use App\Http\Controllers\Web\ProfileController;
 use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\Docs\DocsController;
 use App\Http\Controllers\Web\Docs\ComponentsShowcaseController;
 
 /*
@@ -29,7 +30,9 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::group(['prefix' => 'docs', 'as' => 'docs.'], function() {
-        Route::get('components-showcase', [ComponentsShowcaseController::class, 'index'])
+        Route::get('/', [DocsController::class, 'index'])
+            ->name('index');
+        Route::get('components-showcase', [ComponentsShowcaseController::class, 'showcase'])
             ->name('components_showcase');
     });
 });

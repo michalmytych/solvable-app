@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 
 class ComponentsShowcaseController extends Controller
 {
-    public function index(): View
+    public function showcase(): View
     {
         return view('docs.components-showcase');
     }
