@@ -1,5 +1,8 @@
 # Solvable
 
+Backend for an application for interactive learning of programming.
+Learn about [contributing](docs/contributing.md).
+
 ### Setup
 
 To run this app you need:
