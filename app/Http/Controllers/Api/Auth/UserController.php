@@ -4,17 +4,16 @@ namespace App\Http\Controllers\Api\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
-use App\Repositories\UserRepository;
+use App\Services\Auth\Api\UserService;
 use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Requests\Api\Auth\RegisterRequest;
 use App\Contracts\Auth\UserControllerInterface;
-use Illuminate\Support\Facades\Auth;
+use App\Exceptions\Auth\BadCredentialsException;
 
 class UserController extends Controller implements UserControllerInterface
 {
-    public function __construct(private UserRepository $userRepository)
+    public function __construct(private UserService $userService)
     {
     }
 
@@ -23,18 +22,11 @@ class UserController extends Controller implements UserControllerInterface
      */
     public function register(RegisterRequest $request): Response
     {
-        $data = $request->validated();
+        $result = $this->userService->register(
+            $request->validated()
+        );
 
-        $user = $this->userRepository->store($data);
-
-        $token = $user->createToken('api_token')->plainTextToken;
-
-        $response = [
-            'user' => $user,
-            'token' => $token
-        ];
-
-        return response($response, 201);
+        return response($result, 201);
     }
 
     /**
@@ -42,22 +34,17 @@ class UserController extends Controller implements UserControllerInterface
      */
     public function login(LoginRequest $request): Response
     {
-        $data = $request->validated();
 
-        $user = $this->userRepository->findByEmail($data['email']);
+        try {
+            $result = $this->userService->login($request->validated());
 
-        if (!$user || !Hash::check($data['password'], $user->password)) {
+        } catch (BadCredentialsException) {
             return response([
-                'message' => 'auth.errors.bad-credentials'
+                'message' => 'auth.errors.bad-credentials',
             ], 401);
         }
 
-        $token = $user->createToken('api_token')->plainTextToken;
-
-        return response([
-            'user' => $user,
-            'token' => $token
-        ]);
+        return response($result);
     }
 
     /**
@@ -65,10 +52,10 @@ class UserController extends Controller implements UserControllerInterface
      */
     public function logout(Request $request): Response
     {
-        auth()->user()->tokens()->delete();
+        $this->userService->logout(auth()->user());
 
         return response([
-            'message' => 'auth.messages.logged-out'
+            'message' => 'auth.messages.logged-out',
         ]);
     }
 
@@ -78,8 +65,8 @@ class UserController extends Controller implements UserControllerInterface
     public function user(Request $request): Response
     {
         return response([
-            'user'  => Auth::user(),
-            'token' => $request->bearerToken()
+            'user'  => $request->user(),
+            'token' => $request->bearerToken(),
         ]);
     }
 }
