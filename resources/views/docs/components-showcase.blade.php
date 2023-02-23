@@ -37,7 +37,7 @@
 
             <!-- Datetime component -->
             <x-card header="Datetime" id="datetime_component">
-                <x-datetime format="d-m-Y, h:i:s">{{ now()->toString() }}</x-datetime>
+                <x-datetime date="{{ now() }}" format="d M y, h:i:s" />
             </x-card>
 
             <!-- Paragraph skeleton component -->
