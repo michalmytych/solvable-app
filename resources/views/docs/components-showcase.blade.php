@@ -1,12 +1,22 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <x-header h="3">
             {{ __('Components showcase') }}
-        </h2>
+        </x-header>
     </x-slot>
 
     <div class="p-12 py-12 w-2/3 mx-auto">
         <div class="lg:px-8">
+
+            <!-- Link component -->
+            <x-card header="Pagination" id="link_component">
+                <x-link href="#">This is link</x-link>
+            </x-card>
+
+            <!-- Secondary text component -->
+            <x-card header="Secondary text" id="secondary_text_component">
+                <x-secondary>This is secondary text</x-secondary>
+            </x-card>
 
             <!-- Pagination display component -->
             <x-card header="Pagination" id="pagination_display_component">
@@ -37,7 +47,7 @@
 
             <!-- Datetime component -->
             <x-card header="Datetime" id="datetime_component">
-                <x-datetime date="{{ now() }}" format="d M y, h:i:s" />
+                <x-datetime date="{{ now() }}" format="d M y, h:i:s"/>
             </x-card>
 
             <!-- Paragraph skeleton component -->
@@ -61,11 +71,11 @@
 
             <!-- Headers components -->
             <x-card header="Headers" id="headers_components">
-                <x-header></x-header>
-                <x-header h="2"></x-header>
-                <x-header h="3"></x-header>
-                <x-header h="4"></x-header>
-                <x-header h="5"></x-header>
+                <x-header>Header 1</x-header>
+                <x-header h="2">Header 2</x-header>
+                <x-header h="3">Header 3</x-header>
+                <x-header h="4">Header 4</x-header>
+                <x-header h="5">Header 5</x-header>
             </x-card>
 
             <!-- Grid gallery component -->
@@ -73,8 +83,13 @@
                 <x-grid-gallery></x-grid-gallery>
             </x-card>
 
+            <!-- Grid gallery component -->
+            <x-card header="Data table" id="data_table_component">
+                <x-data-table></x-data-table>
+            </x-card>
+
         </div>
     </div>
 
-<x-footer></x-footer>
+    <x-footer></x-footer>
 </x-app-layout>
