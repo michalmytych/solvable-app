@@ -1,15 +1,22 @@
 <x-app-layout>
-    <x-slot name="header">
-        <x-header h="3">
-            {{ __('Components showcase') }}
-        </x-header>
-    </x-slot>
-
     <div class="p-12 py-12 w-2/3 mx-auto">
         <div class="lg:px-8">
 
+            <x-page-header>
+                <x-gradient-header>
+                    Solvable UI Kit
+                </x-gradient-header>
+                <x-space height="2"/>
+                <x-header h="2">Components showcase</x-header>
+                <x-space height="4"/>
+                <x-paragraph>
+                    To use any of components, copy code from <x-code>components-showcase.blade.php</x-code>, and paste it where you need it.
+                    Use component attributes to parametrize view rendering.
+                </x-paragraph>
+            </x-page-header>
+
             <!-- Link component -->
-            <x-card header="Pagination" id="link_component">
+            <x-card header="Link" id="link_component">
                 <x-link href="#">This is link</x-link>
             </x-card>
 
@@ -65,7 +72,7 @@
             <!-- Gradient header component -->
             <x-card header="Gradient header" id="gradient_header_component">
                 <x-gradient-header>
-                    Solvable UI Kit
+                    Gradient header
                 </x-gradient-header>
             </x-card>
 
@@ -86,6 +93,16 @@
             <!-- Grid gallery component -->
             <x-card header="Data table" id="data_table_component">
                 <x-data-table></x-data-table>
+            </x-card>
+
+            <!-- Spinner component -->
+            <x-card header="Spinner" id="spinner_component">
+                <x-spinner/>
+            </x-card>
+
+            <!-- Search component -->
+            <x-card header="Search" id="search_component">
+                <x-search placeholder="Search..."/>
             </x-card>
 
         </div>
