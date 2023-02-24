@@ -1,4 +1,5 @@
 <x-app-layout>
+
     <div class="p-12 py-12 w-2/3 mx-auto">
         <div class="lg:px-8">
 
@@ -10,7 +11,9 @@
                 <x-header h="2">Components showcase</x-header>
                 <x-space height="4"/>
                 <x-paragraph>
-                    To use any of components, copy code from <x-code>components-showcase.blade.php</x-code>, and paste it where you need it.
+                    To use any of components, copy code from
+                    <x-code>components-showcase.blade.php</x-code>
+                    , and paste it where you need it.
                     Use component attributes to parametrize view rendering.
                 </x-paragraph>
             </x-page-header>

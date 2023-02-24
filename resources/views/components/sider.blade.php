@@ -1,9 +1,5 @@
 <aside id="logo-sidebar" class="h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
-    <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded-r-lg">
-        <a href="https://flowbite.com/" class="flex items-center pl-2.5 mb-5">
-            <img src="https://flowbite.com/docs/images/logo.svg" class="h-6 mr-3 sm:h-7" alt="Flowbite Logo" />
-            <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Flowbite</span>
-        </a>
+    <div class="h-full px-3 my-12 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800 rounded-r-lg">
         <ul class="space-y-2">
             <li>
                 <a href="#" class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
