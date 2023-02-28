@@ -4,8 +4,8 @@ namespace App\Repositories;
 
 use App\Models\Solution;
 use Illuminate\Contracts\Auth\Authenticatable;
-use App\Contracts\SolutionRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use App\Contracts\Repositories\SolutionRepositoryInterface;
 
 class SolutionRepository implements SolutionRepositoryInterface
 {

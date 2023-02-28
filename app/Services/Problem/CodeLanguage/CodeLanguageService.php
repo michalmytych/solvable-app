@@ -3,7 +3,7 @@
 namespace App\Services\Problem\CodeLanguage;
 
 use Illuminate\Database\Eloquent\Collection;
-use App\Contracts\CodeLanguageRepositoryInterface;
+use App\Contracts\Repositories\CodeLanguageRepositoryInterface;
 
 class CodeLanguageService
 {

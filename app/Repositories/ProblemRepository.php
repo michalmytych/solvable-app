@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Problem;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Contracts\Problem\ProblemRepositoryInterface;
+use App\Contracts\Repositories\Problem\ProblemRepositoryInterface;
 
 class ProblemRepository implements ProblemRepositoryInterface
 {

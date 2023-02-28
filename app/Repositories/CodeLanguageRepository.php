@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Models\CodeLanguage;
 use Illuminate\Database\Eloquent\Collection;
-use App\Contracts\CodeLanguageRepositoryInterface;
+use App\Contracts\Repositories\CodeLanguageRepositoryInterface;
 
 class CodeLanguageRepository implements CodeLanguageRepositoryInterface
 {

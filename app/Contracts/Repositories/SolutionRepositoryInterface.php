@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Contracts;
+namespace App\Contracts\Repositories;
 
 use App\Models\Solution;
 use Illuminate\Contracts\Auth\Authenticatable;
