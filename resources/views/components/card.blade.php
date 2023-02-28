@@ -6,7 +6,7 @@
     </div>
     @endif
     <x-horizontal-separator></x-horizontal-separator>
-    <div class="mx-6 mb-6 w-5/6">
+    <div class="mx-6 mb-6">
         {{ $slot }}
     </div>
 </div>
