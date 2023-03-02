@@ -9,17 +9,21 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class CourseService
 {
-    public function __construct(private CourseRepository $courseRepository)
-    {
-    }
+    public function __construct(private CourseRepository $courseRepository) {}
 
     /**
      * Get all courses by user.
      */
-    public function all(): EloquentCollection
+    public function all()
     {
-        return Course::all(); // @todo
+        return Course::latest()->paginate(); // @todo
         //return $this->courseRepository->allByUserId(Auth::id());
+    }
+
+    public function find(string $id): ?Course
+    {
+        // @todo - to repository
+        return Course::find($id);
     }
 
     /**
@@ -27,6 +31,8 @@ class CourseService
      */
     public function create(array $data): Course
     {
+        $name = data_get($data, 'name');
+        data_set($data, 'slug', Str::slug($name));
         $course = $this->courseRepository->store($data);
         $this->createDefaultGroupAtCourse($course);
 
@@ -54,12 +60,13 @@ class CourseService
      */
     private function createDefaultGroupAtCourse(Course $course): void
     {
+        // @todo move to GroupService? move to repository
         $course
             ->groups()
-            ->create([      // todo moze logike tworzenia default gropy przeniesc do group service?
-                'name'        => 'course.default-group-name',
+            ->create([
+                'name'        => __('Default group for course ') . $course->name,
                 'code'        => Str::slug('default.' . $course->name),
-                'description' => 'course.default-group-description.{' . $course->id . '}',
+                'description' => __('Default course group.'),
                 'user_id'     => $course->user_id,
                 'is_default'  => true,
             ]);

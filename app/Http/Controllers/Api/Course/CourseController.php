@@ -30,7 +30,7 @@ class CourseController extends Controller
     public function store(StoreRequest $storeRequest): Course
     {
         $courseData = $storeRequest->validated();
-        data_set($courseData, 'user_id', $storeRequest->user());
+        data_set($courseData, 'user_id', $storeRequest->user()->id);
 
         return $this->courseService->create($courseData);
     }

@@ -127,6 +127,7 @@
                     <x-text-input
                             id="test_input"
                             name="test_input"
+                            placeholder="Placeholder..."
                             class="mt-1 block w-full p-2 focus:outline-none"
                     />
                 </div>

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Course extends Model
 {
@@ -26,11 +27,11 @@ class Course extends Model
     /**
      * Group related to the course.
      *
-     * @return HasMany
+     * @return BelongsToMany
      */
-    public function groups(): HasMany
+    public function groups(): BelongsToMany
     {
-        return $this->hasMany(Group::class);
+        return $this->belongsToMany(Group::class, 'group_course');
     }
 
     /**

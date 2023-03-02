@@ -17,7 +17,7 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string|unique',     // todo unique against other courses of this user
+            'name' => 'string|unique:courses',     // todo unique against other courses of this user
             'description' => 'string'
         ];
     }

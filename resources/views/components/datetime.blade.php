@@ -1,3 +1,3 @@
-<div class="italic text-gray-500">
-    {{ $dateTime }}
+<div class="text-gray-500">
+    {{ $slot }} {{ $dateTime }}
 </div>

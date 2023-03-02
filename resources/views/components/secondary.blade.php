@@ -1,1 +1,1 @@
-<div class="text-gray-500">{{ $slot }}</div>
+<span class="text-gray-500">{{ $slot }}</span>
