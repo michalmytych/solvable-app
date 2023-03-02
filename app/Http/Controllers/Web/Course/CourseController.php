@@ -31,6 +31,7 @@ class CourseController extends Controller
 
     public function store(StoreRequest $request): RedirectResponse
     {
+        sleep(5);
         $courseData = $request->validated();
         data_set($courseData, 'user_id', $request->user()->id);
 
