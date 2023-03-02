@@ -1,0 +1,1 @@
+<div class="w-auto h-0.5 ml-6 mr-6 mb-6 bg-gray-600"></div>

@@ -1,0 +1,1 @@
+<div class="w-full h-64 bg-gray-800"></div>

@@ -1,7 +1,11 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Web\RootController;
+use App\Http\Controllers\Web\ProfileController;
+use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\Docs\DocsController;
+use App\Http\Controllers\Web\Docs\ComponentsShowcaseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,18 +18,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/', [RootController::class, 'index'])->name('web_root');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::middleware('verified')->group(function() {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    });
+
+    Route::group(['prefix' => 'docs', 'as' => 'docs.'], function() {
+        Route::get('/', [DocsController::class, 'index'])
+            ->name('index');
+        Route::get('components-showcase', [ComponentsShowcaseController::class, 'showcase'])
+            ->name('components_showcase');
+    });
 });
 
 require __DIR__.'/auth.php';
