@@ -10,8 +10,8 @@
 
             <x-form method="POST" action="{{ route('course.store') }}">
                 <div>
-                    <x-transparent-input id="name" name="name" placeholder="{{ __('Name') }}" />
-                    <x-input-error :messages="$errors->storeCourse->get('name')" class="mt-2"/>
+                    <x-transparent-input id="name" name="name" placeholder="{{ __('Name') }}" :value="old('name')" />
+                    <x-input-error :messages="$errors->get('name')" class="mt-2"/>
                 </div>
                 <div>
                     <x-textarea
@@ -19,9 +19,10 @@
                             name="description"
                             class="resize-none mt-1 block w-full placeholder-gray-600 text-xl transition duration-500 dark:hover:bg-gray-800 pl-3"
                             rows="1"
+                            :value="old('description')"
                             placeholder="{{ __('Description') }}"
                     />
-                    <x-input-error :messages="$errors->storeCourse->get('description')" class="mt-2"/>
+                    <x-input-error :messages="$errors->get('description')" class="mt-2"/>
                 </div>
                 <x-spinner id="spinner" style="display: none;" class="ml-2">{{ __('Creating new course') }}</x-spinner>
                 <div class="grid" id="submitButtonWrapper" style="display: none">

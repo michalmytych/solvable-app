@@ -12,8 +12,15 @@ class FactoryMixin
 {
     public function firstOrCreate(): Closure
     {
-        return function (): Model {
-            return $this->model::first() ?? $this->model::factory()->create();
+        return function (?array $attributes = null): Model {
+            $model = $this->model::first();
+
+            if ($attributes) {
+                $model = $this->model::firstWhere($attributes)
+                    ?? $this->model::factory()->create($attributes);
+            }
+
+            return $model ?? $this->model::factory()->create();
         };
     }
 }

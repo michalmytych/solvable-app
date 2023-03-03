@@ -9,13 +9,11 @@
             </div>
 
             <x-page-header>
+                <x-space height="4"/>
                 <x-header h="1">{{ $problem->title }}</x-header>
                 <x-space height="4"/>
                 <x-datetime date="{{ $problem->created_at }}">{{ __('Created at') }}</x-datetime>
-                <x-space height="4"/>
-                <x-paragraph>
-                    {{ __('Programming problems available to you.') }}
-                </x-paragraph>
+                <x-space height="5"/>
             </x-page-header>
 
             <x-card header="{{ $problem->title }}" id="{{ $problem->id }}_problem">
@@ -25,6 +23,7 @@
             </x-card>
 
         </x-container>
+        <x-space height="64"/>
     </div>
 
     <x-footer></x-footer>

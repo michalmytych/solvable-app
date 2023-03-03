@@ -179,6 +179,7 @@ return [
         App\Providers\RepositoryServiceProvider::class,
         App\Providers\CodeExecutorServiceProvider::class,
         App\Providers\ApiServiceProvider::class,
+        \App\Providers\MixinServiceProvider::class
     ],
 
     /*
