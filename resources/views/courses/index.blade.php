@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <div class="lg:w-1/2 md:w-2/3 sm:w-full mx-auto">
+    <x-half-container>
         <x-container>
             <x-page-header>
                 <x-header h="1">{{ __('Courses') }}</x-header>
@@ -20,12 +20,8 @@
                 @include('courses.partials.course-card', ['course' => $course ])
             @endforeach
 
-            <div class="flex justify-center">
-                <x-pagination/>
-            </div>
-
         </x-container>
-    </div>
+    </x-half-container>
     <x-space height="64"/>
 
     <x-footer></x-footer>

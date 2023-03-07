@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <div class="lg:w-1/2 md:w-2/3 sm:w-full mx-auto">
+    <x-half-container>
         <x-container>
             <div>
                 <x-link href="{{ route('course.index') }}">{{ __('Courses') }}</x-link>
@@ -10,7 +10,7 @@
 
             <x-form method="POST" action="{{ route('course.store') }}">
                 <div>
-                    <x-transparent-input id="name" name="name" placeholder="{{ __('Name') }}" :value="old('name')" />
+                    <x-transparent-input id="name" name="name" placeholder="{{ __('Name') }}" :value="old('name')"/>
                     <x-input-error :messages="$errors->get('name')" class="mt-2"/>
                 </div>
                 <div>
@@ -30,15 +30,15 @@
                 </div>
             </x-form>
         </x-container>
-        <x-space height="64"/>
-    </div>
+        <x-space height="screen"/>
+    </x-half-container>
 
     <x-footer></x-footer>
 
     @push('scripts')
         <script>
             /** * * * Handle inputs live validation * * * */
-            // @todo - move to separate script
+                // @todo - move to separate script
             const name = document.getElementById('name');
             const description = document.getElementById('description');
             const submitButtonWrapper = document.getElementById('submitButtonWrapper');
@@ -63,6 +63,7 @@
                 tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
                 tx[i].addEventListener("input", e => onTextareaInput(e), false);
             }
+
             function onTextareaInput(e) {
                 e.target.style.height = 0;
                 e.target.style.height = (e.target.scrollHeight) + "px";

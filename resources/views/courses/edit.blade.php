@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <div class="lg:w-1/2 md:w-2/3 sm:w-full mx-auto">
+    <x-half-container>
         <x-container>
             <div>
                 <x-link href="{{ route('course.index') }}">{{ __('Courses') }}</x-link>
@@ -36,8 +36,8 @@
                 </div>
             </x-form>
         </x-container>
-        <x-space height="64"/>
-    </div>
+        <x-space height="screen"/>
+    </x-half-container>
 
     <x-footer></x-footer>
 
@@ -76,6 +76,7 @@
                 tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
                 tx[i].addEventListener("input", e => onTextareaInput(e), false);
             }
+
             function onTextareaInput(e) {
                 e.target.style.height = 0;
                 e.target.style.height = (e.target.scrollHeight) + "px";

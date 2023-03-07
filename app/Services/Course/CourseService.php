@@ -5,11 +5,10 @@ namespace App\Services\Course;
 use App\Models\Course;
 use Illuminate\Support\Str;
 use App\Repositories\CourseRepository;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class CourseService
 {
-    public function __construct(private CourseRepository $courseRepository) {}
+    public function __construct(private CourseRepository $courseRepository) { }
 
     /**
      * Get all courses by user.
@@ -23,7 +22,7 @@ class CourseService
     public function find(string $id): ?Course
     {
         // @todo - to repository
-        return Course::find($id);
+        return Course::with('groups')->findOrFail($id);
     }
 
     /**
@@ -33,6 +32,7 @@ class CourseService
     {
         $name = data_get($data, 'name');
         data_set($data, 'slug', Str::slug($name));
+
         $course = $this->courseRepository->store($data);
         $this->createDefaultGroupAtCourse($course);
 
@@ -64,9 +64,9 @@ class CourseService
         $course
             ->groups()
             ->create([
-                'name'        => __('Default group for course ') . $course->name,
-                'code'        => Str::slug('default.' . $course->name),
-                'description' => __('Default course group.'),
+                'name'        => 'Default group for course ' . $course->name,
+                'code'        => Str::slug('default-' . $course->name),
+                'description' => 'Default course group.',
                 'user_id'     => $course->user_id,
                 'is_default'  => true,
             ]);

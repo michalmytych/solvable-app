@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <div class="lg:w-1/2 md:w-2/3 sm:w-full mx-auto">
+    <x-half-container>
         <x-container>
             <div>
                 <x-link href="{{ route('problem.index') }}">{{ __('Problems') }}</x-link>
@@ -24,7 +24,7 @@
 
         </x-container>
         <x-space height="64"/>
-    </div>
+    </x-half-container>
 
     <x-footer></x-footer>
 </x-app-layout>

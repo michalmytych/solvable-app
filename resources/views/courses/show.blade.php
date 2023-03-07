@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <div class="lg:w-1/2 md:w-2/3 sm:w-full mx-auto">
+    <x-half-container>
         <x-container>
             <div class="flex items-center justify-between">
                 <div>
@@ -27,9 +27,12 @@
                 {{ $course->description }}
             </x-paragraph>
 
+            <x-space height="4"/>
+            @include('courses.partials.groups-list', ['groups' => $course->groups ])
+
         </x-container>
-        <x-space height="64"/>
-    </div>
+        <x-space height="screen"/>
+    </x-half-container>
 
     <x-footer></x-footer>
 </x-app-layout>

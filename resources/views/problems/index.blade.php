@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <div class="lg:w-1/2 md:w-2/3 sm:w-full mx-auto">
+    <x-half-container>
         <x-container>
             <x-page-header>
                 <x-header h="1">{{ __('Problems') }}</x-header>
@@ -28,7 +28,7 @@
                 </x-card>
             @endforeach
         </x-container>
-    </div>
+    </x-half-container>
     <x-space height="64"/>
 
     <x-footer></x-footer>
