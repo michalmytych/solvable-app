@@ -33,7 +33,7 @@
                     />
                     <x-input-error :messages="$errors->get('chars_limit')" class="mt-2"/>
                 </div>
-                <div>
+                <div class="ml-0.5">
                     <x-select
                             name="course_id"
                             :options="$courses"

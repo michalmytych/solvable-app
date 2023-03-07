@@ -14,7 +14,7 @@ foreach ($options ?? [] as $ix => $option) {
 <select
         id="{{ $name . 'SelectInput' }}"
         name="{{ $name }}"
-        class="bg-transparent border border-gray-300 text-gray-400 rounded-lg block w-full p-2.5 dark:border-gray-600 dark:placeholder-gray-400"
+        class="bg-transparent border-none text-gray-400 rounded-lg block w-full p-2.5 dark:placeholder-gray-400 dark:hover:bg-gray-800"
 >
     @if(count($options) === 0)
         <option selected>{{ __('No options') }}</option>
