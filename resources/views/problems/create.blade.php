@@ -47,6 +47,12 @@
                             :emptySelectedOption="__('Select group')"
                     />
                     <x-input-error :messages="$errors->get('group_id')" class="mt-2"/>
+                    <x-verbose-checkbox
+                            name="code_languages_ids"
+                            label="{{ __('Allowed code languages') }}"
+                            :boxes="$codeLanguages"
+                    />
+                    <x-input-error :messages="$errors->get('code_languages_ids')" class="mt-2"/>
                 </div>
                 <div class="grid" id="submitButtonWrapper" style="display: none">
                     <x-primary-button class="place-self-end">{{ __('Save') }}</x-primary-button>

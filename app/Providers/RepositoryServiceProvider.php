@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
-use App\Contracts\SolutionRepositoryInterface;
-use App\Repositories\SolutionRepository;
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\SolutionRepository;
+use App\Repositories\CodeLanguageRepository;
+use App\Contracts\SolutionRepositoryInterface;
+use App\Contracts\CodeLanguageRepositoryInterface;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -26,5 +28,6 @@ class RepositoryServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->app->bind(SolutionRepositoryInterface::class, SolutionRepository::class);
+        $this->app->bind(CodeLanguageRepositoryInterface::class, CodeLanguageRepository::class);
     }
 }

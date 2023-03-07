@@ -10,15 +10,16 @@ use App\Services\Course\GroupService;
 use App\Services\Course\CourseService;
 use App\Services\Problem\ProblemService;
 use App\Http\Requests\Web\Problem\StoreRequest;
+use App\Services\Problem\CodeLanguage\CodeLanguageService;
 
 class ProblemController extends Controller
 {
     public function __construct(
-        private ProblemService $problemService,
-        private CourseService  $courseService,
-        private GroupService   $groupService
-    )
-    {
+        private ProblemService      $problemService,
+        private CourseService       $courseService,
+        private GroupService        $groupService,
+        private CodeLanguageService $codeLanguageService
+    ) {
     }
 
     public function index(Request $request): View
@@ -35,12 +36,14 @@ class ProblemController extends Controller
 
     public function create(): View
     {
-        $courses = $this->courseService->allByUser();
-        $groups  = $this->groupService->allByUser();
+        $courses       = $this->courseService->allByUser();
+        $groups        = $this->groupService->allByUser();
+        $codeLanguages = $this->codeLanguageService->all();
 
         return view('problems.create', [
-            'courses' => $courses,
-            'groups'  => $groups,
+            'courses'       => $courses,
+            'groups'        => $groups,
+            'codeLanguages' => $codeLanguages,
         ]);
     }
 

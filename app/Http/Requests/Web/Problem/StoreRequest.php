@@ -24,7 +24,7 @@ class StoreRequest extends FormRequest
             'group_id' => 'nullable|string|exists:groups,id',
             'course_id' => 'nullable|string|exists:courses,id',
             'chars_limit' => 'required|integer',
-//            'code_languages_ids' => 'array'
+            'code_languages_ids' => 'array'
         ];
     }
 }
