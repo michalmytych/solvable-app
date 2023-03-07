@@ -134,11 +134,6 @@
                 <x-select name="test"/>
             </x-card>
 
-            <!-- Verbose checkbox component -->
-            <x-card header="Verbose checkbox" id="verbose_checkbox_component">
-                <x-verbose-checkbox name="test"/>
-            </x-card>
-
             <!-- Form component -->
             <x-card header="Form" id="form_component">
                 <x-form method="GET" action="#">
