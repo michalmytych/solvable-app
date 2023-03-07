@@ -6,12 +6,20 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
+use App\Services\Course\GroupService;
+use App\Services\Course\CourseService;
 use App\Services\Problem\ProblemService;
-use App\Http\Requests\Api\Problem\StoreRequest;
+use App\Http\Requests\Web\Problem\StoreRequest;
 
 class ProblemController extends Controller
 {
-    public function __construct(private ProblemService $problemService) {}
+    public function __construct(
+        private ProblemService $problemService,
+        private CourseService  $courseService,
+        private GroupService   $groupService
+    )
+    {
+    }
 
     public function index(Request $request): View
     {
@@ -27,11 +35,18 @@ class ProblemController extends Controller
 
     public function create(): View
     {
-        return view('problems.create');
+        $courses = $this->courseService->allByUser();
+        $groups  = $this->groupService->allByUser();
+
+        return view('problems.create', [
+            'courses' => $courses,
+            'groups'  => $groups,
+        ]);
     }
 
     public function store(StoreRequest $request): RedirectResponse
     {
+        dd($request->validated());
         $this->problemService->createWithRelations($request->validated());
         return redirect()->to(route('problem.index'));
     }

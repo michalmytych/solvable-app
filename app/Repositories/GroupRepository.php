@@ -6,9 +6,20 @@ use App\Models\Group;
 use App\Models\Course;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class GroupRepository
 {
+    /**
+     * Get all groups available to user.
+     */
+    public function allByUser(): EloquentCollection
+    {
+        // @todo dont use auth facade instead add userId function argument
+        return Group::where('user_id', Auth::id())->latest()->get();
+    }
+
     /**
      * Update provided group with data and return it.
      */

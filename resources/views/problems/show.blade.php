@@ -5,7 +5,7 @@
             <div>
                 <x-link href="{{ route('problem.index') }}">{{ __('Problems') }}</x-link>
                 <x-secondary>/</x-secondary>
-                <x-link href="{{ route('problem.show', ['problem' => $problem->id]) }}">{{ $problem->title }}</x-link>
+                <x-link href="{{ route('problem.show', ['problem' => $problem->id]) }}">{{ shorten_str($problem->title) }}</x-link>
             </div>
 
             <x-page-header>

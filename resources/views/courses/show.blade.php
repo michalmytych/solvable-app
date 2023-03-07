@@ -6,7 +6,7 @@
                 <div>
                     <x-link href="{{ route('course.index') }}">{{ __('Courses') }}</x-link>
                     <x-secondary>/</x-secondary>
-                    <x-link href="{{ route('course.show', ['course' => $course->id]) }}">{{ $course->name }}</x-link>
+                    <x-link href="{{ route('course.show', ['course' => $course->id]) }}">{{ shorten_str($course->name) }}</x-link>
                 </div>
                 <div>
                     <a href="{{ route('course.edit', ['course' => $course->id]) }}" class="cursor-pointer">

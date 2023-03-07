@@ -20,10 +20,6 @@ class Course extends Model
         'user_id'
     ];
 
-    protected $hidden = [
-        'id'
-    ];
-
     /**
      * Group related to the course.
      *

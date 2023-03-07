@@ -4,7 +4,7 @@
         <x-container>
             <div class="flex items-center justify-between">
                 <div>
-                    <x-link href="{{ route('docs.index') }}">{{ __('Docs') }}</x-link>
+                    <x-link href="{{ route('docs.index') }}">Docs</x-link>
                     <x-secondary>/</x-secondary>
                     <x-link href="{{ route('docs.components_showcase') }}">Components showcase</x-link>
                 </div>
@@ -127,6 +127,11 @@
             <!-- Search component -->
             <x-card header="Search" id="search_component">
                 <x-search placeholder="Search..."/>
+            </x-card>
+
+            <!-- Select component -->
+            <x-card header="Select" id="select_component">
+                <x-select name="test"/>
             </x-card>
 
             <!-- Form component -->
