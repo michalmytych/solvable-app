@@ -1,12 +1,3 @@
-<!--
-
-1. "input" (text)
-2. "time_limit" (int) (milliseconds)
-3. "memory_limit" (int) (bytes/megabytes)
-4. valid_outputs (array<string>) ()
-
--->
-
 <div>
     <div id="testInputsForm">
         <input type="hidden" id="dataHolder" name="tests_json_data">
@@ -19,27 +10,29 @@
             <x-header h="5" class="__header">
                 {{ __('Test ') }}1
             </x-header>
-            <x-transparent-input
-                    id="input"
-                    name="input"
-                    type="text"
-                    class="text-lg mt-2"
-                    placeholder="{{ __('Test input') }}"
-            />
-            <x-transparent-input
-                    id="time_limit"
-                    name="time_limit"
-                    type="number"
-                    class="text-lg"
-                    placeholder="{{ __('Execution time limit') }}"
-            />
-            <x-transparent-input
-                    id="memory_limit"
-                    name="memory_limit"
-                    type="number"
-                    class="text-lg"
-                    placeholder="{{ __('Memory usage limit') }}"
-            />
+            <div class="grid w-full gap-4 md:grid-cols-3">
+                <x-transparent-input
+                        id="input"
+                        name="input"
+                        type="text"
+                        class="text-lg mt-2"
+                        placeholder="{{ __('Test input') }}"
+                />
+                <x-transparent-input
+                        id="time_limit"
+                        name="time_limit"
+                        type="number"
+                        class="text-lg"
+                        placeholder="{{ __('Time limit') }}"
+                />
+                <x-transparent-input
+                        id="memory_limit"
+                        name="memory_limit"
+                        type="number"
+                        class="text-lg"
+                        placeholder="{{ __('Memory limit') }}"
+                />
+            </div>
         </div>
     </div>
 
