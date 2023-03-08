@@ -12,7 +12,6 @@
                     <input
                             id="{{ $box['__verbose_checkbox_value'] }}"
                             class="hidden peer"
-                            required=""
                             @if($box['__verbose_checkbox_checked'])
                             checked
                             @endif

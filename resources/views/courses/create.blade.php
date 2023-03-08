@@ -36,54 +36,21 @@
     <x-footer></x-footer>
 
     @push('scripts')
+        @include('js.validation')
+        @include('js.textarea-live-resize')
+        @include('js.submit-spinner')
         <script>
-            /** * * * Handle inputs live validation * * * */
-                // @todo - move to separate script
-            const name = document.getElementById('name');
-            const description = document.getElementById('description');
             const submitButtonWrapper = document.getElementById('submitButtonWrapper');
 
-            const updateSubmitButtonVisibility = () => {
-                const nameValue = name.value;
-                const descriptionValue = description.value;
-
-                if (!nameValue || !descriptionValue) {
-                    submitButtonWrapper.style.display = 'none';
-                }
-
-                if (nameValue && descriptionValue) {
+            validateRequiredInputsLive(
+                ['title', 'content', 'chars_limit'],
+                () => {
+                    submitButtonWrapper.style.display = 'none'
+                },
+                () => {
                     submitButtonWrapper.style.display = '';
-                }
-            }
-
-            /** * * * Live textarea resize * * * */
-                // @todo - move to separate script
-            const tx = document.getElementsByTagName("textarea");
-            for (let i = 0; i < tx.length; i++) {
-                tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
-                tx[i].addEventListener("input", e => onTextareaInput(e), false);
-            }
-
-            function onTextareaInput(e) {
-                e.target.style.height = 0;
-                e.target.style.height = (e.target.scrollHeight) + "px";
-            }
-
-            /** * * * Handle submit button click * * * */
-            const submitButton = document.getElementById('submitButton');
-            const spinner = document.getElementById('spinner');
-
-            const handleButtonClick = () => {
-                submitButtonWrapper.style.display = 'none';
-                spinner.style.display = '';
-            }
-
-            window.onload = () => {
-                updateSubmitButtonVisibility();
-                name.addEventListener('input', () => updateSubmitButtonVisibility());
-                description.addEventListener('input', () => updateSubmitButtonVisibility());
-                submitButton.addEventListener('click', () => handleButtonClick());
-            }
+                },
+            );
         </script>
     @endpush
 </x-app-layout>

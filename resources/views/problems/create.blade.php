@@ -59,8 +59,9 @@
                 <div>
                     @include('problems.partials.tests-input')
                 </div>
+                <x-spinner id="spinner" style="display: none;" class="ml-2">{{ __('Creating new problem') }}</x-spinner>
                 <div class="grid" id="submitButtonWrapper" style="display: none">
-                    <x-primary-button class="place-self-end">{{ __('Save') }}</x-primary-button>
+                    <x-primary-button id="submitButton" class="place-self-end">{{ __('Save') }}</x-primary-button>
                 </div>
             </x-form>
         </x-container>
@@ -69,47 +70,23 @@
 
     <x-footer></x-footer>
 
+
     @push('scripts')
+        @include('js.validation')
+        @include('js.textarea-live-resize')
+        @include('js.submit-spinner')
         <script>
-            /** * * * Handle inputs live validation * * * */
-                // @todo - move to separate script
-            const title = document.getElementById('title');
-            const content = document.getElementById('content');
             const submitButtonWrapper = document.getElementById('submitButtonWrapper');
 
-            const updateSubmitButtonVisibility = () => {
-                const titleValue = title.value;
-                const contentValue = content.value;
-
-                if (!titleValue || !contentValue) {
-                    submitButtonWrapper.style.display = 'none';
-                }
-
-                console.log(titleValue, contentValue)
-                if (titleValue && contentValue) {
+            validateRequiredInputsLive(
+                ['title', 'content', 'chars_limit'],
+                () => {
+                    submitButtonWrapper.style.display = 'none'
+                },
+                () => {
                     submitButtonWrapper.style.display = '';
-                }
-            }
-
-            window.onload = () => {
-                updateSubmitButtonVisibility();
-                title.addEventListener('input', () => updateSubmitButtonVisibility());
-                content.addEventListener('input', () => updateSubmitButtonVisibility());
-            }
-        </script>
-        <script>
-            /** * * * Live textarea resize * * * */
-                // @todo - move to separate script
-            const tx = document.getElementsByTagName("textarea");
-            for (let i = 0; i < tx.length; i++) {
-                tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
-                tx[i].addEventListener("input", e => onTextareaInput(e), false);
-            }
-
-            function onTextareaInput(e) {
-                e.target.style.height = 0;
-                e.target.style.height = (e.target.scrollHeight) + "px";
-            }
+                },
+            );
         </script>
     @endpush
 </x-app-layout>

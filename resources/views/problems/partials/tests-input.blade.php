@@ -1,7 +1,9 @@
 <div>
     <div id="testInputsForm">
         <input type="hidden" id="dataHolder" name="tests_json_data">
-        <!-- Single input form -->
+        <x-input-error :messages="$errors->get('tests_json_data')" class="mt-2"/>
+
+        <!-- Single input form start -->
         <div
                 class="ml-2 mt-4"
                 id="singleFormInput_0"
@@ -34,6 +36,7 @@
                 />
             </div>
         </div>
+        <!-- Single input form end -->
     </div>
 
     <div class="flex ml-2 mb-4 mt-4 items-center cursor-pointer" id="newTestInputBtn">
@@ -91,16 +94,13 @@
 
         const updateDataHolder = () => {
             const data = getFormData();
-            console.log(data)
             serializeAndSaveData(data);
         }
 
         const updateHandlers = () => {
             const singleTestInputs = testInputsForm.querySelectorAll(`[id^='singleFormInput_']`);
-            console.log(singleTestInputs.length)
 
             singleTestInputs.forEach(function (_input) {
-                console.log('awdaw')
                 _input.querySelector('#input')
                     .removeEventListener('input', updateDataHolder)
                 _input.querySelector('#input')
@@ -116,9 +116,14 @@
             });
         }
 
-        newTestInputBtn.addEventListener('click', () => {
-            addTestInput();
-            updateHandlers();
-        });
+        const addNewTestButtonHandler = () => {
+            newTestInputBtn.addEventListener('click', () => {
+                addTestInput();
+                updateHandlers();
+            });
+        }
+
+        addNewTestButtonHandler();
+        updateDataHolder();
     </script>
 @endpush
