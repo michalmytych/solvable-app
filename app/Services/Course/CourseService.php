@@ -5,6 +5,9 @@ namespace App\Services\Course;
 use App\Models\Course;
 use Illuminate\Support\Str;
 use App\Repositories\CourseRepository;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class CourseService
 {
@@ -24,7 +27,7 @@ class CourseService
         //return $this->courseRepository->allByUserId(Auth::id());
     }
 
-    public function find(string $id): ?Course
+    public function find(string $id): Builder|array|Collection|Model
     {
         // @todo - to repository
         return Course::with('groups')->findOrFail($id);
