@@ -43,7 +43,7 @@
             const submitButtonWrapper = document.getElementById('submitButtonWrapper');
 
             validateRequiredInputsLive(
-                ['title', 'content', 'chars_limit'],
+                ['name', 'description'],
                 () => {
                     submitButtonWrapper.style.display = 'none'
                 },

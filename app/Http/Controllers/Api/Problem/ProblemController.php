@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Problem;
 
+use App\Models\User;
 use App\Models\Problem;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -36,9 +37,12 @@ class ProblemController extends Controller
      * Create new problem with relations,
      * or return error message on fail.
      */
-    public function store(CreateRequest $createRequest, ProblemService $problemService): ProblemResource
+    public function store(CreateRequest $createRequest): ProblemResource
     {
-        $problem = $problemService->createWithRelations($createRequest);
+        $problem = $this->problemService->createWithRelations(
+            $createRequest->validated(),
+            $createRequest->user()->id
+        );
 
         return new ProblemResource($problem);
     }

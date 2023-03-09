@@ -35,6 +35,14 @@
                         placeholder="{{ __('Memory limit') }}"
                 />
             </div>
+            <x-textarea
+                    id="valid_outputs"
+                    name="valid_outputs"
+                    class="resize-none block w-full placeholder-gray-600 text-lg transition duration-500 dark:hover:bg-gray-800 mt-4 ml-2"
+                    rows="1"
+                    autofocus
+                    placeholder="{{ __('Valid outputs') }}"
+            />
         </div>
         <!-- Single input form end -->
     </div>
@@ -84,6 +92,7 @@
                     input: _input.querySelector('#input').value,
                     time_limit: _input.querySelector('#time_limit').value,
                     memory_limit: _input.querySelector('#memory_limit').value,
+                    valid_outputs: _input.querySelector('#valid_outputs').value.split("\n"),
                 };
 
                 testsData.push(testData);
@@ -101,18 +110,14 @@
             const singleTestInputs = testInputsForm.querySelectorAll(`[id^='singleFormInput_']`);
 
             singleTestInputs.forEach(function (_input) {
-                _input.querySelector('#input')
-                    .removeEventListener('input', updateDataHolder)
-                _input.querySelector('#input')
-                    .addEventListener('input', updateDataHolder);
-                _input.querySelector('#time_limit')
-                    .removeEventListener('input', updateDataHolder)
-                _input.querySelector('#time_limit')
-                    .addEventListener('input', updateDataHolder);
-                _input.querySelector('#memory_limit')
-                    .removeEventListener('input', updateDataHolder)
-                _input.querySelector('#memory_limit')
-                    .addEventListener('input', updateDataHolder);
+                const ids = ['#input', '#time_limit', '#memory_limit', '#valid_outputs'];
+
+                ids.forEach(id => {
+                    _input.querySelector(id)
+                        .removeEventListener('input', updateDataHolder)
+                    _input.querySelector(id)
+                        .addEventListener('input', updateDataHolder);
+                });
             });
         }
 

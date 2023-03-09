@@ -7,12 +7,11 @@ namespace App\Services\Problem;
 use Throwable;
 use App\Models\User;
 use App\Models\Problem;
-use Illuminate\Support\Collection;
+use App\DTOs\ProblemDTO;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use App\Repositories\GroupRepository;
+use Spatie\LaravelData\DataCollection;
 use App\Repositories\ProblemRepository;
-use App\Http\Requests\Api\Problem\CreateRequest;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ProblemService
@@ -36,47 +35,38 @@ class ProblemService
      * Create new problem with relations in transaction,
      * rollback on database error.
      */
-    public function createWithRelations(CreateRequest $createRequest): ?Problem
+    public function createWithRelations(ProblemDTO $problemDTO): ?Problem
     {
-        $problemData = collect($createRequest->input())
-            ->put('user_id', Auth::id());
-
-        $tests = collect($problemData->get('tests'));
-        $codeLanguagesIds = collect($problemData->get('code_languages_ids'));
-
-        $groupId = $problemData->get('group_id');
-        $courseId = $problemData->get('course_id');
-
         $problem = null;
 
         DB::beginTransaction();
 
         try {
-            $problem = $this->storeProblem($problemData);
+            $problem = $this->storeProblem($problemDTO);
 
-            if ($groupId) {
-                $this->addProblemToGroup($groupId, $problem);
+            if ($problemDTO->group_id) {
+                $this->addProblemToGroup($problemDTO->group_id, $problem);
 
-            } else if ($courseId) {
-                $this->addProblemToAllGroupsOfCourse($courseId, $problem);
+            } else if ($problemDTO->course_id) {
+                $this->addProblemToAllGroupsOfCourse($problemDTO->course_id, $problem);
             }
 
-            $this->updateProblemTests($problem, $tests);
+            $this->updateProblemTests($problem, $problemDTO->tests);
 
-            $this->updateProblemCodeLanguages($problem, $codeLanguagesIds);
+            $this->updateProblemCodeLanguages($problem, $problemDTO->code_languages_ids);
 
             DB::commit();
-        } catch (Throwable $throwable) {
+        } catch (Throwable) {
             DB::rollBack();
         }
 
         return $problem;
     }
 
-    private function storeProblem(Collection $problemData): Problem
+    private function storeProblem(ProblemDTO $problemDTO): Problem
     {
         return $this->problemRepository->store(
-            $problemData
+            collect($problemDTO->toArray()) // @todo
                 ->forget([
                     'tests',
                     'group_id',
@@ -87,13 +77,13 @@ class ProblemService
         );
     }
 
-    private function addProblemToGroup($groupId, Problem $problem)
+    private function addProblemToGroup(string $groupId, Problem $problem)
     {
         $group = $this->groupRepository->findById($groupId);
         $group->problems()->attach($problem);
     }
 
-    private function addProblemToAllGroupsOfCourse($courseId, Problem $problem)
+    private function addProblemToAllGroupsOfCourse(string $courseId, Problem $problem)
     {
         $groupsOfCourse = $this->groupRepository->findByCourseId($courseId);
 
@@ -102,16 +92,16 @@ class ProblemService
         );
     }
 
-    private function updateProblemTests(Problem $problem, Collection $tests)
+    private function updateProblemTests(Problem $problem, DataCollection $tests)
     {
-        if ($tests->isNotEmpty()) {
-            $problem->tests()->createMany($tests);
+        if (count($tests)) {
+            $problem->tests()->createMany($tests->toArray());
         }
     }
 
-    private function updateProblemCodeLanguages(Problem $problem, Collection $codeLanguagesIds)
+    private function updateProblemCodeLanguages(Problem $problem, array $codeLanguagesIds)
     {
-        if ($codeLanguagesIds->isNotEmpty()) {
+        if (count($codeLanguagesIds)) {
             $problem->codeLanguages()->sync($codeLanguagesIds);
         }
     }

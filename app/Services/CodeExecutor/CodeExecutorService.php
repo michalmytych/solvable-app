@@ -18,6 +18,7 @@ class CodeExecutorService implements CodeExecutorServiceInterface
 
     /**
      * Initialize service.
+     * @throws ExternalServiceInitializationException|CurlError3Exception
      */
     public function init(): self
     {

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Models\User;
+use App\DTOs\ProblemDTO;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -49,8 +51,14 @@ class ProblemController extends Controller
 
     public function store(StoreRequest $request): RedirectResponse
     {
-        dd($request->validated());
-        $this->problemService->createWithRelations($request->validated());
+        $problemDTO = ProblemDTO::fromRequest($request);
+
+        try {
+            $this->problemService->createWithRelations($problemDTO);
+        } catch (\Throwable $t) {
+            dd($t);
+        }
+
         return redirect()->to(route('problem.index'));
     }
 }
