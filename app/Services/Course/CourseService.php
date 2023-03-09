@@ -4,16 +4,15 @@ namespace App\Services\Course;
 
 use App\Models\Course;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Auth;
 use App\Repositories\CourseRepository;
 
 class CourseService
 {
     public function __construct(private CourseRepository $courseRepository) { }
 
-    public function allByUser()
+    public function allByUser(string $userId)
     {
-        return Course::where('user_id', Auth::id())->latest()->get(); // @todo
+        return Course::where('user_id', $userId)->latest()->get(); // @todo
     }
 
     /**

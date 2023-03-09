@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Models\User;
 use App\DTOs\ProblemDTO;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
@@ -26,26 +25,26 @@ class ProblemController extends Controller
 
     public function index(Request $request): View
     {
-        $problems = $this->problemService->all($request->user());
+        $problems = $this->problemService->allByUser($request->user()->id);
+
         return view('problems.index', compact('problems'));
     }
 
     public function show(string $id): View
     {
         $problem = $this->problemService->find($id);
+
         return view('problems.show', compact('problem'));
     }
 
-    public function create(): View
+    public function create(Request $request): View
     {
-        $courses       = $this->courseService->allByUser();
-        $groups        = $this->groupService->allByUser();
-        $codeLanguages = $this->codeLanguageService->all();
+        $userId = $request->user()->id;
 
         return view('problems.create', [
-            'courses'       => $courses,
-            'groups'        => $groups,
-            'codeLanguages' => $codeLanguages,
+            'courses'       => $this->courseService->allByUser($userId),
+            'groups'        => $this->groupService->allByUser($userId),
+            'codeLanguages' => $this->codeLanguageService->all($userId),
         ]);
     }
 
@@ -53,11 +52,7 @@ class ProblemController extends Controller
     {
         $problemDTO = ProblemDTO::fromRequest($request);
 
-        try {
-            $this->problemService->createWithRelations($problemDTO);
-        } catch (\Throwable $t) {
-            dd($t);
-        }
+        $this->problemService->createWithRelations($problemDTO);
 
         return redirect()->to(route('problem.index'));
     }

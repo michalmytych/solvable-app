@@ -9,8 +9,9 @@ class GroupService
 {
     public function __construct(private GroupRepository $groupRepository) { }
 
-    public function allByUser(): Collection
+    public function allByUser(string $userId): Collection
     {
+        // @todo $userId
         return $this->groupRepository->allByUser();
     }
 }

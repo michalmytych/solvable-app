@@ -32,6 +32,14 @@ class ProblemService
     }
 
     /**
+     * Get all problems for user.
+     */
+    public function allByUser(string $userId): LengthAwarePaginator
+    {
+        return $this->problemRepository->all($userId);
+    }
+
+    /**
      * Create new problem with relations in transaction,
      * rollback on database error.
      */
