@@ -9,7 +9,7 @@ class CodeLanguageService
 {
     public function __construct(private CodeLanguageRepositoryInterface $codeLanguageRepository) {}
 
-    public function all(string $userId): Collection
+    public function all(): Collection
     {
         // @todo userId
         return $this->codeLanguageRepository->all();

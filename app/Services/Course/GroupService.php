@@ -11,7 +11,6 @@ class GroupService
 
     public function allByUser(string $userId): Collection
     {
-        // @todo $userId
-        return $this->groupRepository->allByUser();
+        return $this->groupRepository->allByUser($userId);
     }
 }

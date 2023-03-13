@@ -4,53 +4,58 @@ namespace App\Repositories;
 
 use App\Models\Group;
 use App\Models\Course;
-use Illuminate\Support\Collection;
+use App\DTOs\GroupDTO;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Spatie\LaravelData\Contracts\DataCollectable;
+use App\Contracts\Course\GroupRepositoryInterface;
 
-class GroupRepository
+class GroupRepository implements GroupRepositoryInterface
 {
     /**
      * Get all groups available to user.
      */
-    public function allByUser(): EloquentCollection
+    public function allByUser(string $userId): DataCollectable
     {
-        // @todo dont use auth facade instead add userId function argument
-        return Group::where('user_id', Auth::id())->latest()->get();
+        $groupsData = Group::where('user_id', $userId)->latest()->get()->toArray();
+
+        return GroupDTO::collection($groupsData);
     }
 
     /**
      * Update provided group with data and return it.
      */
-    public function update(Group $group, array $data): Group
+    public function update(Group $group, array $data): GroupDTO
     {
-        return tap($group)->update($data);
+        $data = tap($group)->update($data);
+
+        return GroupDTO::from($data);
     }
 
     /**
      * Sync problems at group with ones from provided ids array.
      */
-    public function syncProblems(Group $group, array $problemsIds): void
+    public function syncProblems(Group $group, array $problemsIds): array
     {
-        DB::transaction(fn() => $group->problems()->sync($problemsIds));
+        return DB::transaction(fn() => $group->problems()->sync($problemsIds));
     }
 
     /**
      * Get groups of course by course id.
      */
-    public function findByCourseId(string $courseId): ?Collection
+    public function findByCourseId(string $courseId): DataCollectable
     {
         $course = Course::find($courseId);
 
-        return optional($course)->groups;
+        return GroupDTO::collection(optional($course)->groups);
     }
 
     /**
      * Find group by id.
      */
-    public function findById(string $groupId)
+    public function findById(string $groupId): ?GroupDTO
     {
-        return Group::find($groupId);
+        $data = Group::find($groupId);
+
+        return GroupDTO::from($data);
     }
 }

@@ -44,7 +44,7 @@ class ProblemController extends Controller
         return view('problems.create', [
             'courses'       => $this->courseService->allByUser($userId),
             'groups'        => $this->groupService->allByUser($userId),
-            'codeLanguages' => $this->codeLanguageService->all($userId),
+            'codeLanguages' => $this->codeLanguageService->all(),
         ]);
     }
 
