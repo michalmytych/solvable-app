@@ -3,38 +3,37 @@
 namespace App\Repositories;
 
 use App\Models\Course;
+use App\DTOs\CourseDTO;
+use Spatie\LaravelData\Contracts\DataCollectable;
+use App\Contracts\Repositories\CourseRepositoryInterface;
 
-class CourseRepository
+class CourseRepository implements CourseRepositoryInterface
 {
-    /**
-     * Get all courses related to user by user id.
-     */
-    public function allByUserId(string $id)
+    public function allByUserId(string $id): DataCollectable
     {
-        return Course::where('user_id', $id);
+        $courses = Course::where('user_id', $id)->get();
+
+        return CourseDTO::collection($courses);
     }
 
-    /**
-     * Store new course in database.
-     */
-    public function store(array $data): Course
+    public function store(array $data): CourseDTO
     {
-        return Course::create($data);
+        $course = Course::create($data);
+
+        return CourseDTO::from($course);
     }
 
-    /**
-     * Update course at database.
-     */
-    public function update(Course $course, array $data): Course
+    public function update(string $id, array $data): CourseDTO
     {
-        return tap($course)->update($data);
+        $course = Course::findOrFail($id);
+
+        return CourseDTO::from(
+            tap($course)->update($data)
+        );
     }
 
-    /**
-     * Delete course at database.
-     */
-    public function delete(Course $course): bool
+    public function delete(string $id): bool
     {
-        return $course->delete();
+        return (bool) Course::destroy($id);
     }
 }

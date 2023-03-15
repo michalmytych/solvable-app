@@ -4,14 +4,14 @@ namespace App\Services\Course;
 
 use App\Models\Course;
 use Illuminate\Support\Str;
-use App\Repositories\CourseRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use App\Contracts\Repositories\CourseRepositoryInterface;
 
 class CourseService
 {
-    public function __construct(private CourseRepository $courseRepository) { }
+    public function __construct(private CourseRepositoryInterface $courseRepository) { }
 
     public function allByUser(string $userId)
     {

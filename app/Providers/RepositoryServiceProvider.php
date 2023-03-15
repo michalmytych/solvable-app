@@ -5,8 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\SolutionRepository;
 use App\Repositories\CodeLanguageRepository;
-use App\Contracts\SolutionRepositoryInterface;
-use App\Contracts\CodeLanguageRepositoryInterface;
+use App\Contracts\Repositories\SolutionRepositoryInterface;
+use App\Contracts\Repositories\CodeLanguageRepositoryInterface;
 
 class RepositoryServiceProvider extends ServiceProvider
 {

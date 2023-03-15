@@ -4,6 +4,8 @@ namespace App\DTOs;
 
 class TestDTO extends DTO
 {
+    public readonly string $id;
+
     public readonly string $input;
 
     public readonly int $memory_limit;
@@ -13,11 +15,13 @@ class TestDTO extends DTO
     public readonly array $valid_outputs;
 
     public function __construct(
+        ?string    $id,
         string     $input,
         int|string $memory_limit,
         int|string $time_limit,
         array      $valid_outputs
     ) {
+        $this->id            = $id;
         $this->input         = $input;
         $this->memory_limit  = (int) $memory_limit;
         $this->time_limit    = (int) $time_limit;

@@ -7,7 +7,7 @@ use App\Models\Course;
 use App\DTOs\GroupDTO;
 use Illuminate\Support\Facades\DB;
 use Spatie\LaravelData\Contracts\DataCollectable;
-use App\Contracts\Course\GroupRepositoryInterface;
+use App\Contracts\Repositories\GroupRepositoryInterface;
 
 class GroupRepository implements GroupRepositoryInterface
 {
@@ -24,18 +24,22 @@ class GroupRepository implements GroupRepositoryInterface
     /**
      * Update provided group with data and return it.
      */
-    public function update(Group $group, array $data): GroupDTO
+    public function update(string $id, array $data): GroupDTO
     {
-        $data = tap($group)->update($data);
+        $group = Group::findOrFail($id);
 
-        return GroupDTO::from($data);
+        return GroupDTO::from(
+            tap($group)->update($data)
+        );
     }
 
     /**
      * Sync problems at group with ones from provided ids array.
      */
-    public function syncProblems(Group $group, array $problemsIds): array
+    public function syncProblems(string $groupId, array $problemsIds): array
     {
+        $group = Group::findOrFail($groupId);
+
         return DB::transaction(fn() => $group->problems()->sync($problemsIds));
     }
 
@@ -44,7 +48,7 @@ class GroupRepository implements GroupRepositoryInterface
      */
     public function findByCourseId(string $courseId): DataCollectable
     {
-        $course = Course::find($courseId);
+        $course = Course::findOrFail($courseId);
 
         return GroupDTO::collection(optional($course)->groups);
     }
@@ -54,7 +58,7 @@ class GroupRepository implements GroupRepositoryInterface
      */
     public function findById(string $groupId): ?GroupDTO
     {
-        $data = Group::find($groupId);
+        $data = Group::findOrFail($groupId);
 
         return GroupDTO::from($data);
     }

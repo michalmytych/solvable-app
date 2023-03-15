@@ -3,30 +3,27 @@
 namespace App\Repositories;
 
 use App\Models\Solution;
-use Illuminate\Contracts\Auth\Authenticatable;
-use App\Contracts\SolutionRepositoryInterface;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use App\DTOs\SolutionDTO;
+use Spatie\LaravelData\Contracts\DataCollectable;
+use App\Contracts\Repositories\SolutionRepositoryInterface;
 
 class SolutionRepository implements SolutionRepositoryInterface
 {
-    /**
-     * Find solution by id.
-     */
-    public function find(Solution $solution): ?Solution
+    public function find(string $id): ?SolutionDTO
     {
-        return $solution
+        $solution = Solution::findOrFail($id)
+            ->query()
             ->withQueryParams()
             ->with('executions', fn($execution) => $execution->with('test'))
             ->first();
+
+        return SolutionDTO::from($solution);
     }
 
-    /**
-     * Get all solutions for provided problem instance.
-     */
-    public function all(Authenticatable $user): LengthAwarePaginator
+    public function allByUser(string $userId): DataCollectable
     {
-        return Solution::query()
-            ->where('user_id', $user->id)
+        $solutionsPaginator = Solution::query()
+            ->where('user_id', $userId)
             ->withQueryParams()
             ->withQueryFilters()
             ->select([
@@ -38,17 +35,16 @@ class SolutionRepository implements SolutionRepositoryInterface
                 'updated_at'
             ])
             ->paginate(10);
+
+        return SolutionDTO::collection($solutionsPaginator);
     }
 
-    /**
-     * Update provided Solution database record with data.
-     */
-    public function update(Solution $solution, array $data): Solution
+    public function update(string $id, array $data): SolutionDTO
     {
-        return tap($solution)->update($data);
-    }
+        $solution = Solution::findOrFail($id);
 
-    public function findById(Solution $solution)
-    {
+        return SolutionDTO::from(
+            tap($solution)->update($data)
+        );
     }
 }

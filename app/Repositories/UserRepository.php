@@ -3,27 +3,26 @@
 namespace App\Repositories;
 
 use App\Models\User;
-use App\Contracts\Auth\UserRepositoryInterface;
+use App\DTOs\UserDTO;
+use App\Contracts\Repositories\UserRepositoryInterface;
 
 class UserRepository implements UserRepositoryInterface
 {
-    /**
-     * Store new user in database.
-     */
-    public function store(array $data): User
+    public function store(array $data): UserDTO
     {
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password'])
         ]);
+
+        return UserDTO::from($user);
     }
 
-    /**
-     * Find user by his e-mail address.
-     */
-    public function findByEmail(string $email): ?User
+    public function findByEmail(string $email): ?UserDTO
     {
-        return User::firstWhere('email', $email);
+        $user = User::firstWhere('email', $email);
+
+        return $user ? UserDTO::from($user) : $user;
     }
 }

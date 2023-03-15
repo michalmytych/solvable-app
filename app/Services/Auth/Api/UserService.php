@@ -2,14 +2,14 @@
 
 namespace App\Services\Auth\Api;
 
-use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Contracts\Auth\Authenticatable;
 use App\Exceptions\Auth\BadCredentialsException;
+use App\Contracts\Repositories\UserRepositoryInterface;
 
 class UserService
 {
-    public function __construct(private UserRepository $userRepository)
+    public function __construct(private UserRepositoryInterface $userRepository)
     {
     }
 

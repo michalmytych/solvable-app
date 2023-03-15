@@ -5,6 +5,8 @@ namespace App\View\Components;
 use Illuminate\View\View;
 use Illuminate\View\Component;
 use Illuminate\Support\Collection;
+use Illuminate\Contracts\Support\Arrayable;
+use Spatie\LaravelData\Contracts\DataCollectable;
 
 class Select extends Component
 {
@@ -12,7 +14,7 @@ class Select extends Component
 
     public ?string $label;
 
-    public array $options;
+    public mixed $options;
 
     public string $optionValueKey;
 
@@ -23,13 +25,13 @@ class Select extends Component
     public ?string $emptySelectedOption;
 
     public function __construct(
-        string           $name,
-        ?string          $label = null,
-        string           $optionValueKey = 'id',
-        string           $optionContentKey = 'name',
-        ?string          $emptySelectedOption = null,
-        array|Collection $options = [],
-        ?string          $selectedOptionValue = null,
+        string  $name,
+        ?string $label = null,
+        string  $optionValueKey = 'id',
+        string  $optionContentKey = 'name',
+        ?string $emptySelectedOption = null,
+        mixed   $options = [],
+        ?string $selectedOptionValue = null,
     ) {
         $this->name                = $name;
         $this->label               = $label;
@@ -37,7 +39,7 @@ class Select extends Component
         $this->emptySelectedOption = $emptySelectedOption;
         $this->selectedOptionValue = $selectedOptionValue;
         $this->optionContentKey    = $optionContentKey;
-        $this->options             = $options instanceof Collection ? $options->toArray() : $options;
+        $this->options             = is_array($options) ? $options : $options->toArray();
     }
 
     public function render(): View

@@ -3,13 +3,16 @@
 namespace App\Repositories;
 
 use App\Models\CodeLanguage;
-use Illuminate\Database\Eloquent\Collection;
-use App\Contracts\CodeLanguageRepositoryInterface;
+use App\DTOs\CodeLanguageDTO;
+use Spatie\LaravelData\Contracts\DataCollectable;
+use App\Contracts\Repositories\CodeLanguageRepositoryInterface;
 
 class CodeLanguageRepository implements CodeLanguageRepositoryInterface
 {
-    public function all(): Collection
+    public function all(): DataCollectable
     {
-        return CodeLanguage::all();
+        $codeLanguages = CodeLanguage::all();
+
+        return CodeLanguageDTO::collection($codeLanguages);
     }
 }

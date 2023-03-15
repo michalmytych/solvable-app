@@ -2,14 +2,14 @@
 
 namespace App\Services\Course;
 
-use App\Repositories\GroupRepository;
-use Illuminate\Database\Eloquent\Collection;
+use Spatie\LaravelData\Contracts\DataCollectable;
+use App\Contracts\Repositories\GroupRepositoryInterface;
 
 class GroupService
 {
-    public function __construct(private GroupRepository $groupRepository) { }
+    public function __construct(private GroupRepositoryInterface $groupRepository) { }
 
-    public function allByUser(string $userId): Collection
+    public function allByUser(string $userId): DataCollectable
     {
         return $this->groupRepository->allByUser($userId);
     }

@@ -5,38 +5,28 @@ namespace App\Services\Problem;
 
 
 use Throwable;
-use App\Models\User;
 use App\Models\Problem;
 use App\DTOs\ProblemDTO;
 use Illuminate\Support\Facades\DB;
-use App\Repositories\GroupRepository;
 use Spatie\LaravelData\DataCollection;
-use App\Repositories\ProblemRepository;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Spatie\LaravelData\Contracts\DataCollectable;
+use App\Contracts\Repositories\GroupRepositoryInterface;
+use App\Contracts\Repositories\ProblemRepositoryInterface;
 
 class ProblemService
 {
     public function __construct(
-        private ProblemRepository $problemRepository,
-        private GroupRepository   $groupRepository
-    )
-    {
+        private ProblemRepositoryInterface $problemRepository,
+        private GroupRepositoryInterface   $groupRepository
+    ) {
     }
 
     /**
      * Get all problems for user.
      */
-    public function all(User $user): LengthAwarePaginator
+    public function allByUser(string $userId): DataCollectable
     {
-        return $this->problemRepository->all($user);
-    }
-
-    /**
-     * Get all problems for user.
-     */
-    public function allByUser(string $userId): LengthAwarePaginator
-    {
-        return $this->problemRepository->all($userId);
+        return $this->problemRepository->allByUser($userId);
     }
 
     /**
@@ -71,31 +61,34 @@ class ProblemService
         return $problem;
     }
 
-    private function storeProblem(ProblemDTO $problemDTO): Problem
+    private function storeProblem(ProblemDTO $problemDTO): ProblemDTO
     {
-        return $this->problemRepository->store(
-            collect($problemDTO->toArray()) // @todo
+        $data = $problemDTO->toArray();
+
+        return $this
+            ->problemRepository
+            ->store(collect($data)
                 ->forget([
                     'tests',
                     'group_id',
                     'course_id',
-                    'code_languages_ids'
+                    'code_languages_ids',
                 ])
                 ->toArray()
-        );
+            );
     }
 
     private function addProblemToGroup(string $groupId, Problem $problem)
     {
         $group = $this->groupRepository->findById($groupId);
-        $group->problems()->attach($problem);
+        $group->problems()->attach($problem);   // @todo
     }
 
     private function addProblemToAllGroupsOfCourse(string $courseId, Problem $problem)
     {
         $groupsOfCourse = $this->groupRepository->findByCourseId($courseId);
 
-        $groupsOfCourse->map(
+        $groupsOfCourse->map(       // @todo
             fn($group) => $group->problems()->attach($problem)
         );
     }
@@ -103,14 +96,14 @@ class ProblemService
     private function updateProblemTests(Problem $problem, DataCollection $tests)
     {
         if (count($tests)) {
-            $problem->tests()->createMany($tests->toArray());
+            $problem->tests()->createMany($tests->toArray());   // @todo
         }
     }
 
     private function updateProblemCodeLanguages(Problem $problem, array $codeLanguagesIds)
     {
         if (count($codeLanguagesIds)) {
-            $problem->codeLanguages()->sync($codeLanguagesIds);
+            $problem->codeLanguages()->sync($codeLanguagesIds);     // $todo
         }
     }
 
