@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use App\Models\Problem;
 use App\Models\Solution;
 use App\DTOs\SolutionDTO;

@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 /**
  * @property string $name
  * @property string $user_id
+ * @method static where(string $string, string $userId)
+ * @method static latest()
  */
 class Course extends Model
 {
