@@ -18,17 +18,17 @@ class SolutionService
     /**
      * Get all solutions by user.
      */
-    public function all(User $user): DataCollectable
+    public function all(string $userId): DataCollectable
     {
-        return $this->solutionRepository->allByUser($user->id);
+        return $this->solutionRepository->allByUser($userId);
     }
 
     /**
      * Find solution by id.
      */
-    public function find(Solution $solution): SolutionDTO
+    public function find(string $id): SolutionDTO
     {
-        return $this->solutionRepository->find($solution);
+        return $this->solutionRepository->find($id);
     }
 
     /**

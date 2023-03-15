@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Api\Solution;
 
 use App\Models\Problem;
-use App\Models\Solution;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Services\SolutionService;
 use App\Http\Controllers\Controller;
+use App\Exceptions\CurlError3Exception;
 use App\Http\Resources\SolutionResource;
 use App\Services\SolutionProcessingService;
 use Illuminate\Validation\ValidationException;
 use App\Http\Resources\ProcessedSolutionResource;
 use App\Http\Requests\Api\Solution\CommitRequest;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Spatie\LaravelData\Contracts\DataCollectable;
+use App\Exceptions\ExternalServiceInitializationException;
 
 class SolutionController extends Controller
 {
@@ -26,21 +27,23 @@ class SolutionController extends Controller
     /**
      * Get all solutions for authenticated user.
      */
-    public function all(Request $request): LengthAwarePaginator
+    public function all(Request $request): DataCollectable
     {
-        return $this->solutionService->all($request->user());
+        return $this->solutionService->all($request->user()->id);
     }
 
     /**
      * Find solution by id.
      */
-    public function find(Solution $solution): SolutionResource
+    public function find(string $id): SolutionResource
     {
-        return new SolutionResource($this->solutionService->find($solution));
+        return new SolutionResource($this->solutionService->find($id));
     }
 
     /**
      * Commit a new solution for a problem.
+     * @throws CurlError3Exception
+     * @throws ExternalServiceInitializationException
      */
     public function commit(CommitRequest $commitRequest, Problem $problem): JsonResponse
     {

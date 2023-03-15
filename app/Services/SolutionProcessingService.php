@@ -5,8 +5,10 @@ namespace App\Services;
 use App\Models\Problem;
 use App\Models\Solution;
 use App\Enums\SolutionStatusType;
+use App\Exceptions\CurlError3Exception;
 use Illuminate\Validation\ValidationException;
 use App\Services\CodeExecutor\CodeExecutorService;
+use App\Exceptions\ExternalServiceInitializationException;
 
 class SolutionProcessingService
 {
@@ -45,6 +47,10 @@ class SolutionProcessingService
 
     /**
      * Commit new solution for problem.
+     * @return SolutionProcessingService
+     * @throws CurlError3Exception
+     * @throws ExternalServiceInitializationException
+     * @throws ValidationException
      */
     public function commit(): SolutionProcessingService
     {
@@ -92,6 +98,7 @@ class SolutionProcessingService
      * Delegate execution of problem tests to CodeExecutorService,
      * which can be used as abstraction / adapter for many
      * external code compilation & execution services.
+     * @throws ExternalServiceInitializationException|CurlError3Exception
      */
     private function delegateExecution(): self
     {
